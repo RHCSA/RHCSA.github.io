@@ -10,57 +10,75 @@
             background-color: #121212;
             color: #eaeaea;
             margin: 0;
+            display: flex;
+        }
+        /* Left Sidebar */
+        .sidebar {
+            background-color: #cc0000;
+            color: #fff;
+            width: 30%;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            position: fixed;
+        }
+        .sidebar img {
+            width: 80px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .sidebar h1 {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+        .sidebar h2 {
+            font-size: 1.2em;
+            font-weight: normal;
+            margin: 10px 0;
+            line-height: 1.4;
+        }
+        .menu {
+            margin-top: 30px;
+            list-style: none;
             padding: 0;
         }
-        header {
-            background-color: #0c0c0d;
+        .menu li {
+            margin: 15px 0;
+        }
+        .menu a {
             color: #fff;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid #cc0000;
-        }
-        header img {
-            height: 50px;
-            vertical-align: middle;
-        }
-        header h1 {
-            display: inline-block;
-            margin: 0;
-            font-size: 1.8em;
-            margin-left: 15px;
-            vertical-align: middle;
-        }
-        nav {
-            background-color: #1b1b1d;
-            padding: 10px;
-            text-align: center;
-        }
-        nav a {
-            color: #eaeaea;
-            margin: 0 15px;
             text-decoration: none;
             font-weight: bold;
-            padding: 8px 15px;
+            font-size: 1em;
+            display: block;
+            padding: 10px;
             border-radius: 5px;
             transition: background 0.3s;
         }
-        nav a:hover {
-            background-color: #cc0000;
-            color: #fff;
+        .menu a:hover {
+            background-color: #a10000;
+        }
+        /* Main Content */
+        .main-content {
+            width: 70%;
+            margin-left: 30%;
+            padding: 20px;
+            box-sizing: border-box;
         }
         .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #1c1c1e;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            max-width: 900px;
+            margin: 0 auto;
         }
-        h2, h3 {
+        h2 {
             color: #cc0000;
         }
         p {
             line-height: 1.8;
+        }
+        section {
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
         }
         footer {
             background-color: #0c0c0d;
@@ -74,48 +92,45 @@
             color: #cc0000;
             text-decoration: none;
         }
-        .icon {
-            width: 100px;
-            height: auto;
-        }
-        .content {
-            margin-bottom: 30px;
-        }
     </style>
 </head>
 <body>
-    <header>
-        <img src="redhat.png" alt="Red Hat Logo" class="icon">
-        <h1>RHCSA Exam Preparation - RHEL 9</h1>
-    </header>
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <img src="redhat.png" alt="Red Hat Logo">
+        <h1>RHCSA</h1>
+        <h2>Red Hat Certified System Administrator<br>Full Course & Exam Preparation (RHEL 9)</h2>
+        <ul class="menu">
+            <li><a href="#course-content">Course Content</a></li>
+            <li><a href="#practice-questions">Practice Questions</a></li>
+            <li><a href="#resources">Resources</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
 
-    <nav>
-        <a href="#course-content">Course Content</a>
-        <a href="#practice-questions">Practice Questions</a>
-        <a href="#resources">Resources</a>
-        <a href="#contact">Contact</a>
-    </nav>
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="container">
+            <section id="course-content">
+                <h2>Course Content</h2>
+                <p>Explore a detailed overview of all the topics covered in the RHCSA exam, including tutorials, hands-on labs, and step-by-step guides on RHEL 9.</p>
+            </section>
 
-    <div class="container">
-        <section id="course-content">
-            <h2>Course Content</h2>
-            <p>Explore a detailed overview of all the topics covered in the RHCSA exam, including tutorials, hands-on labs, and step-by-step guides on RHEL 9.</p>
-        </section>
+            <section id="practice-questions">
+                <h2>Practice Questions</h2>
+                <p>Challenge yourself with a variety of practice questions designed to mimic the RHCSA exam environment. Each question includes thorough answers and explanations.</p>
+            </section>
 
-        <section id="practice-questions">
-            <h2>Practice Questions</h2>
-            <p>Challenge yourself with a variety of practice questions designed to mimic the RHCSA exam environment. Each question includes thorough answers and explanations.</p>
-        </section>
+            <section id="resources">
+                <h2>Resources</h2>
+                <p>Access additional resources for your RHCSA exam preparation, including links to official documentation, online courses, and community forums.</p>
+            </section>
 
-        <section id="resources">
-            <h2>Resources</h2>
-            <p>Access additional resources for your RHCSA exam preparation, including links to official documentation, online courses, and community forums.</p>
-        </section>
-
-        <section id="contact">
-            <h2>Contact</h2>
-            <p>Questions or feedback? Reach out via <a href="mailto:your-email@example.com">email</a>.</p>
-        </section>
+            <section id="contact">
+                <h2>Contact</h2>
+                <p>Questions or feedback? Reach out via <a href="mailto:your-email@example.com">email</a>.</p>
+            </section>
+        </div>
     </div>
 
     <footer>
