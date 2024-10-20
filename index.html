@@ -34,14 +34,25 @@
             margin-bottom: 40px;
         }
         .sidebar h1 {
-            font-size: 2.5em;
+            font-size: 3em; /* Make "Red Hat" larger */
             margin: 5px 0;
             font-weight: bold;
         }
-        .sidebar h2, .sidebar h3 {
+        .sidebar .certified, .sidebar .system {
+            font-size: 2.5em;
+            width: 100%;
+            max-width: 200px; /* Match width of "Red Hat" */
+            margin: 0;
+            font-weight: bold;
+        }
+        .sidebar .administrator {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .sidebar h2 {
             font-size: 1.5em;
-            color: #fff;
             margin: 5px 0;
+            line-height: 1.5;
         }
 
         /* Right Sidebar for Objectives */
@@ -56,6 +67,9 @@
             right: 0;
             top: 0;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Push image to bottom */
         }
         .objectives-sidebar h2 {
             font-size: 1.8em;
@@ -68,6 +82,11 @@
         }
         .objectives-sidebar ul li {
             margin: 10px 0;
+        }
+        .objectives-sidebar img {
+            width: 100%;
+            max-width: 200px;
+            margin-top: 20px;
         }
 
         /* Main Content */
@@ -116,9 +135,11 @@
     <!-- Left Sidebar -->
     <div class="sidebar">
         <img src="redhat.png" alt="Red Hat Certified System Administrator Logo">
-        <h1><span class="highlight">Red Hat</span></h1>
-        <h2>Certified System Administrator</h2>
-        <h3>RHCSA - EX200</h3>
+        <h1>Red Hat</h1>
+        <h1 class="certified">CERTIFIED</h1>
+        <h1 class="system">SYSTEM</h1>
+        <h1 class="administrator">ADMINISTRATOR</h1>
+        <h2>RHCSA - EX200<br><br>Full Course + Exam Preparation<br>(on RHEL 9)</h2>
     </div>
 
     <!-- Main Content Area -->
@@ -159,6 +180,7 @@
             <li>Manage security</li>
             <!-- Add more objectives from the official page -->
         </ul>
+        <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge">
     </div>
 </body>
 </html>
