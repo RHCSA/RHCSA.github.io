@@ -31,10 +31,10 @@
         .sidebar img {
             width: 200px;
             height: auto;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
         .sidebar h1 {
-            font-size: 3.5em; /* Larger font size for Red Hat */
+            font-size: 3em; /* Bigger font for Red Hat */
             margin: 5px 0;
             font-weight: bold;
         }
@@ -43,8 +43,9 @@
             color: #fff;
             margin: 5px 0;
         }
-        .sidebar .highlight {
-            font-weight: bold;
+        .sidebar p {
+            font-size: 1.2em;
+            margin: 15px 0;
         }
 
         /* Right Sidebar for Objectives */
@@ -59,7 +60,10 @@
             right: 0;
             top: 0;
             overflow-y: auto;
-            text-align: center; /* Center align */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
         .objectives-sidebar h2 {
             font-size: 1.8em;
@@ -74,12 +78,9 @@
             margin: 10px 0;
         }
         .objectives-sidebar img {
-            width: 80%; /* Adjust size to fit */
+            width: 150px;
             height: auto;
             margin: 20px 0;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         /* Main Content */
@@ -130,11 +131,13 @@
         <img src="redhat.png" alt="Red Hat Certified System Administrator Logo">
         <h1>Red Hat</h1>
         <h2>CERTIFIED</h2>
-        <h2>SYSTEM ADMINISTRATOR</h2>
+        <h2>SYSTEM</h2>
+        <h2>ADMINISTRATOR</h2>
         <h3>RHCSA - EX200</h3>
-        <br>
-        <h3>Full Course<br>+<br>Exam Preparation</h3>
-        <h3>(on RHEL 9)</h3>
+        <p>Full Course</p>
+        <p>+</p>
+        <p>Exam Preparation</p>
+        <p>(on RHEL 9)</p>
     </div>
 
     <!-- Main Content Area -->
@@ -155,6 +158,11 @@
                 <p>Access additional resources for your RHCSA exam preparation, including links to official documentation, online courses, and community forums.</p>
             </section>
 
+            <section id="video">
+                <h2>Intro Video</h2>
+                <iframe width="100%" height="400" src="https://www.youtube.com/embed/Me6Y12-sux8?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </section>
+
             <section id="contact">
                 <h2>Contact</h2>
                 <p>Questions or feedback? Reach out via <a href="mailto:your-email@example.com">email</a>.</p>
@@ -169,14 +177,12 @@
             <li>Understand and use essential tools</li>
             <li>Operate running systems</li>
             <li>Configure local storage</li>
-            <li>Create and configure file systems</li>
-            <li>Deploy, configure, and maintain systems</li>
-            <li>Manage users and groups</li>
-            <li>Manage security</li>
+
         </ul>
-        <!-- Add images at the bottom center -->
-        <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="Certification Badge">
-        <img src="https://media.licdn.com/dms/image/v2/D5612AQGpF51xuYPUWg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1687423473899?e=2147483647&v=beta&t=M5fZx1PG_8Z6zesortt86Q8ZZ6SSuSwbqg50HG_Fpm8" alt="Exam Preparation Image">
+        <div>
+            <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge">
+            <img src="https://media.licdn.com/dms/image/v2/D5612AQGpF51xuYPUWg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1687423473899?e=2147483647&v=beta&t=M5fZx1PG_8Z6zesortt86Q8ZZ6SSuSwbqg50HG_Fpm8" alt="RHEL Certification">
+        </div>
     </div>
 </body>
 </html>
