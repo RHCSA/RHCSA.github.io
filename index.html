@@ -34,25 +34,17 @@
             margin-bottom: 40px;
         }
         .sidebar h1 {
-            font-size: 3em; /* Make "Red Hat" larger */
+            font-size: 3.5em; /* Larger font size for Red Hat */
             margin: 5px 0;
             font-weight: bold;
         }
-        .sidebar .certified, .sidebar .system {
-            font-size: 2.5em;
-            width: 100%;
-            max-width: 200px; /* Match width of "Red Hat" */
-            margin: 0;
-            font-weight: bold;
-        }
-        .sidebar .administrator {
-            font-size: 2.5em;
-            margin: 0;
-        }
-        .sidebar h2 {
+        .sidebar h2, .sidebar h3 {
             font-size: 1.5em;
+            color: #fff;
             margin: 5px 0;
-            line-height: 1.5;
+        }
+        .sidebar .highlight {
+            font-weight: bold;
         }
 
         /* Right Sidebar for Objectives */
@@ -67,9 +59,7 @@
             right: 0;
             top: 0;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Push image to bottom */
+            text-align: center; /* Center align */
         }
         .objectives-sidebar h2 {
             font-size: 1.8em;
@@ -84,9 +74,12 @@
             margin: 10px 0;
         }
         .objectives-sidebar img {
-            width: 100%;
-            max-width: 200px;
-            margin-top: 20px;
+            width: 80%; /* Adjust size to fit */
+            height: auto;
+            margin: 20px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Main Content */
@@ -136,10 +129,12 @@
     <div class="sidebar">
         <img src="redhat.png" alt="Red Hat Certified System Administrator Logo">
         <h1>Red Hat</h1>
-        <h1 class="certified">CERTIFIED</h1>
-        <h1 class="system">SYSTEM</h1>
-        <h1 class="administrator">ADMINISTRATOR</h1>
-        <h2>RHCSA - EX200<br><br>Full Course + Exam Preparation<br>(on RHEL 9)</h2>
+        <h2>CERTIFIED</h2>
+        <h2>SYSTEM ADMINISTRATOR</h2>
+        <h3>RHCSA - EX200</h3>
+        <br>
+        <h3>Full Course<br>+<br>Exam Preparation</h3>
+        <h3>(on RHEL 9)</h3>
     </div>
 
     <!-- Main Content Area -->
@@ -178,9 +173,10 @@
             <li>Deploy, configure, and maintain systems</li>
             <li>Manage users and groups</li>
             <li>Manage security</li>
-            <!-- Add more objectives from the official page -->
         </ul>
-        <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge">
+        <!-- Add images at the bottom center -->
+        <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="Certification Badge">
+        <img src="https://media.licdn.com/dms/image/v2/D5612AQGpF51xuYPUWg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1687423473899?e=2147483647&v=beta&t=M5fZx1PG_8Z6zesortt86Q8ZZ6SSuSwbqg50HG_Fpm8" alt="Exam Preparation Image">
     </div>
 </body>
 </html>
