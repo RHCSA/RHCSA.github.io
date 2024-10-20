@@ -11,12 +11,13 @@
             color: #eaeaea;
             margin: 0;
             display: flex;
+            flex-direction: row;
         }
         /* Left Sidebar */
         .sidebar {
             background-color: #cc0000;
             color: #fff;
-            width: 30%;
+            width: 25%;
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
@@ -28,63 +29,54 @@
             align-items: center;
         }
         .sidebar img {
-            width: 350px; /* Adjust size as needed */
+            width: 200px;
             height: auto;
             margin-bottom: 40px;
         }
         .sidebar h1 {
-            font-size: 3.5em;
-            margin: 5px 0;
-            font-weight: bold;
-        }
-        .sidebar h2 {
             font-size: 2.5em;
-            font-weight: normal;
             margin: 5px 0;
-            line-height: 1.5;
-            color: #fff;
+            font-weight: bold;
         }
-        .sidebar h3 {
+        .sidebar h2, .sidebar h3 {
             font-size: 1.5em;
-            font-weight: normal;
+            color: #fff;
             margin: 5px 0;
-            line-height: 1.5;
+        }
+
+        /* Right Sidebar for Objectives */
+        .objectives-sidebar {
+            background-color: #1a1a1a;
             color: #fff;
-        }
-        .sidebar .highlight {
-            font-weight: bold;
-        }
-        .menu {
-            margin-top: 30px;
-            list-style: none;
-            padding: 0;
-        }
-        .menu li {
-            margin: 15px 0;
-        }
-        .menu a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1em;
-            display: block;
-            padding: 10px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .menu a:hover {
-            background-color: #a10000;
-        }
-        /* Main Content */
-        .main-content {
-            width: 70%;
-            margin-left: 30%;
+            width: 20%;
+            min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
+            position: fixed;
+            right: 0;
+            top: 0;
+            overflow-y: auto;
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
+        .objectives-sidebar h2 {
+            font-size: 1.8em;
+            color: #cc0000;
+            margin-bottom: 20px;
+        }
+        .objectives-sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .objectives-sidebar ul li {
+            margin: 10px 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            width: 55%;
+            margin-left: 25%;
+            margin-right: 20%;
+            padding: 20px;
+            box-sizing: border-box;
         }
         h2 {
             color: #cc0000;
@@ -96,19 +88,37 @@
             padding: 20px 0;
             border-bottom: 1px solid #333;
         }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            .main-content {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+                padding: 10px;
+            }
+            .objectives-sidebar {
+                width: 100%;
+                position: relative;
+                margin-top: 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Left Sidebar -->
     <div class="sidebar">
         <img src="redhat.png" alt="Red Hat Certified System Administrator Logo">
-        <h1><span class="highlight">Red Hat</span><br></h1>
-        <h2>Certified System Administrator<br></h2>
-        <h3>RHCSA - EX200<br>
-        <br>
-        Full Course &<br>
-        Exam Preparation<br>
-        (on RHEL 9)</h3>
+        <h1><span class="highlight">Red Hat</span></h1>
+        <h2>Certified System Administrator</h2>
+        <h3>RHCSA - EX200</h3>
     </div>
 
     <!-- Main Content Area -->
@@ -134,6 +144,21 @@
                 <p>Questions or feedback? Reach out via <a href="mailto:your-email@example.com">email</a>.</p>
             </section>
         </div>
+    </div>
+
+    <!-- Right Sidebar for RHCSA Exam Objectives -->
+    <div class="objectives-sidebar">
+        <h2>RHCSA Exam Objectives</h2>
+        <ul>
+            <li>Understand and use essential tools</li>
+            <li>Operate running systems</li>
+            <li>Configure local storage</li>
+            <li>Create and configure file systems</li>
+            <li>Deploy, configure, and maintain systems</li>
+            <li>Manage users and groups</li>
+            <li>Manage security</li>
+            <!-- Add more objectives from the official page -->
+        </ul>
     </div>
 </body>
 </html>
