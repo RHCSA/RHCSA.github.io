@@ -13,11 +13,12 @@
             display: flex;
             flex-direction: row;
         }
+
         /* Left Sidebar */
         .sidebar {
             background-color: #cc0000;
             color: #fff;
-            width: 25%;
+            width: 20%; /* Adjusted to 20% */
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
@@ -28,21 +29,25 @@
             justify-content: center;
             align-items: center;
         }
+
         .sidebar img {
             width: 200px;
             height: auto;
             margin-bottom: 20px;
         }
+
         .sidebar h1 {
             font-size: 3em;
             margin: 5px 0;
             font-weight: bold;
         }
+
         .sidebar h2, .sidebar h3 {
             font-size: 1.5em;
             color: #fff;
             margin: 5px 0;
         }
+
         .sidebar p {
             font-size: 1.2em;
             margin: 15px 0;
@@ -52,7 +57,7 @@
         .objectives-sidebar {
             background-color: #1a1a1a;
             color: #fff;
-            width: 25%;
+            width: 20%; /* Adjusted to 20% */
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
@@ -66,74 +71,90 @@
             justify-content: center;
             align-items: center;
         }
+
         .objectives-sidebar img {
             width: 200px;
             height: auto;
             margin-bottom: 20px;
         }
+
         .objectives-sidebar h2 {
             font-size: 3em;
             color: #fff;
             margin-bottom: 20px;
             font-weight: bold;
         }
+
         .objectives-sidebar ul {
             list-style-type: none;
             padding: 0;
             font-size: 1.5em;
         }
+
         .objectives-sidebar ul li {
             margin: 10px 0;
         }
 
         /* Main Content */
         .main-content {
-            width: 55%;
-            margin-left: 25%;
+            width: 60%; /* Adjusted to fit 20% sidebars */
+            margin-left: 20%;
             margin-right: 20%;
             padding: 20px;
             box-sizing: border-box;
         }
+
         h2 {
             color: #cc0000;
         }
+
         p {
             line-height: 1.8;
         }
+
         section {
             padding: 20px 0;
             border-bottom: 1px solid #333;
         }
 
-        /* Tab Container */
+        /* Vertical Tab Navigation */
         .tab-container {
+            display: flex;
             margin-top: 30px;
         }
+
         .tabs {
             display: flex;
-            border-bottom: 1px solid #333;
-            cursor: pointer;
+            flex-direction: column; /* Make tabs vertical */
+            border-right: 1px solid #333;
+            width: 30%; /* Set a width for the vertical tabs */
         }
+
         .tabs div {
-            flex: 1;
             padding: 10px;
             background-color: #1a1a1a;
-            text-align: center;
-            border-right: 1px solid #333;
+            text-align: left;
+            border-bottom: 1px solid #333;
             color: #eaeaea;
+            cursor: pointer;
         }
+
         .tabs div:hover {
             background-color: #333;
         }
+
         .tabs div.active {
             background-color: #cc0000;
         }
+
         .tab-content {
             display: none;
             padding: 20px;
             background-color: #1a1a1a;
             color: #eaeaea;
+            flex-grow: 1;
         }
+
         .tab-content.active {
             display: block;
         }
@@ -143,18 +164,30 @@
             body {
                 flex-direction: column;
             }
+
             .sidebar, .objectives-sidebar {
                 width: 100%;
                 position: relative;
             }
+
             .main-content {
                 width: 100%;
                 margin-left: 0;
                 margin-right: 0;
                 padding: 10px;
             }
+
             .tabs div {
                 font-size: 0.9em;
+            }
+
+            .tabs {
+                width: 100%;
+                flex-direction: row;
+            }
+
+            .tab-content {
+                padding: 10px;
             }
         }
     </style>
@@ -178,21 +211,23 @@
     <div class="main-content">
         <!-- Central Title -->
         <h1 style="text-align: center;">Red Hat Certified System Administrator (RHCSA) EX200 Exam</h1>
-        
+
         <!-- Tab Navigation -->
         <div class="tab-container">
+            <!-- Vertical Tabs -->
             <div class="tabs">
-                <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 1</div>
-                <div class="tab" onclick="openTab(event, 'chapter2')">Chapter 2</div>
-                <div class="tab" onclick="openTab(event, 'chapter3')">Chapter 3</div>
-                <div class="tab" onclick="openTab(event, 'chapter4')">Chapter 4</div>
-                <div class="tab" onclick="openTab(event, 'chapter5')">Chapter 5</div>
-                <div class="tab" onclick="openTab(event, 'chapter6')">Chapter 6</div>
-                <div class="tab" onclick="openTab(event, 'chapter7')">Chapter 7</div>
-                <div class="tab" onclick="openTab(event, 'chapter8')">Chapter 8</div>
-                <div class="tab" onclick="openTab(event, 'chapter9')">Chapter 9</div>
-                <div class="tab" onclick="openTab(event, 'chapter10')">Chapter 10</div>
+                <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 01): Understand and use essential tools</div>
+                <div class="tab" onclick="openTab(event, 'chapter2')">Chapter 02): Create simple shell scripts</div>
+                <div class="tab" onclick="openTab(event, 'chapter3')">Chapter 03): Operate running systems</div>
+                <div class="tab" onclick="openTab(event, 'chapter4')">Chapter 04): Configure local storage</div>
+                <div class="tab" onclick="openTab(event, 'chapter5')">Chapter 05): Create and configure file systems</div>
+                <div class="tab" onclick="openTab(event, 'chapter6')">Chapter 06): Deploy, configure, and maintain systems</div>
+                <div class="tab" onclick="openTab(event, 'chapter7')">Chapter 07): Manage basic networking</div>
+                <div class="tab" onclick="openTab(event, 'chapter8')">Chapter 08): Manage users and groups</div>
+                <div class="tab" onclick="openTab(event, 'chapter9')">Chapter 09): Manage security</div>
+                <div class="tab" onclick="openTab(event, 'chapter10')">Chapter 10): Manage containers</div>
             </div>
+
             <!-- Tab Content -->
             <div id="chapter1" class="tab-content">Understand and use essential tools</div>
             <div id="chapter2" class="tab-content">Create simple shell scripts</div>
@@ -220,22 +255,21 @@
 
     <!-- JavaScript for Tab Navigation -->
     <script>
-        // Function to open a tab and show its content
         function openTab(evt, tabName) {
-            // Get all elements with class="tab-content" and hide them
+            // Hide all tab contents
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(content => content.classList.remove('active'));
 
-            // Get all elements with class="tab" and remove the class "active"
+            // Remove "active" class from all tabs
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => tab.classList.remove('active'));
 
-            // Show the current tab's content and add "active" class to the clicked tab
+            // Show the clicked tab's content and highlight the active tab
             document.getElementById(tabName).classList.add('active');
             evt.currentTarget.classList.add('active');
         }
 
-        // Set default active tab
+        // Set default active tab on page load
         document.querySelector('.tabs .tab').click();
     </script>
 </body>
