@@ -50,9 +50,9 @@
 
         /* Right Sidebar for Objectives */
         .objectives-sidebar {
-            background-color: #1a1a1a; /* Keep background color */
+            background-color: #1a1a1a;
             color: #fff;
-            width: 20%;
+            width: 25%;
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
@@ -60,19 +60,19 @@
             right: 0;
             top: 0;
             overflow-y: auto;
-            text-align: center; /* Align content centrally */
+            text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
         .objectives-sidebar img {
-            width: 200px; /* Match the image size to the left sidebar */
+            width: 200px;
             height: auto;
             margin-bottom: 20px;
         }
         .objectives-sidebar h2 {
-            font-size: 3em; /* Match font size to left sidebar */
+            font-size: 3em;
             color: #fff;
             margin-bottom: 20px;
             font-weight: bold;
@@ -80,7 +80,7 @@
         .objectives-sidebar ul {
             list-style-type: none;
             padding: 0;
-            font-size: 1.5em; /* Match text size */
+            font-size: 1.5em;
         }
         .objectives-sidebar ul li {
             margin: 10px 0;
@@ -105,6 +105,39 @@
             border-bottom: 1px solid #333;
         }
 
+        /* Tab Container */
+        .tab-container {
+            margin-top: 30px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+        }
+        .tabs div {
+            flex: 1;
+            padding: 10px;
+            background-color: #1a1a1a;
+            text-align: center;
+            border-right: 1px solid #333;
+            color: #eaeaea;
+        }
+        .tabs div:hover {
+            background-color: #333;
+        }
+        .tabs div.active {
+            background-color: #cc0000;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #eaeaea;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
         /* Responsive Design for Mobile */
         @media (max-width: 768px) {
             body {
@@ -120,6 +153,9 @@
                 margin-right: 0;
                 padding: 10px;
             }
+            .tabs div {
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -132,39 +168,42 @@
         <h2>SYSTEM</h2>
         <h2>ADMINISTRATOR</h2>
         <h3>RHCSA - EX200</h3>
-        <p>Full Course</p>
-        <p>+</p>
-        <p>Exam Preparation</p>
-        <p>(on RHEL 9)</p>
+        <h4>Full Course</h4>
+        <h4>+</h4>
+        <h4>Exam Preparation</h4>
+        <h4>(on RHEL 9)</h4>
     </div>
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <div class="container">
-            <section id="course-content">
-                <h2>Course Content</h2>
-                <p>Explore a detailed overview of all the topics covered in the RHCSA exam, including tutorials, hands-on labs, and step-by-step guides on RHEL 9.</p>
-            </section>
-
-            <section id="practice-questions">
-                <h2>Practice Questions</h2>
-                <p>Challenge yourself with a variety of practice questions designed to mimic the RHCSA exam environment. Each question includes thorough answers and explanations.</p>
-            </section>
-
-            <section id="resources">
-                <h2>Resources</h2>
-                <p>Access additional resources for your RHCSA exam preparation, including links to official documentation, online courses, and community forums.</p>
-            </section>
-
-            <section id="video">
-                <h2>Intro Video</h2>
-                <iframe width="100%" height="400" src="https://www.youtube.com/embed/Me6Y12-sux8?autoplay=1&mute=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </section>
-
-            <section id="contact">
-                <h2>Contact</h2>
-                <p>Questions or feedback? Reach out via <a href="mailto:your-email@example.com">email</a>.</p>
-            </section>
+        <!-- Central Title -->
+        <h1 style="text-align: center;">Red Hat Certified System Administrator (RHCSA) EX200 Exam</h1>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tabs">
+                <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 1</div>
+                <div class="tab" onclick="openTab(event, 'chapter2')">Chapter 2</div>
+                <div class="tab" onclick="openTab(event, 'chapter3')">Chapter 3</div>
+                <div class="tab" onclick="openTab(event, 'chapter4')">Chapter 4</div>
+                <div class="tab" onclick="openTab(event, 'chapter5')">Chapter 5</div>
+                <div class="tab" onclick="openTab(event, 'chapter6')">Chapter 6</div>
+                <div class="tab" onclick="openTab(event, 'chapter7')">Chapter 7</div>
+                <div class="tab" onclick="openTab(event, 'chapter8')">Chapter 8</div>
+                <div class="tab" onclick="openTab(event, 'chapter9')">Chapter 9</div>
+                <div class="tab" onclick="openTab(event, 'chapter10')">Chapter 10</div>
+            </div>
+            <!-- Tab Content -->
+            <div id="chapter1" class="tab-content">Understand and use essential tools</div>
+            <div id="chapter2" class="tab-content">Create simple shell scripts</div>
+            <div id="chapter3" class="tab-content">Operate running systems</div>
+            <div id="chapter4" class="tab-content">Configure local storage</div>
+            <div id="chapter5" class="tab-content">Create and configure file systems</div>
+            <div id="chapter6" class="tab-content">Deploy, configure, and maintain systems</div>
+            <div id="chapter7" class="tab-content">Manage basic networking</div>
+            <div id="chapter8" class="tab-content">Manage users and groups</div>
+            <div id="chapter9" class="tab-content">Manage security</div>
+            <div id="chapter10" class="tab-content">Manage containers</div>
         </div>
     </div>
 
@@ -178,5 +217,26 @@
             <li>Configure local storage</li>
         </ul>
     </div>
+
+    <!-- JavaScript for Tab Navigation -->
+    <script>
+        // Function to open a tab and show its content
+        function openTab(evt, tabName) {
+            // Get all elements with class="tab-content" and hide them
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Get all elements with class="tab" and remove the class "active"
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show the current tab's content and add "active" class to the clicked tab
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Set default active tab
+        document.querySelector('.tabs .tab').click();
+    </script>
 </body>
 </html>
