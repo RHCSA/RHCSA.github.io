@@ -34,7 +34,7 @@
             margin-bottom: 20px;
         }
         .sidebar h1 {
-            font-size: 3em; /* Bigger font for Red Hat */
+            font-size: 3em;
             margin: 5px 0;
             font-weight: bold;
         }
@@ -50,7 +50,7 @@
 
         /* Right Sidebar for Objectives */
         .objectives-sidebar {
-            background-color: #1a1a1a;
+            background-color: #1a1a1a; /* Keep background color */
             color: #fff;
             width: 20%;
             min-height: 100vh;
@@ -60,27 +60,30 @@
             right: 0;
             top: 0;
             overflow-y: auto;
+            text-align: center; /* Align content centrally */
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
         }
-        .objectives-sidebar h2 {
-            font-size: 1.8em;
-            color: #cc0000;
+        .objectives-sidebar img {
+            width: 200px; /* Match the image size to the left sidebar */
+            height: auto;
             margin-bottom: 20px;
+        }
+        .objectives-sidebar h2 {
+            font-size: 3em; /* Match font size to left sidebar */
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
         .objectives-sidebar ul {
             list-style-type: none;
             padding: 0;
+            font-size: 1.5em; /* Match text size */
         }
         .objectives-sidebar ul li {
             margin: 10px 0;
-        }
-        .objectives-sidebar img {
-            width: 150px;
-            height: auto;
-            margin: 20px 0;
         }
 
         /* Main Content */
@@ -107,7 +110,7 @@
             body {
                 flex-direction: column;
             }
-            .sidebar {
+            .sidebar, .objectives-sidebar {
                 width: 100%;
                 position: relative;
             }
@@ -116,11 +119,6 @@
                 margin-left: 0;
                 margin-right: 0;
                 padding: 10px;
-            }
-            .objectives-sidebar {
-                width: 100%;
-                position: relative;
-                margin-top: 20px;
             }
         }
     </style>
@@ -172,17 +170,13 @@
 
     <!-- Right Sidebar for RHCSA Exam Objectives -->
     <div class="objectives-sidebar">
-        <h2>RHCSA Exam Objectives</h2>
+        <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge">
+        <h2>RHCSA</h2>
         <ul>
             <li>Understand and use essential tools</li>
             <li>Operate running systems</li>
             <li>Configure local storage</li>
-
         </ul>
-        <div>
-            <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge">
-            <img src="https://media.licdn.com/dms/image/v2/D5612AQGpF51xuYPUWg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1687423473899?e=2147483647&v=beta&t=M5fZx1PG_8Z6zesortt86Q8ZZ6SSuSwbqg50HG_Fpm8" alt="RHEL Certification">
-        </div>
     </div>
 </body>
 </html>
