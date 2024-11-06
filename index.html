@@ -18,7 +18,7 @@
         .sidebar {
             background-color: #cc0000;
             color: #fff;
-            width: 20%; /* Set to 20% */
+            width: 20%;
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
@@ -128,7 +128,7 @@
 
         /* Main Content */
         .main-content {
-            width: 60%; /* 60% for main content */
+            width: 60%;
             margin-left: 20%;
             margin-right: 20%;
             padding: 20px;
@@ -158,7 +158,7 @@
         .tabs {
             display: flex;
             flex-direction: column;
-            width: 100%; /* Full width */
+            width: 100%;
             border-bottom: 1px solid #333;
         }
 
@@ -210,7 +210,7 @@
             }
 
             .tabs div {
-                font-size: 0.9em;
+                font-size: 1.1em; /* Larger font size for better readability on mobile */
             }
 
             .tabs {
@@ -221,6 +221,27 @@
 
             .tab-content {
                 padding: 10px;
+            }
+
+            .line {
+                height: 1px; /* Thinner line on mobile */
+                width: 100%; /* Adjusted width to fit smaller screen */
+            }
+
+            .redhat {
+                font-size: 19vw; /* Adjust size of "redhat" text for smaller screens */
+            }
+
+            .certified {
+                font-size: 8.5vw; /* Adjust size for mobile readability */
+            }
+
+            .system {
+                font-size: 12vw;
+            }
+
+            .admin {
+                font-size: 5.5vw;
             }
         }
     </style>
