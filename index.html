@@ -14,7 +14,7 @@
             flex-direction: row;
         }
 
-        /* Left Sidebar (new one) */
+        /* Left Sidebar (remains unchanged) */
         .sidebar {
             background-color: #cc0000;
             color: #fff;
@@ -48,7 +48,7 @@
         }
 
         .redhat {
-            font-size: 4.5vw; /* Adjusted to fit well on sidebar */
+            font-size: 4.5vw;
             color: white;
         }
 
@@ -84,7 +84,7 @@
             color: white;
         }
 
-        /* Right Sidebar */
+        /* Right Sidebar (Tabs moved here) */
         .objectives-sidebar {
             background-color: #1a1a1a;
             color: #fff;
@@ -96,63 +96,8 @@
             right: 0;
             top: 0;
             overflow-y: auto;
-            text-align: center;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .objectives-sidebar img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        .objectives-sidebar h2 {
-            font-size: 3em;
-            color: #fff;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .objectives-sidebar ul {
-            list-style-type: none;
-            padding: 0;
-            font-size: 1.5em;
-        }
-
-        .objectives-sidebar ul li {
-            margin: 10px 0;
-        }
-
-        /* Main Content */
-        .main-content {
-            width: 60%;
-            margin-left: 20%;
-            margin-right: 20%;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        h2 {
-            color: #cc0000;
-        }
-
-        p {
-            line-height: 1.8;
-        }
-
-        section {
-            padding: 20px 0;
-            border-bottom: 1px solid #333;
-        }
-
-        /* Vertical Tab Navigation */
-        .tab-container {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column; /* Vertical alignment */
         }
 
         .tabs {
@@ -179,6 +124,29 @@
             background-color: #cc0000;
         }
 
+        /* Main Content */
+        .main-content {
+            width: 60%;
+            margin-left: 20%;
+            margin-right: 20%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #cc0000;
+        }
+
+        p {
+            line-height: 1.8;
+        }
+
+        section {
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        /* Tab Content */
         .tab-content {
             display: none;
             padding: 20px;
@@ -210,7 +178,7 @@
             }
 
             .tabs div {
-                font-size: 1.1em; /* Larger font size for better readability on mobile */
+                font-size: 1.1em;
             }
 
             .tabs {
@@ -224,16 +192,16 @@
             }
 
             .line {
-                height: 1px; /* Thinner line on mobile */
-                width: 100%; /* Adjusted width to fit smaller screen */
+                height: 1px;
+                width: 100%;
             }
 
             .redhat {
-                font-size: 19vw; /* Adjust size of "redhat" text for smaller screens */
+                font-size: 19vw;
             }
 
             .certified {
-                font-size: 8.5vw; /* Adjust size for mobile readability */
+                font-size: 8.5vw;
             }
 
             .system {
@@ -247,34 +215,27 @@
     </style>
 </head>
 <body>
-    <!-- Left Sidebar (New One) -->
+    <!-- Left Sidebar (No changes) -->
     <div class="sidebar">
         <table>
-            <!-- Image row -->
             <tr class="image-container">
                 <td><img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/redhat.png?raw=true" alt="RedHat Logo"></td>
             </tr>
-            <!-- RedHat text row -->
             <tr>
                 <td class="redhat">red<span class="hat">hat</span></td>
             </tr>
-            <!-- Dynamic full-width horizontal line -->
             <tr>
                 <td><div class="line"></div></td>
             </tr>
-            <!-- Certified text row -->
             <tr>
                 <td class="certified">CERTIFIED</td>
             </tr>
-            <!-- System text row -->
             <tr>
                 <td class="system">SYSTEM</td>
             </tr>
-            <!-- Administrator text row -->
             <tr>
                 <td class="admin">ADMINISTRATOR</td>
             </tr>
-            <!-- Second Image row at the bottom -->
             <tr class="image-container-bottom">
                 <td><img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge"></td>
             </tr>
@@ -287,50 +248,136 @@
     <!-- Main Content Area -->
     <div class="main-content">
         <!-- Central Title -->
-        <h1 style="text-align: center;">Red Hat Certified System Administrator (RHCSA) EX200 Exam</h1>
+        <h1 style="text-align: center;">RHCSA (EX200) Exam Preparation Full Course</h1>
 
         <!-- Video -->
         <div style="text-align: center;">
             <iframe width="100%" height="400" src="https://www.youtube.com/embed/Me6Y12-sux8?autoplay=1&mute=0&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
 
-        <!-- Tab Navigation -->
-        <div class="tab-container">
-            <!-- Vertical Tabs -->
-            <div class="tabs">
-                <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 01): Understand and use essential tools</div>
-                <div class="tab" onclick="openTab(event, 'chapter2')">Chapter 02): Create simple shell scripts</div>
-                <div class="tab" onclick="openTab(event, 'chapter3')">Chapter 03): Operate running systems</div>
-                <div class="tab" onclick="openTab(event, 'chapter4')">Chapter 04): Configure local storage</div>
-                <div class="tab" onclick="openTab(event, 'chapter5')">Chapter 05): Create and configure file systems</div>
-                <div class="tab" onclick="openTab(event, 'chapter6')">Chapter 06): Deploy, configure, and maintain systems</div>
-                <div class="tab" onclick="openTab(event, 'chapter7')">Chapter 07): Manage basic networking</div>
-                <div class="tab" onclick="openTab(event, 'chapter8')">Chapter 08): Manage users and groups</div>
-                <div class="tab" onclick="openTab(event, 'chapter9')">Chapter 09): Manage security</div>
-                <div class="tab" onclick="openTab(event, 'chapter10')">Chapter 10): Manage containers</div>
-            </div>
-
-            <!-- Tab Content (below tabs) -->
-            <div id="chapter1" class="tab-content">Understand and use essential tools</div>
-            <div id="chapter2" class="tab-content">Create simple shell scripts</div>
-            <div id="chapter3" class="tab-content">Operate running systems</div>
-            <div id="chapter4" class="tab-content">Configure local storage</div>
-            <div id="chapter5" class="tab-content">Create and configure file systems</div>
-            <div id="chapter6" class="tab-content">Deploy, configure, and maintain systems</div>
-            <div id="chapter7" class="tab-content">Manage basic networking</div>
-            <div id="chapter8" class="tab-content">Manage users and groups</div>
-            <div id="chapter9" class="tab-content">Manage security</div>
-            <div id="chapter10" class="tab-content">Manage containers</div>
+        <!-- Tab Content (below the video) -->
+        <div id="chapter1" class="tab-content">
+            <dl><dt><p><b>Understand and use essential tools</b></p></dt><dd><ul>
+                <li>Access a shell prompt and issue commands with correct syntax</li>
+                <li>Use input-output redirection (&gt;, &gt;&gt;, |, 2&gt;, etc.)</li>
+                <li>Use grep and regular expressions to analyze text</li>
+                <li>Access remote systems using SSH</li>
+                <li>Log in and switch users in multiuser targets</li>
+                <li>Archive, compress, unpack, and uncompress files using tar, gzip, and bzip2</li>
+                <li>Create and edit text files</li>
+                <li>Create, delete, copy, and move files and directories</li>
+                <li>Create hard and soft links</li>
+                <li>List, set, and change standard ugo/rwx permissions</li>
+                <li>Locate, read, and use system documentation including man, info, and files in /usr/share/doc</li>
+            </ul></dd></dl>
+        </div>
+        <div id="chapter2" class="tab-content">
+            <dl><dt><p><b>Create simple shell scripts</b></p></dt><dd><ul>
+            <li>Conditionally execute code (use of: if, test, [], etc.)</li>
+            <li>Use Looping constructs (for, etc.) to process file, command line input</li>
+            <li>Process script inputs ($1, $2, etc.)</li>
+            <li>Processing output of shell commands within a script</li>
+        </ul></dd>
+        </div>
+        <div id="chapter3" class="tab-content">
+            <dl><dt><p><b>Operate running systems</b></p></dt><dd><ul>
+            <li>Boot, reboot, and shut down a system normally</li>
+            <li>Boot systems into different targets manually</li>
+            <li>Interrupt the boot process in order to gain access to a system</li>
+            <li>Identify CPU/memory intensive processes and kill processes</li>
+            <li>Adjust process scheduling</li><li>Manage tuning profiles</li>
+            <li>Locate and interpret system log files and journals</li>
+            <li>Preserve system journals</li>
+            <li>Start, stop, and check the status of network services</li>
+            <li>Securely transfer files between systems</li></ul></dd>
+        </div>
+        <div id="chapter4" class="tab-content">
+            <dl><dt><p><b>Configure local storage</b></p></dt><dd><ul>
+            <li>List, create, delete partitions on MBR and GPT disks</li>
+            <li>Create and remove physical volumes</li>
+            <li>Assign physical volumes to volume groups</li>
+            <li>Create and delete logical volumes</li>
+            <li>Configure systems to mount file systems at boot by universally unique ID (UUID) or label</li>
+            <li>Add new partitions and logical volumes, and swap to a system non-destructively</li>
+        </ul></dd>
+        </div>
+        <div id="chapter5" class="tab-content">
+            <dl><dt><p><b>Create and configure file systems</b></p></dt><dd><ul>
+            <li>Create, mount, unmount, and use vfat, ext4, and xfs file systems</li>
+            <li>Mount and unmount network file systems using NFS</li>
+            <li>Configure autofs</li>
+            <li>Extend existing logical volumes</li>
+            <li>Create and configure set-GID directories for collaboration</li>
+            <li>Diagnose and correct file permission problems</li>
+        </ul></dd>
+        </div>
+        <div id="chapter6" class="tab-content">
+            <dl><dt><p><b>Deploy, configure, and maintain systems</b></p></dt><dd><ul>
+            <li>Schedule tasks using at and cron</li>
+            <li>Start and stop services and configure services to start automatically at boot</li>
+            <li>Configure systems to boot into a specific target automatically</li>
+            <li>Configure time service clients</li>
+            <li>Install and update software packages from Red Hat Network, a remote repository, or from the local file system</li>
+            <li>Modify the system bootloader</li>
+        </ul></dd>
+        </div>
+        <div id="chapter7" class="tab-content">
+            <dl><dt><p><b>Manage basic networking</b></p></dt><dd><ul>
+            <li>Configure IPv4 and IPv6 addresses</li>
+            <li>Configure hostname resolution</li>
+            <li>Configure network services to start automatically at boot</li>
+            <li>Restrict network access using firewall-cmd/firewall</li>
+        </ul></dd>
+        </div>
+        <div id="chapter8" class="tab-content">
+            <dl><dt><p><b>Manage users and groups</b></p></dt><dd><ul>
+            <li>Create, delete, and modify local user accounts</li>
+            <li>Change passwords and adjust password aging for local user accounts</li>
+            <li>Create, delete, and modify local groups and group memberships</li>
+            <li>Configure superuser access</li>
+        </ul></dd>
+        </div>
+        <div id="chapter9" class="tab-content">
+            <dl><dt><p><b>Manage security</b></p></dt><dd><ul>
+            <li>Configure firewall settings using firewall-cmd/firewalld</li>
+            <li>Manage default file permissions</li>
+            <li>Configure key-based authentication for SSH</li>
+            <li>Set enforcing and permissive modes for SELinux</li>
+            <li>List and identify SELinux file and process context</li>
+            <li>Restore default file contexts</li>
+            <li>Manage SELinux port labels</li>
+            <li>Use boolean settings to modify system SELinux settings</li>
+            <li>Diagnose and address routine SELinux policy violations</li>
+        </ul></dd>
+        </div>
+        <div id="chapter10" class="tab-content">
+            <dl><dt><p><b>Manage containers</b></p></dt><dd><ul>
+            <li>Find and retrieve container images from a remote registry</li>
+            <li>Inspect container images</li>
+            <li>Perform container management using commands such as podman and skopeo</li>
+            <li>Perform basic container management such as running, starting, stopping, and listing running containers</li>
+            <li>Run a service inside a container</li>
+            <li>Configure a container to start automatically as a systemd service</li>
+            <li>Attach persistent storage to a container</li>
+        </ul></dd>
         </div>
     </div>
 
-    <!-- Right Sidebar for RHCSA Exam Objectives -->
+    <!-- Right Sidebar for Tabs (Moved here) -->
     <div class="objectives-sidebar">
-        <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge">
-        <h3>Full Course &</h3>
-        <h3>Exam Preparation</h3>
-        <h4>(on RHEL 9)</h4>
-        <a href="https://www.youtube.com/embed/Me6Y12-sux8?autoplay=1&mute=0&rel=0" target="_blank"><img src="photos/youtube-button.png" alt="our youtube channel"></a>
+        <!-- Vertical Tabs (Moved from center) -->
+        <div class="tabs">
+            <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 01): Understand and use essential tools</div>
+            <div class="tab" onclick="openTab(event, 'chapter2')">Chapter 02): Create simple shell scripts</div>
+            <div class="tab" onclick="openTab(event, 'chapter3')">Chapter 03): Operate running systems</div>
+            <div class="tab" onclick="openTab(event, 'chapter4')">Chapter 04): Configure local storage</div>
+            <div class="tab" onclick="openTab(event, 'chapter5')">Chapter 05): Create and configure file systems</div>
+            <div class="tab" onclick="openTab(event, 'chapter6')">Chapter 06): Deploy, configure, and maintain systems</div>
+            <div class="tab" onclick="openTab(event, 'chapter7')">Chapter 07): Manage basic networking</div>
+            <div class="tab" onclick="openTab(event, 'chapter8')">Chapter 08): Manage users and groups</div>
+            <div class="tab" onclick="openTab(event, 'chapter9')">Chapter 09): Manage security</div>
+            <div class="tab" onclick="openTab(event, 'chapter10')">Chapter 10): Manage containers</div>
+        </div>
     </div>
 
     <!-- JavaScript for Tab Navigation -->
