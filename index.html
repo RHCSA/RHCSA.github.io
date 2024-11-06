@@ -250,12 +250,12 @@
         <!-- Central Title -->
         <h1 style="text-align: center;">RHCSA (EX200) Exam Preparation Full Course</h1>
 
-        <!-- Video -->
-        <div style="text-align: center;">
-            <iframe width="100%" height="400" src="https://www.youtube.com/embed/Me6Y12-sux8?autoplay=1&mute=0&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <!-- Tab Content -->
+        <div id="Introduction" class="tab-content">
+            <!-- Video -->
+            <iframe width="100%" height="400" src="https://www.youtube.com/embed/Me6Y12-sux8?autoplay=1&mute=0&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>            
         </div>
 
-        <!-- Tab Content (below the video) -->
         <div id="chapter1" class="tab-content">
             <dl><dt><p><b>Understand and use essential tools</b></p></dt><dd><ul>
                 <li>Access a shell prompt and issue commands with correct syntax</li>
@@ -367,6 +367,7 @@
     <div class="objectives-sidebar">
         <!-- Vertical Tabs (Moved from center) -->
         <div class="tabs">
+            <div class="tab" onclick="openTab(event, 'Introduction')">Introduction</div>
             <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 01): Understand and use essential tools</div>
             <div class="tab" onclick="openTab(event, 'chapter2')">Chapter 02): Create simple shell scripts</div>
             <div class="tab" onclick="openTab(event, 'chapter3')">Chapter 03): Operate running systems</div>
