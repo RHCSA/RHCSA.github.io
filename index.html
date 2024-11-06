@@ -14,7 +14,7 @@
             flex-direction: row;
         }
 
-        /* Left Sidebar */
+        /* Left Sidebar (new one) */
         .sidebar {
             background-color: #cc0000;
             color: #fff;
@@ -22,7 +22,6 @@
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
-            text-align: center;
             position: fixed;
             display: flex;
             flex-direction: column;
@@ -30,34 +29,66 @@
             align-items: center;
         }
 
-        .sidebar img {
-            width: 200px;
-            height: auto;
-            margin-bottom: 20px;
+        table {
+            width: 70%; /* Take full width of the sidebar */
+            text-align: center;
+            border-collapse: collapse;
         }
 
-        .sidebar h1 {
-            font-size: 3em;
-            margin: 10px 0;
+        td {
             font-weight: bold;
+            padding: 2px 0;
+            width: 70%;
+            color: white;
         }
 
-        .sidebar h2, .sidebar h3 {
-            font-size: 1.5em;
-            color: #fff;
-            margin: 8px 0;
+        .image-container img, .image-container-bottom img {
+            width: 100%; /* Dynamic image width based on table width */
+            height: auto; /* Maintain aspect ratio of the image */
         }
 
-        .sidebar p {
-            font-size: 1.2em;
-            margin: 15px 0;
+        .redhat {
+            font-size: 4.5vw; /* Adjusted to fit well on sidebar */
+            color: white;
         }
 
-        /* Right Sidebar for Objectives */
+        .hat {
+            color: white;
+            font-weight: normal;
+        }
+
+        .line {
+            height: 0.2vw;
+            width: 100%;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .certified {
+            font-size: 2vw;
+            letter-spacing: 0.15em;
+            color: white;
+        }
+
+        .system {
+            font-size: 2.9vw;
+            letter-spacing: 0.1em;
+            font-weight: normal;
+            color: white;
+        }
+
+        .admin {
+            font-size: 1.4vw;
+            letter-spacing: 0.1em;
+            color: white;
+        }
+
+        /* Right Sidebar */
         .objectives-sidebar {
             background-color: #1a1a1a;
             color: #fff;
-            width: 20%; /* Set to 20% */
+            width: 20%;
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
@@ -195,15 +226,41 @@
     </style>
 </head>
 <body>
-    <!-- Left Sidebar -->
+    <!-- Left Sidebar (New One) -->
     <div class="sidebar">
-        <img src="photos/redhat.png" alt="Red Hat Certified System Administrator Logo">
-        <h1>Red Hat</h1>
-        <h2>CERTIFIED</h2>
-        <h2>SYSTEM</h2>
-        <h2>ADMINISTRATOR</h2>
-        <h3>RHCSA - EX200</h3>
-        <a href="https://github.com/RHCSA/RHCSA.github.io" target="_blank"><img src="photos/view_on_github.png" alt="View course source on github"></a>
+        <table>
+            <!-- Image row -->
+            <tr class="image-container">
+                <td><img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/redhat.png?raw=true" alt="RedHat Logo"></td>
+            </tr>
+            <!-- RedHat text row -->
+            <tr>
+                <td class="redhat">red<span class="hat">hat</span></td>
+            </tr>
+            <!-- Dynamic full-width horizontal line -->
+            <tr>
+                <td><div class="line"></div></td>
+            </tr>
+            <!-- Certified text row -->
+            <tr>
+                <td class="certified">CERTIFIED</td>
+            </tr>
+            <!-- System text row -->
+            <tr>
+                <td class="system">SYSTEM</td>
+            </tr>
+            <!-- Administrator text row -->
+            <tr>
+                <td class="admin">ADMINISTRATOR</td>
+            </tr>
+            <!-- Second Image row at the bottom -->
+            <tr class="image-container-bottom">
+                <td><img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge"></td>
+            </tr>
+            <tr class="image-container-bottom">
+                <td><img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/youtube-button.png?raw=true" alt="Youtube Channel"></td>
+            </tr>
+        </table>
     </div>
 
     <!-- Main Content Area -->
