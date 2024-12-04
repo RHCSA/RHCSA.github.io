@@ -1,0 +1,193 @@
+The RHCSA exam topic **"Configure hostname resolution"** involves configuring the system to resolve hostnames to IP addresses using tools like **DNS**, **`/etc/hosts`**, and ensuring that any changes are persistent across reboots. Hostname resolution is crucial for network communication, as it allows systems to communicate using hostnames instead of IP addresses.
+
+
+---
+
+### **What You Need to Know:**
+1. **Hostname resolution methods**: 
+   - **DNS**: Resolving hostnames via DNS servers.
+   - **`/etc/hosts`**: Local static hostname-to-IP mapping.
+2. **Configuring DNS servers**: How to set or change DNS servers that the system uses for hostname resolution.
+3. **Using `/etc/hosts`**: Manually adding hostname-to-IP mappings for local resolution.
+4. **Ensuring persistence**: Ensure that changes made to DNS configuration or `/etc/hosts` persist across reboots.
+5. **Verifying hostname resolution**: Use tools like `ping`, `host`, `dig`, or `nslookup` to verify that hostname resolution works correctly.
+
+---
+
+### **1. Configuring DNS Resolution**
+
+In Red Hat-based systems, DNS servers are used to resolve hostnames to IP addresses. You can configure DNS servers by using **`nmcli`** or manually by editing network configuration files.
+
+#### **Example Task 1: Configure DNS Servers Using `nmcli`**
+
+**Task:** Configure the DNS server **`8.8.8.8`** for the network interface **`eth0`**.
+
+1. **Configure the DNS server**:
+   ```bash
+   sudo nmcli con mod eth0 ipv4.dns "8.8.8.8"
+   ```
+
+2. **Bring the connection up to apply the changes**:
+   ```bash
+   sudo nmcli con up eth0
+   ```
+
+3. **Verify the DNS configuration**:
+   ```bash
+   nmcli dev show eth0 | grep DNS
+   ```
+
+#### **Verify Hostname Resolution**:
+```bash
+ping -c 4 google.com
+```
+
+**Explanation**:
+- **`nmcli con mod eth0 ipv4.dns`** configures the DNS server for the network interface **`eth0`**.
+- This change is persistent and will survive reboots as **`nmcli`** modifies the underlying network configuration files.
+
+---
+
+#### **Example Task 2: Manually Configure DNS in Network Configuration Files**
+
+In some cases, you might want to manually configure DNS servers in the network configuration file.
+
+**Task:** Set the DNS server **`8.8.8.8`** for **`eth0`** by editing the connection file directly.
+
+1. **Locate the configuration file** for the connection:
+   ```bash
+   sudo ls /etc/NetworkManager/system-connections/
+   ```
+
+2. **Edit the connection file (e.g., `eth0.nmconnection`)**:
+   ```bash
+   sudo nano /etc/NetworkManager/system-connections/eth0.nmconnection
+   ```
+
+3. **Add the DNS server under the `[ipv4]` section**:
+   ```
+   [ipv4]
+   dns=8.8.8.8;
+   ```
+
+4. **Restart the NetworkManager service** to apply the changes:
+   ```bash
+   sudo systemctl restart NetworkManager
+   ```
+
+#### **Verify Hostname Resolution**:
+```bash
+ping -c 4 example.com
+```
+
+**Explanation**:
+- Manually editing the network configuration file and restarting NetworkManager makes DNS changes persistent.
+- **`ping`** tests hostname resolution by resolving **`example.com`** to its IP address.
+
+---
+
+### **2. Configuring `/etc/hosts` for Local Resolution**
+
+The **`/etc/hosts`** file is a simple, static way to resolve hostnames to IP addresses without querying a DNS server. This is useful for small networks, testing, or overriding DNS entries.
+
+#### **Example Task 3: Add a Static Hostname-to-IP Mapping in `/etc/hosts`**
+
+**Task:** Map the hostname **`webserver`** to the IP address **`192.168.1.100`** using `/etc/hosts`.
+
+1. **Open the `/etc/hosts` file**:
+   ```bash
+   sudo nano /etc/hosts
+   ```
+
+2. **Add the following entry** at the end of the file:
+   ```
+   192.168.1.100  webserver
+   ```
+
+3. **Save and close the file**.
+
+#### **Verify the Configuration**:
+```bash
+ping -c 4 webserver
+```
+
+**Explanation**:
+- **`/etc/hosts`** allows manual mapping of hostnames to IP addresses. In this example, **`webserver`** is mapped to **`192.168.1.100`**.
+- The **`ping`** command verifies that the system can resolve the hostname **`webserver`** to the correct IP.
+
+**Persistent Changes**: Modifications to `/etc/hosts` are automatically persistent because they are saved in the file.
+
+---
+
+### **3. Using `resolv.conf` for DNS Configuration**
+
+The **`/etc/resolv.conf`** file is used by the system to list DNS servers. In modern systems managed by NetworkManager, **`/etc/resolv.conf`** is generated automatically based on network configuration. You should not edit this file directly because changes may not persist unless the file is made immutable.
+
+#### **Example Task 4: Set a Persistent DNS Server via `/etc/resolv.conf`**
+
+To make DNS changes persistent in **`/etc/resolv.conf`**, configure the DNS server through NetworkManager rather than manually editing the file.
+
+1. **Verify the content of `/etc/resolv.conf`**:
+   ```bash
+   cat /etc/resolv.conf
+   ```
+
+   **Example Output**:
+   ```
+   # Generated by NetworkManager
+   nameserver 8.8.8.8
+   ```
+
+2. **Configure DNS using `nmcli`** (as shown in **Task 1**) to ensure that **`/etc/resolv.conf`** is updated by NetworkManager.
+
+---
+
+### **4. Testing and Verifying Hostname Resolution**
+
+After configuring hostname resolution, you should verify that the system can properly resolve hostnames using DNS and static entries in `/etc/hosts`.
+
+#### **Example Task 5: Test and Verify Hostname Resolution**
+
+1. **Use `ping` to test hostname resolution**:
+   ```bash
+   ping -c 4 example.com
+   ping -c 4 webserver
+   ```
+
+2. **Use `dig` (if installed) to query DNS servers directly**:
+   ```bash
+   dig example.com
+   ```
+
+3. **Use `host` to resolve a hostname to an IP address**:
+   ```bash
+   host example.com
+   ```
+
+4. **Check the DNS settings**:
+   ```bash
+   cat /etc/resolv.conf
+   ```
+
+**Explanation**:
+- **`ping`** tests basic hostname resolution by sending ICMP requests to the resolved IP address.
+- **`dig`** and **`host`** are useful tools to query DNS servers and verify DNS resolution.
+- **`/etc/resolv.conf`** should reflect the correct DNS servers.
+
+---
+
+### **5. Making Sure Changes are Persistent**
+
+- **Changes made using `nmcli`** are persistent because they modify the underlying network configuration files in `/etc/NetworkManager/system-connections/`.
+- **Changes to `/etc/hosts`** are automatically persistent because the file is static.
+- DNS changes reflected in `/etc/resolv.conf` are dynamically managed by NetworkManager, and persistence is ensured by modifying the network settings, not by directly editing `/etc/resolv.conf`.
+
+---
+
+### Summary of Skills for RHCSA Exam on Configuring Hostname Resolution:
+1. **Configure DNS servers** using `nmcli` or by manually editing network configuration files.
+2. **Add static hostname-to-IP mappings** in `/etc/hosts` for local resolution.
+3. **Verify hostname resolution** using tools like `ping`, `host`, and `dig`.
+4. **Ensure that DNS and hostname resolution changes** are persistent across reboots.
+5. **Use NetworkManager tools** like `nmcli` and `nmtui` to manage network settings and DNS servers.
+

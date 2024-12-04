@@ -14,7 +14,7 @@
             flex-direction: row;
         }
 
-        /* Left Sidebar (remains unchanged) */
+        /* Left Sidebar */
         .sidebar {
             background-color: #cc0000;
             color: #fff;
@@ -25,12 +25,12 @@
             position: fixed;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: center; /* Center content vertically */
             align-items: center;
         }
 
         table {
-            width: 70%; /* Take full width of the sidebar */
+            width: 70%;
             text-align: center;
             border-collapse: collapse;
         }
@@ -43,8 +43,8 @@
         }
 
         .image-container img, .image-container-bottom img {
-            width: 100%; /* Dynamic image width based on table width */
-            height: auto; /* Maintain aspect ratio of the image */
+            width: 100%;
+            height: auto;
         }
 
         .redhat {
@@ -79,7 +79,7 @@
             color: white;
         }
 
-        /* Right Sidebar (Tabs moved here) */
+        /* Right Sidebar (Tabs) */
         .objectives-sidebar {
             background-color: #1a1a1a;
             color: #fff;
@@ -90,9 +90,10 @@
             position: fixed;
             right: 0;
             top: 0;
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Align items centrally */
         }
 
         .tabs {
@@ -126,16 +127,19 @@
             margin-right: 20%;
             padding: 20px;
             box-sizing: border-box;
+            background-color: #282424;
         }
 
         h2 {
-            color: #cc0000;
+            color: #ffc107;
         }
 
         p {
             line-height: 1.8;
         }
-
+        h3, h4, strong {
+            color: #ffc107;
+        }
         section {
             padding: 20px 0;
             border-bottom: 1px solid #333;
@@ -145,16 +149,81 @@
         .tab-content {
             display: none;
             padding: 20px;
-            background-color: #1a1a1a;
+            background-color: #383434;
             color: #eaeaea;
             margin-top: 10px;
+            border-radius: 15px; /* Curved corners */
+            overflow: hidden;
+            position: relative;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        /* Responsive Design for Mobile */
+        /* Profile-like Image */
+        .profile-image img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Circular shape */
+            position: absolute;
+            top: 10px; /* Moved image slightly upward */
+            left: 20px;
+        }
+
+        /* Gradual Button Appearance */
+        .gradual-buttons {
+            display: flex;
+            flex-direction: column; /* Arrange buttons in a column */
+            justify-content: flex-start; /* Align buttons to the left */
+            gap: 10px; /* Space between buttons */
+            margin-top: 20px;
+        }
+
+        .gradual-buttons button {
+            display: block; /* Ensure buttons behave like block elements */
+            text-align: left; /* Align text to the left */
+            background-color: #cc0000;
+            color: white;
+            border: 1px solid transparent; /* Optional: Makes the border more visible if needed */
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold; /* Make text bold */
+            transition: background-color 0.7s ease;
+        }
+
+        .gradual-buttons button:hover {
+            background-color: #ffffff;
+            color: #cc0000;
+        }
+
+        /* Markdown Container */
+        .markdown-container {
+            background-color: #2e2f34;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        /* Code block styling */
+        pre, code {
+            background-color: #2d2d2d;
+            color: #00ff7f;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 5px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        pre {
+            padding: 15px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        code {
+            padding: 2px 4px;
+        }
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -210,7 +279,7 @@
     </style>
 </head>
 <body>
-    <!-- Left Sidebar (No changes) -->
+    <!-- Left Sidebar -->
     <div class="sidebar">
         <table>
             <tr class="image-container">
@@ -242,125 +311,211 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <!-- Central Title -->
         <h1 style="text-align: center;">RHCSA (EX200) Exam Preparation Full Course</h1>
 
-        <!-- Tab Content -->
+        <!-- Tab Content with Gradual Buttons -->
         <div id="Introduction" class="tab-content">
             <!-- Video -->
             <iframe width="100%" height="400" src="https://www.youtube.com/embed/Me6Y12-sux8?autoplay=1&mute=0&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>            
         </div>
 
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter1" class="tab-content">
-            <dl><dt><p><b>Understand and use essential tools</b></p></dt><dd><ul>
-                <li>Access a shell prompt and issue commands with correct syntax</li>
-                <li>Use input-output redirection (&gt;, &gt;&gt;, |, 2&gt;, etc.)</li>
-                <li>Use grep and regular expressions to analyze text</li>
-                <li>Access remote systems using SSH</li>
-                <li>Log in and switch users in multiuser targets</li>
-                <li>Archive, compress, unpack, and uncompress files using tar, gzip, and bzip2</li>
-                <li>Create and edit text files</li>
-                <li>Create, delete, copy, and move files and directories</li>
-                <li>Create hard and soft links</li>
-                <li>List, set, and change standard ugo/rwx permissions</li>
-                <li>Locate, read, and use system documentation including man, info, and files in /usr/share/doc</li>
-            </ul></dd></dl>
+            <h2>Chapter 01: Understand and use essential tools:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('https://raw.githubusercontent.com/hmdhszd/Red-Hat-Certified-System-Administrator-RHCSA/main/contents/01-%20Understand%20and%20use%20essential%20tools/01-%20Access%20a%20shell%20prompt%20and%20issue%20commands%20with%20correct%20syntax.md', 'chapter1')">01- Access a shell prompt and issue commands with correct syntax</button>
+                <button onclick="loadMarkdown('https://raw.githubusercontent.com/hmdhszd/Red-Hat-Certified-System-Administrator-RHCSA/main/contents/01-%20Understand%20and%20use%20essential%20tools/02-%20Use%20input-output%20redirection.md', 'chapter1')">02- Use input-output redirection</button>
+                <button onclick="loadMarkdown('https://raw.githubusercontent.com/hmdhszd/Red-Hat-Certified-System-Administrator-RHCSA/main/contents/01-%20Understand%20and%20use%20essential%20tools/03-%20Use%20grep%20and%20regular%20expressions%20to%20analyze%20text.md', 'chapter1')">03- Use grep and regular expressions to analyze text</button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter2" class="tab-content">
-            <dl><dt><p><b>Create simple shell scripts</b></p></dt><dd><ul>
-            <li>Conditionally execute code (use of: if, test, [], etc.)</li>
-            <li>Use Looping constructs (for, etc.) to process file, command line input</li>
-            <li>Process script inputs ($1, $2, etc.)</li>
-            <li>Processing output of shell commands within a script</li>
-        </ul></dd>
+            <h2>Chapter 02: Create simple shell scripts:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('https://raw.githubusercontent.com/hmdhszd/Red-Hat-Certified-System-Administrator-RHCSA/main/contents/02-%20Create%20simple%20shell%20scripts/01-%20Conditionally%20execute%20code%20use%20of%20if%2C%20test%2C%20%5B%5D%2C%20etc.md', 'chapter2')">01- Conditionally execute code use of if, test, [], etc.</button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter2')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter3" class="tab-content">
-            <dl><dt><p><b>Operate running systems</b></p></dt><dd><ul>
-            <li>Boot, reboot, and shut down a system normally</li>
-            <li>Boot systems into different targets manually</li>
-            <li>Interrupt the boot process in order to gain access to a system</li>
-            <li>Identify CPU/memory intensive processes and kill processes</li>
-            <li>Adjust process scheduling</li><li>Manage tuning profiles</li>
-            <li>Locate and interpret system log files and journals</li>
-            <li>Preserve system journals</li>
-            <li>Start, stop, and check the status of network services</li>
-            <li>Securely transfer files between systems</li></ul></dd>
+            <h2>Chapter 03: Operate running systems:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('https://raw.githubusercontent.com/hmdhszd/Red-Hat-Certified-System-Administrator-RHCSA/main/contents/01-%20Understand%20and%20use%20essential%20tools/01-%20Access%20a%20shell%20prompt%20and%20issue%20commands%20with%20correct%20syntax.md', 'chapter3')">01- TEST</button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter3')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter4" class="tab-content">
-            <dl><dt><p><b>Configure local storage</b></p></dt><dd><ul>
-            <li>List, create, delete partitions on MBR and GPT disks</li>
-            <li>Create and remove physical volumes</li>
-            <li>Assign physical volumes to volume groups</li>
-            <li>Create and delete logical volumes</li>
-            <li>Configure systems to mount file systems at boot by universally unique ID (UUID) or label</li>
-            <li>Add new partitions and logical volumes, and swap to a system non-destructively</li>
-        </ul></dd>
+            <h2>Chapter 04: Configure local storage:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter4')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter5" class="tab-content">
-            <dl><dt><p><b>Create and configure file systems</b></p></dt><dd><ul>
-            <li>Create, mount, unmount, and use vfat, ext4, and xfs file systems</li>
-            <li>Mount and unmount network file systems using NFS</li>
-            <li>Configure autofs</li>
-            <li>Extend existing logical volumes</li>
-            <li>Create and configure set-GID directories for collaboration</li>
-            <li>Diagnose and correct file permission problems</li>
-        </ul></dd>
+            <h2>Chapter 05: Create and configure file systems:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter5')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter6" class="tab-content">
-            <dl><dt><p><b>Deploy, configure, and maintain systems</b></p></dt><dd><ul>
-            <li>Schedule tasks using at and cron</li>
-            <li>Start and stop services and configure services to start automatically at boot</li>
-            <li>Configure systems to boot into a specific target automatically</li>
-            <li>Configure time service clients</li>
-            <li>Install and update software packages from Red Hat Network, a remote repository, or from the local file system</li>
-            <li>Modify the system bootloader</li>
-        </ul></dd>
+            <h2>Chapter 06: Deploy, configure, and maintain systems:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter6')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter7" class="tab-content">
-            <dl><dt><p><b>Manage basic networking</b></p></dt><dd><ul>
-            <li>Configure IPv4 and IPv6 addresses</li>
-            <li>Configure hostname resolution</li>
-            <li>Configure network services to start automatically at boot</li>
-            <li>Restrict network access using firewall-cmd/firewall</li>
-        </ul></dd>
+            <h2>Chapter 07: Manage basic networking:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter7')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter8" class="tab-content">
-            <dl><dt><p><b>Manage users and groups</b></p></dt><dd><ul>
-            <li>Create, delete, and modify local user accounts</li>
-            <li>Change passwords and adjust password aging for local user accounts</li>
-            <li>Create, delete, and modify local groups and group memberships</li>
-            <li>Configure superuser access</li>
-        </ul></dd>
+            <h2>Chapter 08: :</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter8')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter9" class="tab-content">
-            <dl><dt><p><b>Manage security</b></p></dt><dd><ul>
-            <li>Configure firewall settings using firewall-cmd/firewalld</li>
-            <li>Manage default file permissions</li>
-            <li>Configure key-based authentication for SSH</li>
-            <li>Set enforcing and permissive modes for SELinux</li>
-            <li>List and identify SELinux file and process context</li>
-            <li>Restore default file contexts</li>
-            <li>Manage SELinux port labels</li>
-            <li>Use boolean settings to modify system SELinux settings</li>
-            <li>Diagnose and address routine SELinux policy violations</li>
-        </ul></dd>
+            <h2>Chapter 09: Manage security:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter9')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Tab Content with Gradual Buttons -->
         <div id="chapter10" class="tab-content">
-            <dl><dt><p><b>Manage containers</b></p></dt><dd><ul>
-            <li>Find and retrieve container images from a remote registry</li>
-            <li>Inspect container images</li>
-            <li>Perform container management using commands such as podman and skopeo</li>
-            <li>Perform basic container management such as running, starting, stopping, and listing running containers</li>
-            <li>Run a service inside a container</li>
-            <li>Configure a container to start automatically as a systemd service</li>
-            <li>Attach persistent storage to a container</li>
-        </ul></dd>
+            <h2>Chapter 10: Manage containers:</h2>
+            <div class="gradual-buttons">
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+                <button onclick="loadMarkdown('.md', 'chapter10')">01- </button>
+            </div>
+            <div class="markdown-container">
+                <div class="text-content"></div>
+            </div>
         </div>
+
+        <!-- Add other chapters and contents as needed -->
+
     </div>
 
-    <!-- Right Sidebar for Tabs (Moved here) -->
+    <!-- Right Sidebar for Tabs -->
     <div class="objectives-sidebar">
-        <!-- Vertical Tabs (Moved from center) -->
         <div class="tabs">
             <div class="tab" onclick="openTab(event, 'Introduction')">Introduction</div>
             <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 01): Understand and use essential tools</div>
@@ -376,20 +531,61 @@
         </div>
     </div>
 
-    <!-- JavaScript for Tab Navigation -->
+    <!-- JavaScript for Tab Navigation and Typing Effect -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+        let currentInterval = null;
+
+        function typeEffect(element, html) {
+            let i = 0;
+            const speed = 5;
+            element.innerHTML = ""; // Clear content before typing
+
+            function typeWriter() {
+                if (i < html.length) {
+                    element.innerHTML = html.substring(0, i + 1);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+            typeWriter();
+        }
+
         function openTab(evt, tabName) {
-            // Hide all tab contents
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(content => content.classList.remove('active'));
 
-            // Remove "active" class from all tabs
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => tab.classList.remove('active'));
 
-            // Show the clicked tab's content and highlight the active tab
-            document.getElementById(tabName).classList.add('active');
+            const contentElement = document.getElementById(tabName);
+            contentElement.classList.add('active');
             evt.currentTarget.classList.add('active');
+        }
+
+        function loadMarkdown(url, tabId) {
+            const contentDiv = document.querySelector(`#${tabId} .text-content`);
+            contentDiv.innerHTML = ""; // Clear existing content
+
+            if (currentInterval) {
+                clearInterval(currentInterval); // Stop any previously running interval
+            }
+
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    const htmlContent = marked.parse(data); // Parse Markdown to HTML
+                    let i = 0;
+                    currentInterval = setInterval(() => {
+                        if (i < htmlContent.length) {
+                            contentDiv.innerHTML = htmlContent.slice(0, i); // Render gradually
+                            i++;
+                        } else {
+                            clearInterval(currentInterval); // Clear interval once finished
+                        }
+                    }, 10); // Adjust speed as necessary
+                })
+                .catch(error => console.error('Error fetching content:', error));
         }
 
         // Set default active tab on page load
