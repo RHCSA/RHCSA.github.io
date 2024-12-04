@@ -1,3 +1,5 @@
+## 03- Assign physical volumes to volume groups:
+
 The RHCSA exam topic **"Assign physical volumes to volume groups"** is part of **Logical Volume Management (LVM)**, which is a powerful way to manage disk storage in Linux. A **Volume Group (VG)** is made up of one or more **Physical Volumes (PVs)**, and Logical Volumes (LVs) are created from the storage space provided by a VG. 
 
 

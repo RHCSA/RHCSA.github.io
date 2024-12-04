@@ -1,3 +1,5 @@
+## 01- List, create, delete partitions on MBR and GPT disks:
+
 The RHCSA exam topic **"List, create, delete partitions on MBR and GPT disks"** tests your ability to manage disk partitions using tools like `fdisk` (for MBR) and `gdisk` or `parted` (for GPT). Understanding partitioning is critical for configuring storage on Linux systems.
 
 

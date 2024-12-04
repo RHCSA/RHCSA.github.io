@@ -1,3 +1,5 @@
+## 02- Create and remove physical volumes:
+
 The RHCSA exam topic **"Create and remove physical volumes"** focuses on managing **Physical Volumes (PVs)** in **Logical Volume Management (LVM)**. Understanding LVM is essential for managing disk storage in a flexible way. A **Physical Volume** is the first step in LVM, where raw disk space is initialized for use by the LVM system. You can then create **Volume Groups (VGs)** and **Logical Volumes (LVs)** on top of physical volumes.
 
 ---

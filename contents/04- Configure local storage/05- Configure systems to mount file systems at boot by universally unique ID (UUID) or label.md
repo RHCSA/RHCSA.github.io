@@ -1,3 +1,5 @@
+## 05- Configure systems to mount file systems at boot by universally unique ID (UUID) or label:
+
 The RHCSA exam topic **"Configure systems to mount file systems at boot by universally unique ID (UUID) or label"** tests your ability to configure file systems to mount automatically during boot. This involves modifying the `/etc/fstab` file to use **UUID** or **LABEL** identifiers, ensuring that the correct partitions or logical volumes are mounted persistently across reboots.
 
 ---

@@ -1,3 +1,5 @@
+## 06- Add new partitions and logical volumes, and swap to a system non-destructively:
+
 The RHCSA exam topic **"Add new partitions and logical volumes, and swap to a system non-destructively"** focuses on safely adding new storage (partitions and logical volumes) and configuring swap space without losing data or interrupting the system's functionality. You must know how to create, extend, and manage partitions and logical volumes (LVM) on a running system, and add swap space dynamically.
 
 ---
