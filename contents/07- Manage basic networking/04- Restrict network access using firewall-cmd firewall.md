@@ -1,3 +1,5 @@
+## 04- Restrict network access using firewall-cmd firewall:
+
 The RHCSA exam topic **"Restrict network access using `firewall-cmd` or `firewalld`"** involves managing network traffic rules using the **`firewalld`** service and **`firewall-cmd`** command. **`firewalld`** is the dynamic firewall manager used in RHEL 9, and it allows you to control incoming and outgoing traffic by defining rules for various zones, services, ports, and protocols.
 
 

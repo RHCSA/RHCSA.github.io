@@ -1,3 +1,5 @@
+## 02- Configure hostname resolution:
+
 The RHCSA exam topic **"Configure hostname resolution"** involves configuring the system to resolve hostnames to IP addresses using tools like **DNS**, **`/etc/hosts`**, and ensuring that any changes are persistent across reboots. Hostname resolution is crucial for network communication, as it allows systems to communicate using hostnames instead of IP addresses.
 
 

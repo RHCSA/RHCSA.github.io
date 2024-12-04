@@ -1,3 +1,5 @@
+## 03- Configure network services to start automatically at boot:
+
 The RHCSA exam topic **"Configure network services to start automatically at boot"** focuses on managing services, specifically ensuring that key network-related services like **`network`, `firewalld`, `sshd`**, etc., are enabled and start automatically when the system boots. On **RHEL 9**, managing services is handled using **`systemctl`**, the interface for working with **systemd**, which manages the initialization and control of services.
 
 ---

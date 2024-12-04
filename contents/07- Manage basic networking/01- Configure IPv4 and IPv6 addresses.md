@@ -1,3 +1,5 @@
+## 01- Configure IPv4 and IPv6 addresses:
+
 The RHCSA exam topic **"Configure IPv4 and IPv6 addresses"** covers the skills needed to configure both **IPv4** and **IPv6** addresses on **RHEL 9**. You’ll need to understand how to assign static IP addresses, configure DNS, and ensure changes are persistent across reboots using tools like **`nmcli`**, **`nmtui`**, or by manually editing network configuration files.
 
 
