@@ -1,3 +1,5 @@
+## 04- Configure time service clients:
+
 The RHCSA exam topic **"Configure time service clients"** focuses on setting up time synchronization on a system. Correct time configuration is critical in Linux environments, as it ensures consistency across servers, logs, scheduled jobs, and security protocols. On RHEL 8, time services are managed using **`chronyd`**, which is the default daemon for time synchronization (replacing the older **`ntpd`** service).
 
 ---

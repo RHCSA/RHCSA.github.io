@@ -1,3 +1,5 @@
+## 02- Start and stop services and configure services to start automatically at boot:
+
 The RHCSA exam topic **"Start and stop services and configure services to start automatically at boot"** focuses on managing system services using **`systemctl`**, the command used to control the **systemd** service manager. You’ll need to understand how to start, stop, restart, and enable/disable services, and ensure that service configurations are persistent across reboots.
 
 ---

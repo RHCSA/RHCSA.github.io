@@ -1,3 +1,5 @@
+## 06- Modify the system bootloader:
+
 The RHCSA exam topic **"Modify the system bootloader"** refers to tasks related to managing the **GRUB2** bootloader, which is the default bootloader used in RHEL-based systems. GRUB2 (GRand Unified Bootloader version 2) is responsible for loading the operating system kernel and initializing the boot process.
 
 In the RHCSA exam, you may be asked to perform tasks such as changing the default kernel, modifying boot parameters, or recovering access to a system by modifying GRUB2 at boot time.

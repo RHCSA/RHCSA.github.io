@@ -1,3 +1,5 @@
+## 03- Configure systems to boot into a specific target automatically:
+
 The RHCSA exam topic **"Configure systems to boot into a specific target automatically"** focuses on understanding **systemd targets** and how to configure a system to boot into a specific target (e.g., graphical mode, multi-user mode, etc.). Systemd targets are used to define the state the system should be in after boot, such as **graphical** mode (with a graphical user interface) or **multi-user** mode (without a graphical interface).
 
 
