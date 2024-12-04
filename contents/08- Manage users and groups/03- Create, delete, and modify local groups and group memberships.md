@@ -1,3 +1,5 @@
+## 03- Create, delete, and modify local groups and group memberships:
+
 The RHCSA exam topic **"Create, delete, and modify local groups and group memberships"** involves managing local groups and assigning users to these groups in **RHEL 9**. Managing groups is essential for setting file permissions, access control, and organizing users in a Linux system. You need to know how to create new groups, delete groups, modify group memberships, and ensure all changes are persistent.
 
 ---

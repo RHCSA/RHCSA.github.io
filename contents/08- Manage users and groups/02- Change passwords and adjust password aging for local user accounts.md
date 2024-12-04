@@ -1,3 +1,5 @@
+## 02- Change passwords and adjust password aging for local user accounts:
+
 The RHCSA exam topic **"Change passwords and adjust password aging for local user accounts"** involves managing user passwords and setting policies related to password aging on **RHEL 9**. This includes setting new passwords, forcing password changes, controlling password expiration, and enforcing aging policies like maximum and minimum password age.
 
 ---

@@ -1,3 +1,5 @@
+## 01- Create, delete, and modify local user accounts:
+
 The RHCSA exam topic **"Create, delete, and modify local user accounts"** focuses on managing local user accounts on a **RHEL 9** system. You need to know how to create new users, modify user attributes, set passwords, delete users, and ensure that every change is persistent across reboots.
 
 ---

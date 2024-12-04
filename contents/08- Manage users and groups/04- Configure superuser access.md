@@ -1,3 +1,5 @@
+## 04- Configure superuser access:
+
 The RHCSA exam topic **"Configure superuser access"** involves managing **root** (superuser) access and configuring **sudo** privileges for users on **RHEL 9**. Superuser access is crucial for performing administrative tasks on a Linux system, and this access should be carefully controlled and granted to trusted users via **`sudo`**.
 
 ---
