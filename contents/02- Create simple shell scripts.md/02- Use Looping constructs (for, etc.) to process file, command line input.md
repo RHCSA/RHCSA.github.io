@@ -1,3 +1,5 @@
+## 02- Use Looping constructs (for, etc.) to process file, command line input:
+
 The RHCSA exam topic **"Use Looping constructs (for, etc.) to process file, command line input in shell scripts"** is fundamental for automating repetitive tasks in Linux. Looping constructs, especially `for`, allow you to process multiple files, iterate over command output, or handle arguments passed to a script.
 
 

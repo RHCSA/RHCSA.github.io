@@ -1,3 +1,5 @@
+## 03- Process script inputs ($1, $2, etc.):
+
 The RHCSA exam topic **"Process script inputs (`$1`, `$2`, etc.)"** focuses on handling positional parameters in shell scripts. Positional parameters are used to pass arguments to a script and are crucial for making scripts dynamic and flexible. This topic tests your ability to handle command-line inputs within scripts using variables like **`$1`, `$2`**, and others, allowing you to process user-provided data.
 
 

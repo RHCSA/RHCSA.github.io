@@ -1,3 +1,5 @@
+## 04- Processing output of shell commands within a script:
+
 The RHCSA exam topic **"Processing output of shell commands within a script"** is crucial because it involves capturing and using the output of shell commands in a script. This skill is essential for creating dynamic and flexible scripts that respond to system information or user input. Shell commands like `ls`, `grep`, `df`, and others can be used within scripts to gather data, which can then be processed using conditionals, loops, or redirections.
 
 ---
