@@ -1,3 +1,5 @@
+## 03- Configure key-based authentication for SSH:
+
 ### **RHCSA Exam Topic: Configure Key-Based Authentication for SSH**
 
 In the RHCSA exam, you need to know how to set up **key-based authentication for SSH** to allow users to connect to a remote system without requiring a password. This method is more secure than password-based login, and it is widely used in environments where secure and automated connections are required.

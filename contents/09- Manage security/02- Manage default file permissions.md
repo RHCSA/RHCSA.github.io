@@ -1,3 +1,5 @@
+## 02- Manage default file permissions:
+
 The RHCSA exam topic **"Manage default file permissions"** focuses on how to control the default permissions assigned to files and directories when they are created. This is handled primarily through the **umask** setting, which dictates the default permissions given to new files and directories. Understanding and configuring default file permissions ensures proper security and access control in a RHEL system.
 
 ### **What You Need to Know for the RHCSA Exam:**

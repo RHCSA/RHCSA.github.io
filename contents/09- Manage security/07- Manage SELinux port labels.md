@@ -1,3 +1,5 @@
+## 07- Manage SELinux port labels:
+
 ### **RHCSA Exam Topic: Manage SELinux Port Labels**
 
 In the **RHCSA exam**, managing **SELinux port labels** is an important topic. SELinux associates specific ports with services for enhanced security. If a service attempts to use a port that is not labeled correctly for that service, SELinux may deny access. You need to know how to view, add, modify, and delete SELinux port labels for services to ensure that they work correctly while maintaining security.

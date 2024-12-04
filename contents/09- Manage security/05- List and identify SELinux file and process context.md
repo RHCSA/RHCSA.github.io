@@ -1,3 +1,5 @@
+## 05- List and identify SELinux file and process context:
+
 ### **RHCSA Exam Topic: List and Identify SELinux File and Process Contexts**
 
 In the RHCSA exam, understanding how to **list and identify SELinux file and process contexts** is crucial for securing and troubleshooting a system that uses SELinux, especially on **RHEL 9**.

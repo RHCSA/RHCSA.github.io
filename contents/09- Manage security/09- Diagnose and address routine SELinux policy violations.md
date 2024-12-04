@@ -1,3 +1,5 @@
+## 09- Diagnose and address routine SELinux policy violations:
+
 ### **RHCSA Exam Topic: Diagnose and Address Routine SELinux Policy Violations (RHEL 9)**
 
 In the **RHCSA exam**, one of the critical topics is the ability to **diagnose and address SELinux policy violations**. SELinux (Security-Enhanced Linux) works by enforcing security policies that restrict services and users from performing actions outside their permitted range. Sometimes, SELinux blocks legitimate operations due to restrictive policies, and you need to diagnose and resolve these issues effectively.

@@ -1,3 +1,5 @@
+## 01- Configure firewall settings using firewall-cmd firewalld:
+
 The RHCSA exam topic **"Configure firewall settings using `firewall-cmd` and `firewalld`"** involves managing and configuring the firewall on a **RHEL 9** system. This includes enabling and disabling services and ports, assigning interfaces to zones, and ensuring all changes are persistent across reboots. **`firewalld`** is the default firewall management service, and **`firewall-cmd`** is the command-line interface to interact with it.
 
 ---

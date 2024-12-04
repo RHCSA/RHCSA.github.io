@@ -1,3 +1,5 @@
+## 04- Set enforcing and permissive modes for SELinux:
+
 ### **RHCSA Exam Topic: Set Enforcing and Permissive Modes for SELinux**
 
 On the RHCSA exam, understanding **SELinux (Security-Enhanced Linux)** is crucial, especially in terms of configuring its modes. SELinux is a security architecture integrated into the Linux kernel that provides mandatory access control (MAC).

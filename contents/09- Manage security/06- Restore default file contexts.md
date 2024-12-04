@@ -1,3 +1,5 @@
+## 06- Restore default file contexts:
+
 ### **RHCSA Exam Topic: Restore Default File Contexts**
 
 In the **RHCSA exam**, restoring the default SELinux file contexts is a key task. SELinux uses contexts to manage access control for files, processes, and ports, and it’s important to know how to restore these contexts to their defaults in case they are changed or corrupted.

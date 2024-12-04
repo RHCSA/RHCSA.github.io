@@ -1,3 +1,5 @@
+## 08- Use boolean settings to modify system SELinux settings:
+
 ### **RHCSA Exam Topic: Use Boolean Settings to Modify System SELinux Settings (RHEL 9)**
 
 In the **RHCSA exam**, understanding how to modify system behavior using SELinux Boolean settings is crucial. SELinux Booleans allow you to toggle specific features or restrictions without having to alter the SELinux policy directly. These Booleans are typically used to enable or disable optional security policies for different services.
