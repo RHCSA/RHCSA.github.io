@@ -1,3 +1,5 @@
+## 03- Configure autofs:
+
 The RHCSA exam topic **"Configure autofs"** focuses on setting up **Autofs**, which is a service that automatically mounts file systems when they are accessed and unmounts them after a period of inactivity. This is useful for network file systems like **NFS** where you want to avoid keeping file systems mounted all the time but want them to be available when needed.
 
 ---

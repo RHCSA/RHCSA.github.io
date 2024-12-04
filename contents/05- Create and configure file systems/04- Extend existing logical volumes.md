@@ -1,3 +1,5 @@
+## 04- Extend existing logical volumes:
+
 The RHCSA exam topic **"Extend existing logical volumes"** involves increasing the size of an existing **Logical Volume (LV)** to accommodate more data without data loss or downtime. This is a critical skill for managing storage dynamically using **Logical Volume Management (LVM)**.
 
 ---

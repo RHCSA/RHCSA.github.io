@@ -1,3 +1,5 @@
+## 05- Create and configure set-GID directories for collaboration:
+
 The RHCSA exam topic **"Create and configure set-GID directories for collaboration"** focuses on creating directories where multiple users can collaborate by sharing files. When the **set-GID** (Set Group ID) permission is applied to a directory, files created within that directory inherit the group ownership of the directory itself, rather than the primary group of the user who creates the file.
 
 This feature is especially useful in shared or collaborative environments where users from the same group need to work together and access each other's files easily.

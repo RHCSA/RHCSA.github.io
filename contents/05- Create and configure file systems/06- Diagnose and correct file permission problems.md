@@ -1,3 +1,5 @@
+## 06- Diagnose and correct file permission problems:
+
 The RHCSA exam topic **"Diagnose and correct file permission problems"** is critical because file permissions are foundational to Linux system security and proper file access control. Diagnosing and correcting file permission problems involves understanding the **ownership** of files, **read/write/execute permissions**, and **special permissions** like **setuid**, **setgid**, and **sticky bit**.
 
 ---
