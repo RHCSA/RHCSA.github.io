@@ -1,3 +1,5 @@
+## 07- Create and edit text files:
+
 The RHCSA exam topic **"Create and edit text files"** is fundamental because many system administration tasks require you to manage configuration files, log files, and scripts. Being proficient in creating and editing text files using terminal-based editors is essential for performing these tasks. The most common editor you need to master is **`vi` (or `vim`)**, which is a standard on Red Hat-based systems. You should also be familiar with basic file manipulation commands, such as `cat`, `echo`, and `nano`.
 
 ---

@@ -1,3 +1,5 @@
+## 11- Locate, read, and use system documentation including man, info, and files in  usr share doc
+
 The RHCSA exam topic **"Locate, read, and use system documentation including man, info, and files in /usr/share/doc"** is crucial for system administration. As a Linux administrator, you must be able to find and use documentation effectively to resolve issues, understand command options, and configure services. On the RHCSA exam, you will likely need to reference **man pages**, **info pages**, and files in **`/usr/share/doc`** to understand commands and configuration options.
 
 ---

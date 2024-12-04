@@ -1,3 +1,5 @@
+## 09- Create hard and soft links
+
 The RHCSA exam topic **"hard links"** is important because it tests your understanding of file management, linking, and inode structure in Linux. **Hard links** allow multiple filenames to refer to the same file content (inode). Unlike symbolic links, hard links are direct references to the file's inode, and they share the same data, metadata, and permissions.
 
 ### What You Need to Know:

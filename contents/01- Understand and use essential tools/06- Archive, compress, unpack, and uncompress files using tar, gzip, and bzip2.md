@@ -1,3 +1,5 @@
+## 06- Archive, compress, unpack, and uncompress files using tar, gzip, and bzip2:
+
 The RHCSA exam topic **"Archive, compress, unpack, and uncompress files using tar, gzip, and bzip2"** is essential for Linux system administrators. This topic covers the ability to create compressed archives, extract data from archives, and use popular compression tools like `tar`, `gzip`, and `bzip2`.
 
 In this section, I’ll explain the commands and operations you need to know for the RHCSA exam, along with examples that reflect common exam-like scenarios.

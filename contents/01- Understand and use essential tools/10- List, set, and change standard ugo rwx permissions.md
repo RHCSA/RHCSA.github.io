@@ -1,3 +1,5 @@
+## 10- List, set, and change standard ugo rwx permissions
+
 The RHCSA exam topic **"List, set, and change standard ugo/rwx permissions"** focuses on managing file and directory permissions using the **user-group-other (UGO)** model and **read-write-execute (RWX)** permissions. This topic is essential for controlling access to files and directories in a multi-user Linux environment.
 
 ---
