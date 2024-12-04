@@ -1,3 +1,5 @@
+## 01- Find and retrieve container images from a remote registry:
+
 The RHCSA exam topic **"Find and retrieve container images from a remote registry"** in the context of RHEL 9 refers to working with **Podman**, a tool used for managing containers and images, similar to Docker. RHEL 9 prefers using **Podman** instead of Docker for container-related tasks.
 
 ### **What You Need to Know:**

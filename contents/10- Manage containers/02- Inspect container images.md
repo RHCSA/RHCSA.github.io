@@ -1,3 +1,5 @@
+## 02- Inspect container images:
+
 In the RHCSA exam topic **"Inspect container images"**, you are expected to use **Podman** to inspect various details about container images, such as their metadata, configuration, and layers. This is important for understanding what the container image consists of, which can be helpful in troubleshooting or customizing the image.
 
 ### **What You Need to Know**:

@@ -1,3 +1,5 @@
+## 07- Attach persistent storage to a container:
+
 In the **RHCSA exam**, "Attaching persistent storage to a container" refers to the process of ensuring that data created or modified within a container is not lost when the container stops or is removed. This is achieved by attaching volumes or bind-mounting directories from the host system to the container.
 
 ### Key Concepts:
