@@ -1,3 +1,5 @@
+## 02- Boot systems into different targets manually:
+
 The RHCSA exam topic **"Boot systems into different targets manually"** focuses on your ability to control how a Linux system boots using **systemd targets**. In systemd-based systems (such as RHEL), **targets** are analogous to runlevels in older SysVinit systems, determining the operational state of the system (e.g., graphical mode, multi-user mode, or rescue mode).
 
 Understanding how to boot into different targets is essential for troubleshooting, configuring boot behavior, and maintaining systems. This includes switching between targets in a running system, changing the default boot target, and booting into specific targets using the **GRUB bootloader**.

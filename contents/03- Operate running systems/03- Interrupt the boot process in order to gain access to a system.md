@@ -1,3 +1,5 @@
+## 03- Interrupt the boot process in order to gain access to a system:
+
 The RHCSA exam topic **"Interrupt the boot process in order to gain access to a system"** is crucial for situations where you need to recover a system, reset forgotten passwords, or fix critical boot issues. You need to understand how to interrupt the boot process using the **GRUB bootloader** to gain privileged access (often root access) without requiring the system’s normal authentication process.
 
 This knowledge is essential for troubleshooting and recovering systems that cannot be accessed normally.

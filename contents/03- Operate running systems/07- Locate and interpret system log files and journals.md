@@ -1,3 +1,5 @@
+## 07- Locate and interpret system log files and journals:
+
 The RHCSA exam topic **"Locate and interpret system log files and journals"** tests your ability to work with system logs, which are crucial for troubleshooting, monitoring, and maintaining system health. On **RHEL-based systems**, logs are managed by **`rsyslog`** and the **systemd journal**, and you’ll need to be able to locate, view, and interpret these logs.
 
 ---

@@ -1,3 +1,5 @@
+## 08- Preserve system journals:
+
 For the **RHCSA (Red Hat Certified System Administrator) exam**, the topic of **preserving system journals** refers to managing the system logs that are stored by the **`systemd` journal**, which is a central component responsible for logging system activities and events on a Red Hat-based Linux system (like RHEL or CentOS).
 
 

@@ -1,3 +1,5 @@
+## 04- Identify CPU and Memory intensive processes and kill processes:
+
 The RHCSA exam topic **"Identify CPU/memory intensive processes and kill processes"** tests your ability to monitor system performance, identify resource-hungry processes, and terminate those processes if necessary. This skill is essential for managing system resources, troubleshooting performance issues, and maintaining system stability.
 
 

@@ -1,3 +1,5 @@
+## 06- Manage tuning profiles:
+
 The RHCSA exam topic **"Manage tuning profiles"** involves the use of the **`tuned`** service to optimize system performance for different workloads. **`tuned`** is a daemon that dynamically adapts the system settings based on the active profile, which can be optimized for tasks such as power saving, throughput, or latency.
 
 

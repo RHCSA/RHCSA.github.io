@@ -1,3 +1,5 @@
+## 05- Adjust process scheduling:
+
 The RHCSA exam topic **"Adjust process scheduling"** tests your understanding of how to manage process priorities in Linux using the **nice** and **renice** commands. These commands allow you to adjust the **priority** at which processes run, which directly impacts how much CPU time they receive. Processes with higher priority will get more CPU time, while those with lower priority will get less.
 
 

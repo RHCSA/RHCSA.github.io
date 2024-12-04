@@ -1,3 +1,5 @@
+## 01- Boot, reboot, and shut down a system normally:
+
 The RHCSA exam topic **"Boot, reboot, and shut down a system normally"** is fundamental for system administration. This topic tests your ability to start, restart, and power off a system using standard Linux commands. You must know how to interact with **`systemctl`**, the **GRUB bootloader**, and handle tasks related to managing system services during the boot process.
 
 ---
