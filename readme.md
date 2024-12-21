@@ -1,6 +1,6 @@
 # Red Hat Certified System Administrator (RHCSA) - EX200
 
-Welcome to the **Ultimate RHCSA (EX200) Exam Preparation Guide**!
+Welcome to the **RHCSA (EX200) Exam Preparation Guide**!
 
 This document will help you organize and keep track of the key topics needed to prepare for the Red Hat Certified System Administrator (RHCSA) exam.
 
