@@ -1,0 +1,1261 @@
+#!/bin/bash
+
+# RHCSA Interactive Study Tool
+# Interactive menu for RHCSA EX200 Exam Objectives
+
+# Colors and formatting
+RESET=$'\e[0m'
+BOLD=$'\e[1m'
+DIM="\033[2m"
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+MAGENTA="\033[35m"
+CYAN="\033[36m"
+
+# Selected item style - using $'...' syntax to embed actual escape character
+# Using reverse video (7) which inverts colors - more reliable across terminals
+SELECTED=$'\e[1;7m'  # Bold (1) + reverse video (7)
+NORMAL="${CYAN}"
+TITLE="${YELLOW}${BOLD}"
+
+# Hide cursor
+hide_cursor() { printf "\033[?25l"; }
+# Show cursor
+show_cursor() { printf "\033[?25h"; }
+# Clear screen
+clear_screen() { printf "\033[2J\033[H"; }
+# Move cursor
+move_cursor() { printf "\033[%d;%dH" "$1" "$2"; }
+
+# ============================================================================
+# TERMINAL RESIZE HANDLING - Instant response to terminal size changes
+# ============================================================================
+
+# Handler function called when terminal is resized
+_handle_winch() {
+    TERMINAL_RESIZED=true
+}
+
+# Setup SIGWINCH trap for instant resize detection
+# Call this before entering a display loop that needs resize awareness
+setup_resize_handler() {
+    TERMINAL_RESIZED=false
+    trap '_handle_winch' WINCH
+}
+
+# Cleanup SIGWINCH trap
+# Call this when exiting the resize-aware display loop
+cleanup_resize_handler() {
+    trap - WINCH
+    TERMINAL_RESIZED=false
+}
+
+# Check if terminal was resized and reset the flag
+# Returns 0 (true) if resized, 1 (false) if not
+check_resize_flag() {
+    if [[ "$TERMINAL_RESIZED" == "true" ]]; then
+        TERMINAL_RESIZED=false
+        return 0
+    fi
+    return 1
+}
+
+# ============================================================================
+
+# Get the script's absolute path
+SCRIPT_PATH="$(readlink -f "$0")"
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+QUESTIONS_DIR="${SCRIPT_DIR}/questions"
+
+# Progress tracking file (stores completed lab filenames)
+PROGRESS_FILE="/tmp/.rhcsa_progress"
+
+# Lab mode variables (set when running as lab monitor pane)
+LAB_OBJ_IDX=""
+LAB_Q_IDX=""
+
+# Arrays to store loaded question data
+declare -a LOADED_QUESTIONS      # Question texts
+declare -a LOADED_ANSWERS        # Answers
+declare -a LOADED_HINTS          # Hints
+declare -a LOADED_FILES          # File paths for each question
+declare -a LOADED_IS_LAB         # Whether it's a lab (true/false)
+declare -a LOADED_COMPLETION_STATUS  # Completion status emojis for display
+
+# Flag to track if we should clear screen on exit (don't clear on errors)
+CLEAR_ON_EXIT=false
+
+# Flag for SIGWINCH resize detection (set by trap, read by lab monitor)
+TERMINAL_RESIZED=false
+
+# Trap to restore cursor on exit
+trap 'show_cursor; if $CLEAR_ON_EXIT; then clear_screen; fi' EXIT INT TERM
+
+# Banner with red background
+print_banner() {
+    local term_width=$(tput cols)
+    local bg_red="\033[48;2;204;0;0m"  # RGB background color #cc0000
+    local white_text="\033[97m"
+    local bold="\033[1m"
+    
+    # Text content
+    local text1="RHCSA.GITHUB.IO"
+    local text2="Red Hat Certified System Administrator"
+    local text3="RHCSA (EX200) Exam Simulator"
+    
+    # Calculate padding for centering
+    local pad1=$(( (term_width - ${#text1}) / 2 ))
+    local pad2=$(( (term_width - ${#text2}) / 2 ))
+    local pad3=$(( (term_width - ${#text3}) / 2 ))
+    
+    # Empty line with red background
+    printf "${bg_red}%${term_width}s${RESET}\n" ""
+    
+    # First line - bigger and bold
+    printf "${bg_red}%${pad1}s${white_text}${bold}${text1}${RESET}${bg_red}%$((term_width - pad1 - ${#text1}))s${RESET}\n" "" ""
+    
+    # Empty line with red background
+    printf "${bg_red}%${term_width}s${RESET}\n" ""
+    
+    # Second line
+    printf "${bg_red}%${pad2}s${white_text}${text2}${RESET}${bg_red}%$((term_width - pad2 - ${#text2}))s${RESET}\n" "" ""
+    
+    # Third line
+    printf "${bg_red}%${pad3}s${white_text}${text3}${RESET}${bg_red}%$((term_width - pad3 - ${#text3}))s${RESET}\n" "" ""
+    
+    # Empty line with red background
+    printf "${bg_red}%${term_width}s${RESET}\n" ""
+    
+    echo ""
+}
+
+# Main Objectives
+declare -a OBJECTIVES=(
+    "Understand and use essential tools"
+    "Manage software"
+    "Create simple shell scripts"
+    "Operate running systems"
+    "Configure local storage"
+    "Create and configure file systems"
+    "Deploy, configure, and maintain systems"
+    "Manage basic networking"
+    "Manage users and groups"
+    "Manage security"
+)
+
+# ============================================================================
+# QUESTION LOADING SYSTEM - Load questions dynamically from files
+# ============================================================================
+
+# Load questions for a specific objective from the questions directory
+# Usage: load_questions_for_objective <obj_idx>
+# Populates: LOADED_QUESTIONS, LOADED_ANSWERS, LOADED_HINTS, LOADED_FILES, LOADED_IS_LAB
+# Note: obj_idx is 0-based internally, but directories are 1-10
+load_questions_for_objective() {
+    local obj_idx=$1
+    local obj_num=$((obj_idx + 1))  # Convert to 1-based for directory
+    local obj_dir="${QUESTIONS_DIR}/${obj_num}"
+    
+    # Clear arrays
+    LOADED_QUESTIONS=()
+    LOADED_ANSWERS=()
+    LOADED_HINTS=()
+    LOADED_FILES=()
+    LOADED_IS_LAB=()
+    
+    # Check if directory exists
+    if [[ ! -d "$obj_dir" ]]; then
+        return 1
+    fi
+    
+    # Find all .sh files in the objective directory and sort them
+    local files=()
+    while IFS= read -r -d '' file; do
+        files+=("$file")
+    done < <(find "$obj_dir" -maxdepth 1 -name "*.sh" -print0 2>/dev/null | sort -z)
+    
+    # Load each question file
+    for file in "${files[@]}"; do
+        # Reset variables before sourcing
+        QUESTION=""
+        ANSWER=""
+        HINT=""
+        IS_LAB=""
+        
+        # Source the file to load variables
+        source "$file"
+        
+        # Add to arrays
+        LOADED_QUESTIONS+=("$QUESTION")
+        LOADED_ANSWERS+=("$ANSWER")
+        LOADED_HINTS+=("$HINT")
+        LOADED_FILES+=("$file")
+        LOADED_IS_LAB+=("${IS_LAB:-false}")
+    done
+    
+    return 0
+}
+
+# Get question text for a specific objective and question index
+get_question() {
+    local obj_idx=$1
+    local q_idx=$2
+    
+    load_questions_for_objective "$obj_idx"
+    echo "${LOADED_QUESTIONS[$q_idx]}"
+}
+
+# Get answer for a specific objective and question index
+get_answer() {
+    local obj_idx=$1
+    local q_idx=$2
+    echo "${LOADED_ANSWERS[$q_idx]}"
+}
+
+# Get hint for a specific objective and question index
+get_hint() {
+    local obj_idx=$1
+    local q_idx=$2
+    echo "${LOADED_HINTS[$q_idx]}"
+}
+
+# Get file path for a specific question
+get_question_file() {
+    local obj_idx=$1
+    local q_idx=$2
+    echo "${LOADED_FILES[$q_idx]}"
+}
+
+# Check if a question is a lab
+is_question_lab() {
+    local obj_idx=$1
+    local q_idx=$2
+    [[ "${LOADED_IS_LAB[$q_idx]}" == "true" ]]
+}
+
+# ============================================================================
+# PROGRESS TRACKING SYSTEM - Track completed labs with emoji indicators
+# ============================================================================
+
+# Initialize progress file (create if doesn't exist)
+init_progress_file() {
+    if [[ ! -f "$PROGRESS_FILE" ]]; then
+        touch "$PROGRESS_FILE" 2>/dev/null
+    fi
+}
+
+# Get lab filename (used as unique identifier - won't change if questions reordered)
+get_lab_filename() {
+    local full_path="$1"
+    basename "$full_path"
+}
+
+# Check if a lab is completed (by filename)
+is_lab_completed() {
+    local lab_path="$1"
+    local lab_name=$(get_lab_filename "$lab_path")
+    
+    if [[ -f "$PROGRESS_FILE" ]]; then
+        grep -qxF "$lab_name" "$PROGRESS_FILE" 2>/dev/null
+        return $?
+    fi
+    return 1
+}
+
+# Mark a lab as completed (saves filename to progress file)
+mark_lab_completed() {
+    local lab_path="$1"
+    local lab_name=$(get_lab_filename "$lab_path")
+    
+    # Ensure progress file exists
+    init_progress_file
+    
+    # Only add if not already marked
+    if ! grep -qxF "$lab_name" "$PROGRESS_FILE" 2>/dev/null; then
+        echo "$lab_name" >> "$PROGRESS_FILE"
+    fi
+}
+
+# Get completion status for all loaded questions (returns array of emojis)
+# Populates LOADED_COMPLETION_STATUS array with ⬜ or ✅
+get_completion_status() {
+    LOADED_COMPLETION_STATUS=()
+    local count=${#LOADED_FILES[@]}
+    
+    for ((i=0; i<count; i++)); do
+        local file_path="${LOADED_FILES[$i]}"
+        local is_lab="${LOADED_IS_LAB[$i]}"
+        
+        if [[ "$is_lab" == "true" ]] && is_lab_completed "$file_path"; then
+            LOADED_COMPLETION_STATUS+=("✅")
+        else
+            LOADED_COMPLETION_STATUS+=("⬜")
+        fi
+    done
+}
+
+# Read a single keypress
+read_key() {
+    local key
+    IFS= read -rsn1 key 2>/dev/null
+    
+    # Check for escape sequences (arrow keys, etc.)
+    if [[ $key == $'\x1b' ]]; then
+        read -rsn2 -t 0.1 key 2>/dev/null
+        case "$key" in
+            '[A') echo "UP" ;;
+            '[B') echo "DOWN" ;;
+            *) echo "ESC" ;;
+        esac
+    # Check for backspace
+    elif [[ $key == $'\x7f' ]] || [[ $key == $'\x08' ]]; then
+        echo "BACKSPACE"
+    # Check for Enter (empty string)
+    elif [[ -z $key ]]; then
+        echo "ENTER"
+    # Check for quit
+    elif [[ $key == "q" ]] || [[ $key == "Q" ]]; then
+        echo "QUIT"
+    # Check for 'h' or 'H' for hint
+    elif [[ $key == "h" ]] || [[ $key == "H" ]]; then
+        echo "HINT"
+    else
+        echo "$key"
+    fi
+}
+
+# Display menu with selection
+# Uses global LOADED_COMPLETION_STATUS array if set for emoji indicators
+display_menu() {
+    local title="$1"
+    local selected=$2
+    local scroll_offset=$3
+    shift 3
+    local items=("$@")
+    local term_height=$(tput lines)
+    local term_width=$(tput cols)
+    # Each item takes 2 lines (item + blank line), so divide available space by 2
+    local max_visible=$(( (term_height - 18) / 2 ))
+    if [[ $max_visible -lt 3 ]]; then max_visible=3; fi
+    local total=${#items[@]}
+    
+    clear_screen
+    print_banner
+    
+    # Title
+    echo -e "  ${TITLE}${title}${RESET}"
+    echo -e "  ${DIM}────────────────────────────────────────${RESET}"
+    echo ""
+    
+    # Calculate visible range
+    local start=$scroll_offset
+    local end=$((scroll_offset + max_visible))
+    if [[ $end -gt $total ]]; then
+        end=$total
+    fi
+    
+    # Show scroll indicator at top
+    if [[ $scroll_offset -gt 0 ]]; then
+        echo -e "  ${DIM}▲ More above...${RESET}"
+    else
+        echo ""
+    fi
+    
+    # Display items with numbers
+    for ((i=start; i<end; i++)); do
+        local item_num=$((i + 1))
+        local item="${items[$i]}"
+        # Truncate if too long
+        local max_len=$((term_width - 18))  # Extra space for emoji
+        if [[ ${#item} -gt $max_len ]]; then
+            item="${item:0:$((max_len-3))}..."
+        fi
+        
+        # Get completion status emoji if available
+        local status_emoji=""
+        if [[ ${#LOADED_COMPLETION_STATUS[@]} -gt 0 ]] && [[ -n "${LOADED_COMPLETION_STATUS[$i]}" ]]; then
+            status_emoji="${LOADED_COMPLETION_STATUS[$i]} "
+        fi
+        
+        if [[ $i -eq $selected ]]; then
+            echo -e "  ${SELECTED} ${status_emoji}${item_num}. ${item} ${RESET}"
+        else
+            echo -e "  ${NORMAL}${status_emoji}${item_num}. ${item}${RESET}"
+        fi
+        echo ""  # Blank line between items for readability
+    done
+    
+    # Show scroll indicator at bottom
+    if [[ $end -lt $total ]]; then
+        echo -e "  ${DIM}▼ More below...${RESET}"
+    else
+        echo ""
+    fi
+    
+    # Navigation help
+    echo ""
+    echo -e "  ${DIM}────────────────────────────────────────${RESET}"
+    echo -e "  ${DIM}↑/↓: Navigate  Enter: Select  Esc/Backspace: Back  Q: Quit${RESET}"
+}
+
+# Word wrap function for task descriptions
+# Word wrap function that preserves existing newlines
+wrap_text() {
+    local text="$1"
+    local width=$2
+    local result=""
+    
+    # Process each line separately to preserve intentional newlines
+    while IFS= read -r input_line; do
+        local line=""
+        # Handle empty lines (preserve them)
+        if [[ -z "$input_line" ]]; then
+            if [[ -n "$result" ]]; then
+                result="$result"$'\n'
+            fi
+            continue
+        fi
+        # Wrap words within each line
+        for word in $input_line; do
+            if [[ $((${#line} + ${#word} + 1)) -le $width ]]; then
+                if [[ -z "$line" ]]; then
+                    line="$word"
+                else
+                    line="$line $word"
+                fi
+            else
+                if [[ -n "$result" ]]; then
+                    result="$result"$'\n'"$line"
+                else
+                    result="$line"
+                fi
+                line="$word"
+            fi
+        done
+        # Add remaining words from this line
+        if [[ -n "$line" ]]; then
+            if [[ -n "$result" ]]; then
+                result="$result"$'\n'"$line"
+            else
+                result="$line"
+            fi
+        fi
+    done <<< "$text"
+    
+    echo "$result"
+}
+
+# ============================================================================
+# LAB FRAMEWORK - Modular lab exercise system
+# ============================================================================
+
+# Global array for task status
+declare -a TASK_STATUS
+
+# Current lab file path (set when loading a lab)
+CURRENT_LAB_FILE=""
+
+# Load lab file and its functions
+# Usage: load_lab_file <obj_idx> <q_idx>
+load_lab_file() {
+    local obj_idx=$1
+    local q_idx=$2
+    
+    # Make sure questions are loaded for this objective
+    load_questions_for_objective "$obj_idx"
+    
+    # Get the lab file path
+    CURRENT_LAB_FILE="${LOADED_FILES[$q_idx]}"
+    
+    if [[ -z "$CURRENT_LAB_FILE" ]] || [[ ! -f "$CURRENT_LAB_FILE" ]]; then
+        echo "Error: Lab file not found"
+        return 1
+    fi
+    
+    # Source the lab file to load its functions
+    source "$CURRENT_LAB_FILE"
+    
+    return 0
+}
+
+# Get lab title (from sourced lab file)
+get_lab_title() {
+    echo "${LAB_TITLE:-Lab Exercise}"
+}
+
+# Get number of tasks for a lab (from sourced lab file)
+get_lab_task_count() {
+    echo "${LAB_TASK_COUNT:-0}"
+}
+
+# Prepare lab environment (generic wrapper)
+prepare_lab_environment() {
+    clear_screen
+    print_banner
+    
+    echo ""
+    echo -e "  ${TITLE}⏳ Preparing Lab Environment...${RESET}"
+    echo ""
+    echo -e "  ${DIM}────────────────────────────────────────${RESET}"
+    echo ""
+    echo -e "  ${CYAN}Setting up the environment for this lab exercise.${RESET}"
+    echo -e "  ${CYAN}Please wait...${RESET}"
+    echo ""
+    
+    # Install common compression tools if missing
+    echo -e "  ${DIM}• Checking required packages...${RESET}"
+    local packages_to_install=""
+    
+    if ! command -v bzip2 &>/dev/null; then
+        packages_to_install="bzip2"
+    fi
+    
+    if ! command -v xz &>/dev/null; then
+        packages_to_install="$packages_to_install xz"
+    fi
+    
+    if [[ -n "$packages_to_install" ]]; then
+        echo -e "  ${DIM}• Installing missing packages:${packages_to_install}...${RESET}"
+        if command -v dnf &>/dev/null; then
+            dnf install -y $packages_to_install &>/dev/null
+        elif command -v yum &>/dev/null; then
+            yum install -y $packages_to_install &>/dev/null
+        elif command -v apt-get &>/dev/null; then
+            # On Debian/Ubuntu, xz package is called xz-utils
+            packages_to_install=$(echo "$packages_to_install" | sed 's/\bxz\b/xz-utils/g')
+            apt-get install -y $packages_to_install &>/dev/null
+        fi
+    fi
+    
+    sleep 0.3
+    
+    # Call the prepare_lab function from the sourced lab file
+    if declare -f prepare_lab &>/dev/null; then
+        prepare_lab
+    else
+        echo -e "  ${DIM}• No specific preparation needed${RESET}"
+    fi
+    
+    echo ""
+    echo -e "  ${GREEN}✓ Environment prepared successfully!${RESET}"
+    sleep 0.5
+}
+
+# Check tasks for a lab (generic wrapper)
+check_lab_tasks() {
+    # Reset task status array
+    TASK_STATUS=()
+    
+    # Call the check_tasks function from the sourced lab file
+    if declare -f check_tasks &>/dev/null; then
+        check_tasks
+    fi
+}
+
+# Check if all tasks are complete
+all_tasks_complete() {
+    local task_count=$(get_lab_task_count)
+    
+    for ((i=0; i<task_count; i++)); do
+        if [[ "${TASK_STATUS[$i]}" != "true" ]]; then
+            return 1
+        fi
+    done
+    return 0
+}
+
+# Display interactive lab exercise (tmux session setup)
+display_lab_exercise() {
+    local obj_idx=$1
+    local q_idx=$2
+    
+    # Load the lab file
+    if ! load_lab_file "$obj_idx" "$q_idx"; then
+        echo "Error: Could not load lab file"
+        return 1
+    fi
+    
+    # Run preparation phase first (before tmux)
+    prepare_lab_environment
+    
+    # Create a tmux session with split panes
+    local session_name="rhcsa_lab_$$"
+    
+    # Kill any existing session with the same name
+    tmux kill-session -t "$session_name" 2>/dev/null
+    
+    # Get the absolute path of this script
+    local script_abs_path
+    script_abs_path="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+    if [[ ! -f "$script_abs_path" ]]; then
+        script_abs_path="$SCRIPT_PATH"
+    fi
+    
+    # Create a temporary launcher script for the lab monitor
+    local launcher_script="/tmp/rhcsa_lab_launcher_$$.sh"
+    cat > "$launcher_script" << LAUNCHER_EOF
+#!/bin/bash
+exec bash "$script_abs_path" --lab-monitor $obj_idx $q_idx
+LAUNCHER_EOF
+    chmod +x "$launcher_script"
+    
+    # Create new tmux session running the lab monitor in the initial pane
+    tmux new-session -d -s "$session_name" "$launcher_script"
+    
+    # Wait for the session to be ready
+    sleep 0.5
+    
+    # Split the window - bottom pane (40%) for user shell
+    tmux split-window -v -t "$session_name" -p 40
+    
+    # Select the bottom pane and set it up
+    tmux select-pane -t "$session_name:0.1"
+    
+    # Attach to the session
+    show_cursor
+    CLEAR_ON_EXIT=false
+    tmux attach-session -t "$session_name"
+    
+    # After tmux exits, clean up
+    tmux kill-session -t "$session_name" 2>/dev/null
+    rm -f "$launcher_script"
+    CLEAR_ON_EXIT=true
+    hide_cursor
+}
+
+# Run the lab monitor (called from within tmux top pane)
+run_lab_monitor() {
+    local obj_idx=$1
+    local q_idx=$2
+    
+    # Load lab file to get its functions and configuration
+    if ! load_lab_file "$obj_idx" "$q_idx"; then
+        echo "Error: Could not load lab file"
+        return 1
+    fi
+    
+    # Get lab configuration from sourced file
+    local lab_title=$(get_lab_title)
+    local task_count=$(get_lab_task_count)
+    local check_interval=5
+    local show_hint=false
+    local hint="$HINT"
+    local need_full_redraw=true
+    
+    # Setup SIGWINCH trap for instant resize detection
+    setup_resize_handler
+    
+    # Track terminal size for resize detection
+    local current_term_width=$(tput cols)
+    local current_term_height=$(tput lines)
+    
+    while true; do
+        # Check for terminal resize (instant via SIGWINCH)
+        if check_resize_flag; then
+            need_full_redraw=true
+        fi
+        
+        # Update current dimensions
+        current_term_width=$(tput cols)
+        current_term_height=$(tput lines)
+        
+        # Check task completion status
+        check_lab_tasks
+        
+        # Recalculate dimensions based on current terminal size
+        local term_width=$current_term_width
+        local table_width=$((term_width - 8))
+        local desc_width=$((table_width - 20))
+        local status_start_line=6  # Line where status table starts (compact header)
+        
+        if $need_full_redraw; then
+            clear_screen
+            
+            echo -e "  ${TITLE}💻 Interactive Lab Exercise - ${lab_title}${RESET}"
+            echo -e "  ${DIM}────────────────────────────────────────${RESET}"
+            echo ""
+            
+            # Table header
+            printf "  %-${desc_width}s | %s\n" "Task Description" "Status"
+            echo -e "  ${DIM}$(printf '─%.0s' $(seq 1 $table_width))${RESET}"
+            
+            need_full_redraw=false
+        fi
+        
+        # Move to status area and update only status values
+        move_cursor $((status_start_line)) 1
+        
+        # Clear the status area (enough lines for tasks + completion message + hint + footer)
+        local clear_lines=$((task_count * 2 + 10))
+        for ((i=0; i<clear_lines; i++)); do
+            printf "\033[K"  # Clear to end of line
+            move_cursor $((status_start_line + i)) 1
+        done
+        move_cursor $((status_start_line)) 1
+        
+        # Display each task with status
+        for ((t=0; t<task_count; t++)); do
+            # Call get_task_description from the sourced lab file
+            local task_desc=$(get_task_description "$t")
+            local task_complete="${TASK_STATUS[$t]}"
+            
+            local wrapped_task=$(wrap_text "$task_desc" $desc_width)
+            local first_line=true
+            while IFS= read -r line; do
+                if $first_line; then
+                    if [[ "$task_complete" == "true" ]]; then
+                        printf "  %-${desc_width}s | ${GREEN}✓ Complete${RESET}\n" "$line"
+                    else
+                        printf "  %-${desc_width}s | ${RED}✗ Incomplete${RESET}\n" "$line"
+                    fi
+                    first_line=false
+                else
+                    printf "  %-${desc_width}s |\n" "$line"
+                fi
+            done <<< "$wrapped_task"
+            echo -e "  ${DIM}$(printf '─%.0s' $(seq 1 $table_width))${RESET}"
+        done
+        
+        echo ""
+        
+        # Check if all tasks are complete
+        if all_tasks_complete; then
+            # If hint was showing, redraw screen without hint but with task status
+            if $show_hint; then
+                show_hint=false
+                clear_screen
+                
+                echo -e "  ${TITLE}💻 Interactive Lab Exercise - ${lab_title}${RESET}"
+                echo -e "  ${DIM}────────────────────────────────────────${RESET}"
+                echo ""
+                
+                # Redraw table header
+                printf "  %-${desc_width}s | %s\n" "Task Description" "Status"
+                echo -e "  ${DIM}$(printf '─%.0s' $(seq 1 $table_width))${RESET}"
+                
+                # Redraw tasks (all complete)
+                for ((t=0; t<task_count; t++)); do
+                    local task_desc_redo=$(get_task_description "$t")
+                    local wrapped_task_redo=$(wrap_text "$task_desc_redo" $desc_width)
+                    local first_line_redo=true
+                    while IFS= read -r line; do
+                        if $first_line_redo; then
+                            printf "  %-${desc_width}s | ${GREEN}✓ Complete${RESET}\n" "$line"
+                            first_line_redo=false
+                        else
+                            printf "  %-${desc_width}s |\n" "$line"
+                        fi
+                    done <<< "$wrapped_task_redo"
+                    echo -e "  ${DIM}$(printf '─%.0s' $(seq 1 $table_width))${RESET}"
+                done
+                
+                echo ""
+            fi
+            
+            echo -e "  ${GREEN}${BOLD}🎉 All tasks completed successfully!${RESET}"
+            echo ""
+            
+            # Mark lab as completed in progress file
+            if [[ -n "$CURRENT_LAB_FILE" ]]; then
+                mark_lab_completed "$CURRENT_LAB_FILE"
+            fi
+            
+            # Cleanup lab environment before exit
+            if declare -f cleanup_lab > /dev/null; then
+                echo ""
+                cleanup_lab
+                echo ""
+            fi
+            
+            # Countdown and exit
+            for i in 4 3 2 1; do
+                echo -ne "\r  ${DIM}Returning to the previous menu in ${i} seconds...${RESET}   "
+                sleep 1
+            done
+            
+            cleanup_resize_handler
+            tmux kill-session 2>/dev/null
+            exit 0
+        else
+            echo ""
+        fi
+        
+        # Show hint if requested
+        if $show_hint; then
+            local formatted_hint=$(echo -e "$hint")
+            draw_box "💡 HINT" "$formatted_hint" "${YELLOW}"
+        fi
+        
+        echo -e "  ${DIM}─────────────────────────────────────────────────────────────────${RESET}"
+        echo -e "  ${DIM}CLick here, then press    H --> show/hide Hint     Q/ESC --> Quit${RESET}"
+        
+        # Read key with timeout for auto-refresh
+        local key
+        read -rsn1 -t $check_interval key 2>/dev/null
+        
+        if [[ $key == $'\x1b' ]]; then
+            read -rsn2 -t 0.1 key 2>/dev/null
+            case "$key" in
+                '[A'|'[B'|'[C'|'[D') 
+                    # Arrow keys pressed - switch focus to terminal pane
+                    tmux select-pane -t 1 2>/dev/null
+                    ;;
+                '') 
+                    # Pure ESC pressed (no additional bytes) - cleanup and exit
+                    if declare -f cleanup_lab > /dev/null; then
+                        echo ""
+                        cleanup_lab
+                    fi
+                    cleanup_resize_handler
+                    tmux kill-session 2>/dev/null
+                    exit 0
+                    ;;
+                *) 
+                    # Other escape sequences - ignore
+                    ;;
+            esac
+        elif [[ $key == $'\x7f' ]] || [[ $key == $'\x08' ]]; then
+            # Backspace pressed - cleanup and exit tmux session
+            if declare -f cleanup_lab > /dev/null; then
+                echo ""
+                cleanup_lab
+            fi
+            cleanup_resize_handler
+            tmux kill-session 2>/dev/null
+            exit 0
+        elif [[ $key == "q" ]] || [[ $key == "Q" ]]; then
+            # Quit - cleanup and exit tmux session
+            if declare -f cleanup_lab > /dev/null; then
+                echo ""
+                cleanup_lab
+            fi
+            cleanup_resize_handler
+            tmux kill-session 2>/dev/null
+            exit 0
+        elif [[ $key == "h" ]] || [[ $key == "H" ]]; then
+            # H pressed - toggle hint (requires full redraw)
+            if $show_hint; then
+                show_hint=false
+            else
+                show_hint=true
+            fi
+            need_full_redraw=true
+        fi
+    done
+}
+
+# ============================================================================
+# END LAB FRAMEWORK
+# ============================================================================
+
+# Draw a box with text inside
+draw_box() {
+    local title="$1"
+    local content="$2"
+    local color="$3"
+    local term_width=$(tput cols)
+    local box_width=$((term_width - 8))
+    local inner_width=$((box_width - 4))
+    
+    # Box drawing characters
+    local tl="╭" tr="╮" bl="╰" br="╯" h="─" v="│"
+    
+    # Top border with title
+    local title_len=${#title}
+    local left_pad=$(( (box_width - title_len - 4) / 2 ))
+    local right_pad=$((box_width - title_len - 4 - left_pad))
+    
+    printf "  ${color}${tl}"
+    printf "${h}%.0s" $(seq 1 $left_pad)
+    printf " ${BOLD}${title}${RESET}${color} "
+    printf "${h}%.0s" $(seq 1 $right_pad)
+    printf "${tr}${RESET}\n"
+    
+    # Empty line inside box
+    printf "  ${color}${v}${RESET}%${inner_width}s${color}  ${v}${RESET}\n" ""
+    
+    # Content lines (word wrap)
+    local wrapped=$(wrap_text "$content" $((inner_width - 2)))
+    while IFS= read -r line; do
+        local line_len=${#line}
+        local padding=$((inner_width - line_len))
+        printf "  ${color}${v}${RESET}  %s%${padding}s${color}${v}${RESET}\n" "$line" ""
+    done <<< "$wrapped"
+    
+    # Empty line inside box
+    printf "  ${color}${v}${RESET}%${inner_width}s${color}  ${v}${RESET}\n" ""
+    
+    # Bottom border
+    printf "  ${color}${bl}"
+    printf "${h}%.0s" $(seq 1 $((box_width - 2)))
+    printf "${br}${RESET}\n"
+}
+
+# Display question and answer
+display_question() {
+    local obj_idx=$1
+    local q_idx=$2
+    
+    # Questions should already be loaded from navigate_questions
+    local question="${LOADED_QUESTIONS[$q_idx]}"
+    
+    # Check if this is an interactive lab exercise
+    if [[ "$question" == "[LAB]"* ]] || [[ "${LOADED_IS_LAB[$q_idx]}" == "true" ]]; then
+        display_lab_exercise $obj_idx $q_idx
+        return
+    fi
+    
+    local hint="${LOADED_HINTS[$q_idx]}"
+    local show_hint=false
+    local term_width=$(tput cols)
+    local box_width=$((term_width - 8))
+    
+    while true; do
+        clear_screen
+        print_banner
+        
+        # Question number header
+        echo ""
+        printf "  ${MAGENTA}◆${RESET} ${TITLE}Question $((q_idx + 1))${RESET}\n"
+        echo ""
+        
+        # Question box
+        draw_box "❓ QUESTION" "$question" "${CYAN}"
+        
+        echo ""
+        
+        # Show hint/answer if requested
+        if $show_hint; then
+            draw_box "💡 ANSWER" "$hint" "${GREEN}"
+            echo ""
+        else
+            # Prompt to reveal answer
+            local prompt_width=$((box_width - 4))
+            
+            printf "  ${DIM}╭"
+            printf "─%.0s" $(seq 1 $((box_width - 2)))
+            printf "╮${RESET}\n"
+            
+            local answer_text="Press ENTER or H to reveal the answer"
+            local answer_len=${#answer_text}
+            local answer_pad=$(( (prompt_width - answer_len) / 2 ))
+            printf "  ${DIM}│${RESET}"
+            printf "%${answer_pad}s" ""
+            printf "${GREEN}${BOLD}🔍 ${answer_text}${RESET}"
+            printf "%$((prompt_width - answer_pad - answer_len))s" ""
+            printf "${DIM}  │${RESET}\n"
+            
+            printf "  ${DIM}╰"
+            printf "─%.0s" $(seq 1 $((box_width - 2)))
+            printf "╯${RESET}\n"
+        fi
+        
+        # Navigation footer
+        echo ""
+        printf "  ${DIM}╶"
+        printf "─%.0s" $(seq 1 $((box_width - 2)))
+        printf "╴${RESET}\n"
+        printf "  ${DIM}  H/Enter: Answer   ← Esc/Backspace: Back   Q: Quit${RESET}\n"
+        
+        local key=$(read_key)
+        case "$key" in
+            "HINT"|"ENTER")
+                show_hint=true
+                ;;
+            "ESC"|"BACKSPACE")
+                return
+                ;;
+            "QUIT")
+                show_cursor
+                clear_screen
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# Menu navigation for questions
+# Menu navigation for questions within an objective
+navigate_questions() {
+    local obj_idx=$1
+    
+    # Load questions for this objective from files
+    if ! load_questions_for_objective "$obj_idx"; then
+        clear_screen
+        print_banner
+        echo -e "  ${YELLOW}No questions available for this topic yet.${RESET}"
+        echo -e "  ${DIM}Add .sh files to: ${QUESTIONS_DIR}/$((obj_idx + 1))/${RESET}"
+        echo ""
+        echo -e "  ${DIM}Press any key to go back...${RESET}"
+        read_key
+        return
+    fi
+    
+    local items=("${LOADED_QUESTIONS[@]}")
+    local total=${#items[@]}
+    
+    if [[ $total -eq 0 ]]; then
+        clear_screen
+        print_banner
+        echo -e "  ${YELLOW}No questions available for this topic yet.${RESET}"
+        echo -e "  ${DIM}Add .sh files to: ${QUESTIONS_DIR}/$((obj_idx + 1))/${RESET}"
+        echo ""
+        echo -e "  ${DIM}Press any key to go back...${RESET}"
+        read_key
+        return
+    fi
+    
+    local selected=0
+    local scroll_offset=0
+    local term_height=$(tput lines)
+    # Each item takes 2 lines (item + blank line), so divide by 2
+    local max_visible=$(( (term_height - 18) / 2 ))
+    if [[ $max_visible -lt 3 ]]; then max_visible=3; fi
+    
+    # Get completion status once when entering menu (not on every scroll)
+    get_completion_status
+    
+    while true; do
+        # Adjust scroll offset to keep selected visible
+        if [[ $selected -lt $scroll_offset ]]; then
+            scroll_offset=$selected
+        elif [[ $selected -ge $((scroll_offset + max_visible)) ]]; then
+            scroll_offset=$((selected - max_visible + 1))
+        fi
+        
+        display_menu "Questions: ${OBJECTIVES[$obj_idx]}" $selected $scroll_offset "${items[@]}"
+        
+        local key=$(read_key)
+        case "$key" in
+            "UP")
+                ((selected--))
+                if [[ $selected -lt 0 ]]; then
+                    selected=$((total - 1))
+                    scroll_offset=$((total - max_visible))
+                    if [[ $scroll_offset -lt 0 ]]; then scroll_offset=0; fi
+                fi
+                ;;
+            "DOWN")
+                ((selected++))
+                if [[ $selected -ge $total ]]; then
+                    selected=0
+                    scroll_offset=0
+                fi
+                ;;
+            "ENTER")
+                display_question $obj_idx $selected
+                # Reload completion status after returning from question/lab
+                get_completion_status
+                ;;
+            "ESC"|"BACKSPACE")
+                return
+                ;;
+            "QUIT")
+                show_cursor
+                clear_screen
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# Main menu navigation
+navigate_objectives() {
+    local total=${#OBJECTIVES[@]}
+    local selected=0
+    local scroll_offset=0
+    local term_height=$(tput lines)
+    # Each item takes 2 lines (item + blank line), so divide by 2
+    local max_visible=$(( (term_height - 18) / 2 ))
+    if [[ $max_visible -lt 3 ]]; then max_visible=3; fi
+    
+    while true; do
+        # Clear completion status (not used for objectives menu)
+        LOADED_COMPLETION_STATUS=()
+        
+        # Adjust scroll offset
+        if [[ $selected -lt $scroll_offset ]]; then
+            scroll_offset=$selected
+        elif [[ $selected -ge $((scroll_offset + max_visible)) ]]; then
+            scroll_offset=$((selected - max_visible + 1))
+        fi
+        
+        display_menu "RHCSA EX200 Exam Objectives" $selected $scroll_offset "${OBJECTIVES[@]}"
+        
+        local key=$(read_key)
+        case "$key" in
+            "UP")
+                ((selected--))
+                if [[ $selected -lt 0 ]]; then
+                    selected=$((total - 1))
+                    scroll_offset=$((total - max_visible))
+                    if [[ $scroll_offset -lt 0 ]]; then scroll_offset=0; fi
+                fi
+                ;;
+            "DOWN")
+                ((selected++))
+                if [[ $selected -ge $total ]]; then
+                    selected=0
+                    scroll_offset=0
+                fi
+                ;;
+            "ENTER")
+                navigate_questions $selected
+                ;;
+            "ESC"|"BACKSPACE"|"QUIT")
+                show_cursor
+                clear_screen
+                echo -e "${GREEN}Thanks for studying! Good luck on your RHCSA exam! 🎓${RESET}"
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# Pre-script checks
+pre_script_checks() {
+    local checks_passed=true
+    clear_screen
+    echo ""
+    echo -e "  ${TITLE}🔍 Checking Exam Simulator Requirements...${RESET}"
+    echo -e "  ${DIM}──────────────────────────────────────────${RESET}"
+    echo ""
+    
+    # Check 1: Root user check
+    echo -ne "  ${DIM}• Checking user permissions...${RESET}"
+    if [[ $EUID -ne 0 ]]; then
+        echo -e " ${RED}✗ FAILED${RESET}"
+        echo ""
+        echo -e "  ${RED}${BOLD}ERROR: This script must be run as root!${RESET}"
+        echo ""
+        echo -e "  ${YELLOW}Please switch to root user and run the script again:${RESET}"
+        echo -e "  ${CYAN}  # sudo su root ${RESET}"
+        echo -e "  ${CYAN}  # rhcsa ${RESET}"
+        echo ""
+        sleep 2
+        exit 1
+    fi
+    echo -e " ${GREEN}✓ Running as root${RESET}"
+    
+    # Check 2: tmux installation
+    echo -ne "  ${DIM}• Checking tmux installation...${RESET}"
+    if ! command -v tmux &>/dev/null; then
+        echo -e " ${YELLOW}⚠ Not installed${RESET}"
+        echo ""
+        echo -e "  ${CYAN}Installing tmux...${RESET}"
+        
+        # Detect package manager and install tmux
+        if command -v dnf &>/dev/null; then
+            dnf install -y tmux &>/dev/null
+        elif command -v yum &>/dev/null; then
+            yum install -y tmux &>/dev/null
+        elif command -v apt-get &>/dev/null; then
+            apt-get update &>/dev/null && apt-get install -y tmux &>/dev/null
+        elif command -v zypper &>/dev/null; then
+            zypper install -y tmux &>/dev/null
+        else
+            echo -e "  ${RED}✗ Could not detect package manager. Please install tmux manually.${RESET}"
+            exit 1
+        fi
+        
+        # Verify installation
+        if command -v tmux &>/dev/null; then
+            echo -e "  ${GREEN}✓ tmux installed successfully${RESET}"
+        else
+            echo -e "  ${RED}✗ Failed to install tmux${RESET}"
+            exit 1
+        fi
+        
+        # Configure tmux
+        echo -ne "  ${DIM}• Configuring tmux...${RESET}"
+        configure_tmux
+        echo -e " ${GREEN}✓ Configured${RESET}"
+    else
+        echo -e " ${GREEN}✓ Installed${RESET}"
+        
+        # Ensure tmux is configured
+        if [[ ! -f ~/.tmux.conf ]] || ! grep -q "RHCSA" ~/.tmux.conf 2>/dev/null; then
+            echo -ne "  ${DIM}• Configuring tmux...${RESET}"
+            configure_tmux
+            echo -e " ${GREEN}✓ Configured${RESET}"
+        fi
+    fi
+    
+    echo ""
+    echo -e "  ${GREEN}${BOLD}✓ All checks passed!${RESET}"
+    echo ""
+    sleep 0.5
+}
+
+# Configure tmux with sensible defaults for RHCSA practice
+configure_tmux() {
+    cat > ~/.tmux.conf << 'EOF'
+# RHCSA Practice Environment - tmux configuration
+
+# Set prefix to Ctrl+a (easier than Ctrl+b)
+set -g prefix C-a
+unbind C-b
+bind C-a send-prefix
+
+# Enable mouse support
+set -g mouse on
+
+# Split panes using | and -
+bind | split-window -h
+bind - split-window -v
+unbind '"'
+unbind %
+
+# Switch panes using Alt-arrow without prefix
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+# Start window numbering at 1
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Reload config file
+bind r source-file ~/.tmux.conf \; display "Config reloaded!"
+
+# Status bar styling
+set -g status-style 'bg=#cc0000 fg=white'
+set -g status-left ' RHCSA '
+set -g status-right ' %H:%M '
+
+# Increase history limit
+set -g history-limit 10000
+
+# Enable 256 colors
+set -g default-terminal "screen-256color"
+EOF
+}
+
+# Main entry point
+main() {
+    # Check for special lab monitor mode (called from tmux)
+    if [[ "$1" == "--lab-monitor" ]] && [[ -n "$2" ]] && [[ -n "$3" ]]; then
+        LAB_OBJ_IDX="$2"
+        LAB_Q_IDX="$3"
+        CLEAR_ON_EXIT=false
+        hide_cursor
+        run_lab_monitor "$LAB_OBJ_IDX" "$LAB_Q_IDX"
+        exit 0
+    fi
+    
+    # Initialize progress tracking file
+    init_progress_file
+    
+    # Run pre-script checks first
+    pre_script_checks
+    
+    # If we got here, checks passed - enable screen clearing on exit
+    CLEAR_ON_EXIT=true
+    
+    hide_cursor
+    navigate_objectives
+}
+
+main "$@"

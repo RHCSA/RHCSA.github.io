@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -319,6 +319,38 @@
                 font-size: 5.5vw;
             }
         }
+
+        /* Lightbox Styles */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .lightbox-overlay.active {
+            display: flex;
+        }
+        .lightbox-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.3);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -366,16 +398,27 @@
         <h1 style="text-align: center;">RHCSA (EX200) Exam Preparation Guide</h1>
         <!-- Tab Content with Gradual Buttons -->
         <div id="Introduction" class="tab-content">
-            <h4>Welcome to the RHCSA (EX200) Exam Preparation Guide</h4>
-            <p>Are you aiming to pass the Red Hat Certified System Administrator (RHCSA) EX200 exam? You're in the right place! </p>
-            <p>This website offers a comprehensive course designed to help you master all the essential skills and concepts needed for success. Whether you're just starting your journey or looking to sharpen your knowledge before the exam, we cover everything you need to know, chapter by chapter.</p>
-            <p>On the right, you will find 10 chapters, each based on the official objectives of the RHCSA exam. These chapters are packed with detailed explanations and practical exam questions, so you can practice and gain confidence as you prepare for the test.</p>
-            <p>Here’s my RHCSA certification as proof of my journey:</p>
+            <h4>Everything You Need to Pass the RHCSA EX200 Exam</h4>
+            <p><strong>FULL RHCSA EXAM COURSE & Practice Questions/Answers + FREE RHCSA EX200 Exam Simulator</strong></p>
+            <p>Latest update: <strong>February 2025</strong> - All 10 chapters based on official Red Hat exam objectives.</p>
+            
+            <h4>Step 1: Download CentOS Stream 9 or RHEL 9</h4>
+            <p>Create a VM with the following requirements:</p>
+            <ul>
+                <li><strong>Disk:</strong> 20GB + 4 additional 5GB disks</li>
+                <li><strong>Network:</strong> 2 NICs (Bridge mode)</li>
+            </ul>
+            <p>Download: <a href="https://www.centos.org/download/" target="_blank">CentOS Stream 9</a> | <a href="https://developers.redhat.com/products/rhel/download" target="_blank">RHEL 9 (Free Developer Account)</a></p>
+            
+            <h4>Step 2: Install RHCSA Exam Simulator</h4>
+            <p>Run this command on your VM:</p>
+            <pre style="background: #1e1e1e; color: #dcdcdc; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>sudo bash &lt;(curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh)</code></pre>
+            
+            <p style="margin-top: 20px;">My RHCSA certificate (click to enlarge):</p>
             <div style="text-align: center;">
-                <a href="https://www.credly.com/badges/fff62969-d5cf-4e57-b4a3-856c2a0b12a9" target="_blank">
-                  <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/Red_Hat_Certified_System_Administrator_RHCSA.jpg?raw=true" alt="RHCSA Certification" style="max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);">
-                </a>
-              </div>
+                <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/Red_Hat_Certified_System_Administrator_RHCSA.jpg?raw=true" alt="RHCSA Certification" style="max-width: 300px; cursor: pointer; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);" onclick="openLightbox(this.src)">
+                <a href="https://www.credly.com/badges/fff62969-d5cf-4e57-b4a3-856c2a0b12a9" target="_blank" style="display: block; margin-top: 10px; font-size: 12px;">Verify on Credly</a>
+            </div>
         </div>
 
         <!-- Tab Content with Gradual Buttons -->
@@ -564,6 +607,15 @@
     <!-- JavaScript for Tab Navigation and Typing Effect -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+        // Lightbox function for certificate image
+        function openLightbox(src) {
+            const overlay = document.createElement('div');
+            overlay.className = 'lightbox-overlay active';
+            overlay.innerHTML = '<span class="lightbox-close">&times;</span><img src="' + src + '" alt="RHCSA Certificate">';
+            overlay.onclick = function() { document.body.removeChild(overlay); };
+            document.body.appendChild(overlay);
+        }
+
         function openTab(evt, tabName) {
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(content => content.classList.remove('active'));
@@ -604,3 +656,5 @@
     </script>
 </body>
 </html>
+
+
