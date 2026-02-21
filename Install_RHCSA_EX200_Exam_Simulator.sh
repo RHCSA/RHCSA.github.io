@@ -1,6 +1,20 @@
 #!/bin/bash
 # RHCSA EX200 Exam Simulator - One-Line Installer
-# Usage: sudo bash <(curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh)
+# Usage: curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh | sudo bash
+
+# Check if running as root - if not, re-run with sudo
+if [[ $EUID -ne 0 ]]; then
+    # Save the script to a temp file and re-execute with sudo
+    SCRIPT_TMP="/tmp/rhcsa_installer_$$.sh"
+    # Download the script again and run with sudo
+    echo "Root privileges required. Re-running with sudo..."
+    curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh -o "$SCRIPT_TMP"
+    chmod +x "$SCRIPT_TMP"
+    sudo bash "$SCRIPT_TMP"
+    rm -f "$SCRIPT_TMP"
+    exit $?
+fi
+
 clear
 set -e
 
@@ -29,16 +43,6 @@ echo -e "${YELLOW}${BOLD}╔═════════════════�
 echo -e "${YELLOW}${BOLD}║         RHCSA EX200 Exam Simulator - Installer             ║${NC}"
 echo -e "${YELLOW}${BOLD}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
-
-# Check if running as root
-if [[ $EUID -ne 0 ]]; then
-    echo -e "${RED}Error: This installer must be run as root${NC}"
-    echo ""
-    echo -e "${YELLOW}Please run:${NC}"
-    echo -e "  ${CYAN}sudo bash <(curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh)${NC}"
-    echo ""
-    exit 1
-fi
 
 # Cleanup function
 cleanup() {
@@ -72,7 +76,11 @@ if ! command -v curl &>/dev/null; then
     echo -e "        ${CYAN}Installing curl...${NC}"
     dnf install -y curl &>/dev/null || yum install -y curl &>/dev/null
 fi
-echo -e "        ${GREEN}✓${NC} Requirements satisfied"
+if ! command -v tmux &>/dev/null; then
+    echo -e "        ${CYAN}Installing tmux...${NC}"
+    dnf install -y tmux &>/dev/null || yum install -y tmux &>/dev/null
+fi
+echo -e "        ${GREEN}✓${NC} Requirements satisfied (curl, tmux)"
 
 # Step 3: Create temp directory and download files
 echo -e "  ${YELLOW}[3/5]${NC} Downloading RHCSA Exam Simulator files..."

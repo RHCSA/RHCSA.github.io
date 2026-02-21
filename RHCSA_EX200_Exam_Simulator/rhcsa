@@ -570,6 +570,15 @@ display_lab_exercise() {
     local obj_idx=$1
     local q_idx=$2
     
+    # Check if tmux is installed
+    if ! command -v tmux &>/dev/null; then
+        echo -e "${RED}Error: tmux is required but not installed.${RESET}"
+        echo -e "${YELLOW}Please install it with: sudo dnf install -y tmux${RESET}"
+        echo ""
+        read -n 1 -s -r -p "Press any key to return to menu..."
+        return 1
+    fi
+    
     # Load the lab file
     if ! load_lab_file "$obj_idx" "$q_idx"; then
         echo "Error: Could not load lab file"
@@ -601,13 +610,34 @@ LAUNCHER_EOF
     chmod +x "$launcher_script"
     
     # Create new tmux session running the lab monitor in the initial pane
-    tmux new-session -d -s "$session_name" "$launcher_script"
+    if ! tmux new-session -d -s "$session_name" "$launcher_script" 2>/dev/null; then
+        echo -e "${RED}Error: Failed to create tmux session.${RESET}"
+        echo -e "${YELLOW}Try running: tmux kill-server && tmux${RESET}"
+        rm -f "$launcher_script"
+        read -n 1 -s -r -p "Press any key to return to menu..."
+        return 1
+    fi
     
     # Wait for the session to be ready
     sleep 0.5
     
+    # Verify session exists
+    if ! tmux has-session -t "$session_name" 2>/dev/null; then
+        echo -e "${RED}Error: tmux session failed to start.${RESET}"
+        rm -f "$launcher_script"
+        read -n 1 -s -r -p "Press any key to return to menu..."
+        return 1
+    fi
+    
     # Split the window - bottom pane (40%) for user shell
-    tmux split-window -v -t "$session_name" -p 40
+    # Try with -p option first (tmux 2.0+), fallback to -l for older versions
+    if ! tmux split-window -v -t "$session_name" -p 40 2>/dev/null; then
+        # Fallback: use fixed line count instead of percentage
+        local term_lines=$(tput lines 2>/dev/null || echo 24)
+        local bottom_lines=$((term_lines * 40 / 100))
+        tmux split-window -v -t "$session_name" -l "$bottom_lines" 2>/dev/null || \
+        tmux split-window -v -t "$session_name" 2>/dev/null
+    fi
     
     # Select the bottom pane and set it up
     tmux select-pane -t "$session_name:0.1"
