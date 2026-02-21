@@ -109,7 +109,7 @@ for i in {1..10}; do
         file_count=0
         for file in $files; do
             curl -sL "${GITHUB_RAW_BASE}/questions/$i/$file" -o "$TMP_DIR/RHCSA_EX200_Exam_Simulator/questions/$i/$file" 2>/dev/null || true
-            ((file_count++))
+            file_count=$((file_count + 1))
             echo -ne "        ${CYAN}↓${NC} Chapter $i: Downloaded $file_count files...     \r"
         done
     fi
