@@ -700,7 +700,7 @@ LAUNCHER_EOF
 
     # Explicitly resize the top pane to calculated size
     resize_top_pane "$top_pane_lines"
-    
+
     # Attach to the session
     show_cursor
     CLEAR_ON_EXIT=false
@@ -734,7 +734,11 @@ run_lab_monitor() {
     
     # Setup SIGWINCH trap for instant resize detection
     setup_resize_handler
-    
+        
+    # Resize pane immediately on startup to fit content
+    local initial_pane_size=$(calculate_top_pane_lines "$task_count" "false" "")
+    resize_top_pane "$initial_pane_size"
+
     # Track terminal size for resize detection
     local current_term_width=$(tput cols)
     local current_term_height=$(tput lines)
