@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_list"
 
 QUESTION="[LAB] List contents of a tar archive and save to file"
-HINT="This lab has 1 task:\n\n1. List archive contents and save to file:\n   tar -tvzf /tmp/archive.tar.gz > /tmp/archive_contents.txt\n\nOptions:\n  -t = list (table of contents)\n  -v = verbose (shows permissions, size, date)\n  -z = gzip compressed\n  -f = file"
+HINT="Task 1: tar -tvzf /tmp/archive.tar.gz > /tmp/archive_contents.txt
+(-t = list contents)"
 
 # Lab configuration
 LAB_TITLE="List tar Archive Contents"

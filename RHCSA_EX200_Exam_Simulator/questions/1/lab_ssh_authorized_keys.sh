@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="ssh_authorized_keys"
 
 QUESTION="[LAB] Set up authorized_keys for SSH key authentication"
-HINT="This lab has 1 task:\n\n1. Add the public key to authorized_keys:\n   cat /tmp/remote_user.pub >> ~/.ssh/authorized_keys\n\nTip: authorized_keys contains public keys that can log in"
+HINT="Task 1: cat /tmp/remote_user.pub >> ~/.ssh/authorized_keys"
 
 # Lab configuration
 LAB_TITLE="Create authorized_keys File"

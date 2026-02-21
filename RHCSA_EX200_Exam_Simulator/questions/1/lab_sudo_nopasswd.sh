@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="sudo_nopasswd"
 
 QUESTION="[LAB] Configure passwordless sudo for a user"
-HINT="This lab has 1 task:\n\n1. Configure passwordless sudo for automation user:\n   visudo -f /etc/sudoers.d/automation\n   OR: visudo (to edit /etc/sudoers)\n   \n   Add:\n   automation ALL=(ALL) NOPASSWD: ALL\n\nTip: Drop-in files in /etc/sudoers.d/ or main /etc/sudoers both work\nNOPASSWD: allows sudo without password"
+HINT="Task 1: Add to /etc/sudoers.d/automation:
+automation ALL=(ALL) NOPASSWD: ALL"
 
 # Lab configuration
 LAB_TITLE="Configure Passwordless sudo"

@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="grep_extract"
 
 QUESTION="[LAB] Use grep -o to extract only the matched portion of lines"
-HINT="This lab has 1 task:\n\n1. Extract IP addresses only:\n   grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' /tmp/access.log > /tmp/ips.txt\n\nTip: -o = only matching part, not full line."
+HINT="Task 1: grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' /tmp/access.log > /tmp/ips.txt (-o shows only match)"
 
 # Lab configuration
 LAB_TITLE="Grep Extract Matched Part"

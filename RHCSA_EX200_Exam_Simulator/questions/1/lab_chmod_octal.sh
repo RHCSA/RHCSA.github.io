@@ -7,7 +7,10 @@ IS_LAB=true
 LAB_ID="chmod_octal"
 
 QUESTION="[LAB] Set file permissions using octal (numeric) notation"
-HINT="This lab has 4 tasks:\n\n1. Set rwxr-xr-x (755):\n   chmod 755 /tmp/script.sh\n   7=rwx, 5=r-x, 5=r-x\n\n2. Set rw-r--r-- (644):\n   chmod 644 /tmp/document.txt\n   6=rw-, 4=r--, 4=r--\n\n3. Set rw------- (600):\n   chmod 600 /tmp/private.txt\n   6=rw-, 0=---, 0=---\n\n4. Set rwxr-x--- (750):\n   chmod 750 /tmp/shared/\n   7=rwx, 5=r-x, 0=---\n\nTip: r=4, w=2, x=1, add them up!"
+HINT="Task 1: chmod 755 /tmp/script.sh (rwxr-xr-x)
+Task 2: chmod 644 /tmp/document.txt (rw-r--r--)
+Task 3: chmod 600 /tmp/private.txt (rw-------)
+Task 4: chmod 750 /tmp/shared/ (rwxr-x---)"
 
 # Lab configuration
 LAB_TITLE="chmod Octal Mode"

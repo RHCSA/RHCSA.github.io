@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="chmod_recursive"
 
 QUESTION="[LAB] Set different permissions for files and directories recursively"
-HINT="This lab has 3 tasks:\n\n1. Set all directories to 755:\n   find /tmp/webroot -type d -exec chmod 755 {} \\;\n\n2. Set all files to 644:\n   find /tmp/webroot -type f -exec chmod 644 {} \\;\n\n3. Remove write for others recursively:\n   chmod -R o-w /tmp/webroot/\n\nTip: Use find with -type d for directories, -type f for files"
+HINT="Task 1: find /tmp/webroot -type d -exec chmod 755 {} \\;
+Task 2: find /tmp/webroot -type f -exec chmod 644 {} \\;
+Task 3: chmod -R o-w /tmp/webroot/"
 
 # Lab configuration
 LAB_TITLE="Recursive chmod"

@@ -7,7 +7,12 @@ IS_LAB=true
 LAB_ID="sshd_config"
 
 QUESTION="[LAB] Modify SSH daemon configuration with security settings"
-HINT="This lab has 5 tasks:\n\n1. Allow root login:\n   PermitRootLogin yes\n\n2. Restrict SSH access to specific users:\n   AllowUsers root admin developer\n\n3. Limit authentication attempts:\n   MaxAuthTries 3\n\n4. Disable X11 forwarding:\n   X11Forwarding no\n\n5. Disable empty passwords:\n   PermitEmptyPasswords no\n\nEdit /etc/ssh/sshd_config with vi/vim/nano\nAfter changes: systemctl reload sshd\nValidate syntax: sshd -t"
+HINT="Task 1: PermitRootLogin yes (in /etc/ssh/sshd_config)
+Task 2: AllowUsers root admin developer
+Task 3: MaxAuthTries 3
+Task 4: X11Forwarding no
+Task 5: PermitEmptyPasswords no
+After editing: systemctl reload sshd"
 
 # Lab configuration
 LAB_TITLE="SSH Daemon Configuration"

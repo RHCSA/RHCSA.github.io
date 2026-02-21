@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="su_login_shell"
 
 QUESTION="[LAB] Switch to another user with full login environment"
-HINT="This lab has 1 task:\n\n1. Switch to devuser with login shell and create a file:\n   su - devuser\n   touch ~/i_was_here.txt\n   exit\n\nTip: su - (with dash) loads full environment\nChanges to user's home directory"
+HINT="Task 1: su - devuser, then touch ~/i_was_here.txt, then exit
+(su - loads full login shell environment)"
 
 # Lab configuration
 LAB_TITLE="Switch User with Login Shell"

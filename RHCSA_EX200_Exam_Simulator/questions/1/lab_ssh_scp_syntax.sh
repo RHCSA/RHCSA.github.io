@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="ssh_scp_transfer"
 
 QUESTION="[LAB] File transfer to/from a server using SCP"
-HINT="This lab has 2 tasks:\n\n1. Upload file to remote server:\n   scp /tmp/upload_test.txt root@127.0.0.1:/tmp/uploaded.txt\n\n2. Download file from remote server:\n   scp root@127.0.0.1:/tmp/remote_file.txt /tmp/downloaded.txt\n\nTip: scp source destination\nUpload: local remote | Download: remote local"
+HINT="Task 1: scp /tmp/upload_test.txt root@127.0.0.1:/tmp/uploaded.txt
+Task 2: scp root@127.0.0.1:/tmp/remote_file.txt /tmp/downloaded.txt"
 
 # Lab configuration
 LAB_TITLE="File Transfer Using SCP"

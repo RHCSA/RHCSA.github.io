@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="grep_security_audit"
 
 QUESTION="[LAB] Find HTTP links that are NOT using HTTPS (security audit)"
-HINT="This lab has 1 task:\n\n1. Find non-HTTPS URLs:\n   grep 'http[^s]' /tmp/config-files/*.conf > /tmp/insecure-urls.txt\n\nExplanation: [^s] means 'not followed by s'\nSo http[^s] matches 'http:' but NOT 'https:'"
+HINT="Task 1: grep 'http[^s]' /tmp/config-files/*.conf > /tmp/insecure-urls.txt\n([^s] matches 'http:' but not 'https:')"
 
 # Lab configuration
 LAB_TITLE="Find Non-HTTPS URLs (Security Audit)"

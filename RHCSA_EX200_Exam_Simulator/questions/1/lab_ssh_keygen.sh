@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="ssh_keygen"
 
 QUESTION="[LAB] Generate SSH key pairs using ssh-keygen"
-HINT="This lab has 2 tasks:\n\n1. Generate Ed25519 key with custom name:\n   ssh-keygen -t ed25519 -f ~/.ssh/exam_key -C 'RHCSA Exam Key'\n\n2. Generate RSA 4096-bit key:\n   ssh-keygen -t rsa -b 4096 -f ~/.ssh/backup_key \n\nTip: -N '' = no passphrase, -C = comment, -f = filename"
+HINT="Task 1: ssh-keygen -t ed25519 -f ~/.ssh/exam_key -C 'RHCSA Exam Key'
+Task 2: ssh-keygen -t rsa -b 4096 -f ~/.ssh/backup_key"
 
 # Lab configuration
 LAB_TITLE="Generate SSH Key Pairs"

@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="output_redirection"
 
 QUESTION="[LAB] Practice output redirection: create files using > and >> operators"
-HINT="This lab has 3 tasks:\n\n1. Create file with 'Hello World':\n   echo 'Hello World' > /tmp/myfile.txt\n\n2. Append 'Second Line':\n   echo 'Second Line' >> /tmp/myfile.txt\n\n3. Append 'Third Line':\n   echo 'Third Line' >> /tmp/myfile.txt\n\nTip: > = overwrite, >> = append."
+HINT="Task 1: echo 'Hello World' > /tmp/myfile.txt
+Task 2: echo 'Second Line' >> /tmp/myfile.txt
+Task 3: echo 'Third Line' >> /tmp/myfile.txt"
 
 # Lab configuration
 LAB_TITLE="Output Redirection (> and >>)"

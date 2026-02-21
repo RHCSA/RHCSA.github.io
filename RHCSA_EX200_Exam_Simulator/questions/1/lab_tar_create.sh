@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_create"
 
 QUESTION="[LAB] Create an uncompressed tar archive"
-HINT="This lab has 1 task:\n\n1. Create tar archive of /etc/sysconfig/:\n   tar -cvf /tmp/backup.tar /etc/sysconfig/\n\nOptions:\n  -c = create\n  -v = verbose\n  -f = file (archive name)"
+HINT="Task 1: tar -cvf /tmp/backup.tar /etc/sysconfig/
+(-c = create, -v = verbose, -f = file)"
 
 # Lab configuration
 LAB_TITLE="Create tar Archive"

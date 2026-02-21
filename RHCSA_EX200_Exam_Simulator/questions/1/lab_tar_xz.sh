@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_xz"
 
 QUESTION="[LAB] Create an xz compressed tar archive"
-HINT="This lab has 1 task:\n\n1. Create xz compressed archive:\n   tar -cvJf /tmp/config_backup.tar.xz /etc/ssh /etc/pam.d\n\nOptions:\n  -c = create\n  -v = verbose\n  -J = xz compression (uppercase J)\n  -f = file\n\nNote: xz has best compression but is slowest"
+HINT="Task 1: tar -cvJf /tmp/config_backup.tar.xz /etc/ssh /etc/pam.d
+(-J = xz compression)"
 
 # Lab configuration
 LAB_TITLE="Create xz Compressed Archive"

@@ -395,17 +395,37 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <h1 style="text-align: center;">RHCSA (EX200) Exam Preparation Full Course<br><span style="font-size: 0.7em;">+ FREE RHCSA Exam Simulator & Hands-on Practice Labs</span></h1>
+        <h1 style="text-align: center;">RHCSA (EX200) Exam Preparation Full Course<br><span style="font-size: 0.7em;">+ FREE Exam Simulator & Mock Exam & Hands-on Labs</span></h1>
         <!-- Tab Content with Gradual Buttons -->
         <div id="Introduction" class="tab-content">
-            <h4>Everything You Need to Pass the RHCSA EX200 Exam<br><span style="font-weight: normal;">and become a Red Hat CERTIFIED SYSTEM ADMINISTRATOR</span></h4>
+            <h3>Everything You Need to Pass the RHCSA EX200 Exam</h3>
             
-            <p><strong>Install RHCSA Exam Simulator</strong> (on a CentOS Stream 10 VM):</p>
+            <p>On the right menu, you'll find all <strong>updated exam topics based on RHEL 10</strong>, fully explained with practice questions and answers. You can also install the <strong>FREE Exam Simulator</strong> below.</p>
+            
+            <hr style="border: 1px solid #444; margin: 20px 0;">
+            
+            <p><strong>Install RHCSA Exam Simulator</strong> (tested on CentOS Stream 10):</p>
             <p>VM Requirements: 20GB for / + 4 additional 5GB disks, 2 NICs (Bridge mode)</p>
             
-            <div style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
-                <pre style="background: #1e1e1e; color: #dcdcdc; padding: 15px; border-radius: 5px; margin: 0; flex-grow: 1; overflow-x: auto;"><code id="install-cmd">curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh | sudo bash</code></pre>
-                <button onclick="copyToClipboard()" style="background: #cc0000; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; white-space: nowrap;">📋 Copy</button>
+            <div style="display: flex; align-items: center; gap: 15px; margin: 15px 0;">
+                <pre style="background: #1e1e1e; color: #dcdcdc; padding: 15px; border-radius: 5px; margin: 0; flex-grow: 1; white-space: nowrap; overflow-x: auto;"><code id="install-cmd">curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh | sudo bash</code></pre>
+                <button onclick="copyToClipboard()" style="background: #cc0000; color: white; border: none; padding: 15px 25px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 16px; font-weight: bold;">📋 Copy</button>
+            </div>
+            
+            <hr style="border: 1px solid #444; margin: 20px 0;">
+            
+            <div style="display: flex; gap: 30px; margin-top: 20px;">
+                <!-- Left column - Donate -->
+                <div style="flex: 1; text-align: center;">
+                    <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/DonateQRCode.png?raw=true" alt="Donate QR Code" style="max-width: 200px; border-radius: 5px;">
+                    <br>
+                    <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/DonateLogo.png?raw=true" alt="Donate" style="max-width: 200px; margin-top: 10px;">
+                </div>
+                <!-- Right column - Certificate -->
+                <div style="flex: 1; text-align: center;">
+                    <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/Red_Hat_Certified_System_Administrator_RHCSA.jpg?raw=true" alt="RHCSA Certificate" style="max-width: 200px; cursor: pointer; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); border-radius: 5px;" onclick="openLightbox(this.src)">
+                    <p style="margin-top: 10px; font-weight: bold; color: #ffc107;">Official RHCSA Certificate</p>
+                </div>
             </div>
         </div>
 
@@ -609,7 +629,7 @@
             const cmd = document.getElementById('install-cmd').textContent;
             navigator.clipboard.writeText(cmd).then(function() {
                 const btn = event.target;
-                btn.textContent = '✓ Copied!';
+                btn.textContent = '✓ Copied to clipboard!';
                 setTimeout(function() { btn.textContent = '📋 Copy'; }, 2000);
             });
         }

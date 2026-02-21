@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="bzip2_compress"
 
 QUESTION="[LAB] Compress a file using bzip2 with maximum compression"
-HINT="This lab has 1 task:\n\n1. Compress with maximum compression:\n   bzip2 -9 /tmp/largefile.txt\n\nOptions:\n  -9 = maximum compression (slowest)\n  -1 = fastest compression\n  Default is -9 for bzip2\n\nResult: Creates largefile.txt.bz2"
+HINT="Task 1: bzip2 -9 /tmp/largefile.txt
+(-9 = maximum compression)"
 
 # Lab configuration
 LAB_TITLE="bzip2 Maximum Compression"

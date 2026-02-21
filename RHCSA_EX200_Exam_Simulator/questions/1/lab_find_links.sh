@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="find_links"
 
 QUESTION="[LAB] Use find command to locate symbolic and hard links"
-HINT="This lab has 2 tasks:\n\n1. Find all symbolic links:\n   find /tmp/linktest -type l > /tmp/symlinks.txt\n   -type l = symbolic links\n\n2. Find broken (dangling) symbolic links:\n   find /tmp/linktest -xtype l > /tmp/broken_links.txt\n   -xtype l = broken symlinks\n\nTip: ls -l shows symlinks with '->' arrow"
+HINT="Task 1: find /tmp/linktest -type l > /tmp/symlinks.txt
+Task 2: find /tmp/linktest -xtype l > /tmp/broken_links.txt"
 
 # Lab configuration
 LAB_TITLE="Find Links"

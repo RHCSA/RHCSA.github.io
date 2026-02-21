@@ -8,7 +8,7 @@ LAB_ID="directory_backup"
 
 QUESTION="[LAB] Create a nested directory structure, a dated backup file with system info, and multiple files"
 ANSWER="Use: mkdir -p, touch with date, hostnamectl redirection, and brace expansion"
-HINT="This lab has 4 tasks:\n\n1. Create nested directories: Use 'mkdir -p /tmp/dir1/dir2/dir3/dir4/dir5' to create all directories at once.\n\n2. Create dated file in dir5: Use command substitution with spaces in filename:\n   touch \"/tmp/dir1/dir2/dir3/dir4/dir5/my backup $(date +%Y-%m-%d).log\"\n\n3. Add hostnamectl output: Redirect the command output to the file:\n   hostnamectl > \"/tmp/dir1/dir2/dir3/dir4/dir5/my backup $(date +%Y-%m-%d).log\"\n\n4. Create files in dir4: Use brace expansion:\n   touch /tmp/dir1/dir2/dir3/dir4/file{1,2,3,4,5}\n\nTip: Remember to quote filenames with spaces!"
+HINT="Task 1: mkdir -p /tmp/dir1/dir2/dir3/dir4/dir5\nTask 2: touch \"/tmp/dir1/dir2/dir3/dir4/dir5/my backup $(date +%Y-%m-%d).log\"\nTask 3: hostnamectl > \"/tmp/dir1/dir2/dir3/dir4/dir5/my backup $(date +%Y-%m-%d).log\"\nTask 4: touch /tmp/dir1/dir2/dir3/dir4/file{1,2,3,4,5}"
 
 # Lab configuration
 LAB_TITLE="Directory Structure and Backup File"

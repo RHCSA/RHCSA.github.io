@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="sudo_limited"
 
 QUESTION="[LAB] Grant limited sudo access to a user"
-HINT="This lab has 1 task:\n\n1. Configure limited sudo for webdev user:\n   visudo -f /etc/sudoers.d/webdev\n   OR: visudo (to edit /etc/sudoers)\n   \n   Add:\n   webdev ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart httpd, PASSWD: /bin/kill\n\nTip: NOPASSWD: = no password, PASSWD: = requires password\nYou can mix both in one line"
+HINT="Task 1: Add to /etc/sudoers.d/webdev:
+webdev ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart httpd, PASSWD: /bin/kill"
 
 # Lab configuration
 LAB_TITLE="Grant Limited sudo Access"

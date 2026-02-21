@@ -7,7 +7,10 @@ IS_LAB=true
 LAB_ID="link_survival"
 
 QUESTION="[LAB] Understand link behavior when original file is deleted"
-HINT="This lab has 4 tasks:\n\n1. Create original file with content:\n   echo 'important data' > /tmp/source.txt\n\n2. Create hard link:\n   ln /tmp/source.txt /tmp/hard.txt\n\n3. Create soft link:\n   ln -s /tmp/source.txt /tmp/soft.txt\n\n4. Delete original and verify which link still works:\n   rm /tmp/source.txt\n   cat /tmp/hard.txt    # Works! (shares inode)\n   cat /tmp/soft.txt    # Fails! (dangling link)\n   Save 'hard' or 'soft' to /tmp/surviving_link.txt\n\nTip: Hard links survive because they point to inode, not filename"
+HINT="Task 1: echo 'important data' > /tmp/source.txt
+Task 2: ln /tmp/source.txt /tmp/hard.txt
+Task 3: ln -s /tmp/source.txt /tmp/soft.txt
+Task 4: rm /tmp/source.txt, test which link works, save 'hard' or 'soft' to /tmp/surviving_link.txt"
 
 # Lab configuration
 LAB_TITLE="Link Survival Test"

@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="verify_user_identity"
 
 QUESTION="[LAB] Verify user identity and group memberships"
-HINT="This lab has 2 tasks:\n\n1. Get user ID info and save to file:\n   id sysadmin > /tmp/sysadmin_id.txt\n\n2. Get group memberships and save to file:\n   groups sysadmin > /tmp/sysadmin_groups.txt\n\nTip: id shows UID, GID and all groups\ngroups shows group names only"
+HINT="Task 1: id sysadmin > /tmp/sysadmin_id.txt
+Task 2: groups sysadmin > /tmp/sysadmin_groups.txt"
 
 # Lab configuration
 LAB_TITLE="Verify User Identity and Groups"

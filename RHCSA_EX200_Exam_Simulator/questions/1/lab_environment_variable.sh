@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="environment_variable"
 
 QUESTION="[LAB] Create a persistent environment variable COMPANY with value 'RedHat' for all users"
-HINT="This lab has 1 task:\n\nSet COMPANY=RedHat persistently for all users:\n\nOption 1 (recommended):\n   echo 'export COMPANY=RedHat' > /etc/profile.d/company.sh\n\nOption 2:\n   echo 'export COMPANY=RedHat' >> /etc/profile\n\nOption 3:\n   echo 'COMPANY=RedHat' >> /etc/environment\n\nTip: /etc/profile.d/*.sh is the cleanest method."
+HINT="Task 1: echo 'export COMPANY=RedHat' > /etc/profile.d/company.sh
+(Alternative: echo 'COMPANY=RedHat' >> /etc/environment)"
 
 # Lab configuration
 LAB_TITLE="Set Environment Variable"

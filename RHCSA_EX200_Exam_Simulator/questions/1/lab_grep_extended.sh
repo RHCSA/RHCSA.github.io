@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="grep_extended"
 
 QUESTION="[LAB] Use grep -E (extended regex) for advanced pattern matching"
-HINT="This lab has 3 tasks:\n\n1. Find error/warning/critical (case-insensitive):\n   grep -iE 'error|warning|critical' /tmp/app.log > /tmp/issues.txt\n\n2. Find lines with 2+ consecutive 'o':\n   grep 'oo' /tmp/words.txt > /tmp/double-o.txt\n   OR: grep -E 'o{2,}' /tmp/words.txt > /tmp/double-o.txt\n\n3. Remove comments and empty lines:\n   grep -Ev '^#|^$' /tmp/server.conf > /tmp/clean-config.txt\n\nTip: | = OR, {2,} = 2 or more, -v = invert."
+HINT="Task 1: grep -iE 'error|warning|critical' /tmp/app.log > /tmp/issues.txt
+Task 2: grep -E 'o{2,}' /tmp/words.txt > /tmp/double-o.txt (or grep 'oo')
+Task 3: grep -Ev '^#|^$' /tmp/server.conf > /tmp/clean-config.txt"
 
 # Lab configuration
 LAB_TITLE="Grep Extended Regex (ERE)"

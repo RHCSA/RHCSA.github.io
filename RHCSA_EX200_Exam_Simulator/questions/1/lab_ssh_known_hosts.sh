@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="ssh_known_hosts"
 
 QUESTION="[LAB] Remove a host from ~/.ssh/known_hosts"
-HINT="This lab has 1 task:\n\n1. Remove server5.example.com from known_hosts:\n   ssh-keygen -R server5.example.com\n\nTip: -R removes all keys belonging to hostname\nUseful when server is rebuilt and has new host key"
+HINT="Task 1: ssh-keygen -R server5.example.com (-R removes all keys for that hostname)"
 
 # Lab configuration
 LAB_TITLE="Remove Host from known_hosts"

@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_extract"
 
 QUESTION="[LAB] Extract a tar archive to a specific directory"
-HINT="This lab has 2 tasks:\n\n1. Create destination directory:\n   mkdir -p /tmp/restore\n\n2. Extract archive to specific directory:\n   tar -xvzf /tmp/test_archive.tar.gz -C /tmp/restore\n\nOptions:\n  -x = extract\n  -v = verbose\n  -z = gzip\n  -f = file\n  -C = change to directory before extracting"
+HINT="Task 1: mkdir -p /tmp/restore
+Task 2: tar -xvzf /tmp/test_archive.tar.gz -C /tmp/restore"
 
 # Lab configuration
 LAB_TITLE="Extract tar Archive"

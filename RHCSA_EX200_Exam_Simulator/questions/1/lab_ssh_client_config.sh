@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="ssh_client_config"
 
 QUESTION="[LAB] Create SSH client configuration file"
-HINT="This lab has 1 task:\n\n1. Create ~/.ssh/config with host entry:\n   vi ~/.ssh/config\n   \n   Add:\n   Host labserver\n       HostName 192.168.1.100\n       User admin\n       Port 2222\n   \n   chmod 600 ~/.ssh/config\n\nTip: Indentation uses spaces, Host is the alias"
+HINT="Task 1: Create ~/.ssh/config with:
+  Host labserver\n    HostName 192.168.1.100\n    User admin\n    Port 2222
+Then: chmod 600 ~/.ssh/config"
 
 # Lab configuration
 LAB_TITLE="Configure SSH Client Config"

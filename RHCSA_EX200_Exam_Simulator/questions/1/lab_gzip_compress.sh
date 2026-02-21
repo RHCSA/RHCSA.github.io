@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="gzip_compress"
 
 QUESTION="[LAB] Compress a file using gzip while keeping the original"
-HINT="This lab has 1 task:\n\n1. Compress file keeping original:\n   gzip -k /tmp/testfile.txt\n\nAlternative using stdout:\n   gzip -c /tmp/testfile.txt > /tmp/testfile.txt.gz\n\nOptions:\n  -k = keep original file\n  -c = write to stdout"
+HINT="Task 1: gzip -k /tmp/testfile.txt
+(Alternative: gzip -c /tmp/testfile.txt > /tmp/testfile.txt.gz)"
 
 # Lab configuration
 LAB_TITLE="gzip Compression"

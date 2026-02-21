@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="cut_command"
 
 QUESTION="[LAB] Use cut to extract specific fields from text"
-HINT="The cut command extracts sections from each line:\n\n- Use -d to specify delimiter (colon : for /etc/passwd)\n- Use -f to specify field number\n- /etc/passwd fields: user:pass:uid:gid:comment:home:shell\n- Home directory is field 6\n\nExample: cat /etc/passwd | cut -d\":\" -f 6 > /tmp/home.txt"
+HINT="Task 1: cat /etc/passwd | cut -d':' -f 6 > /tmp/home.txt
+(-d = delimiter, -f = field number, field 6 = home directory)"
 
 # Lab configuration
 LAB_TITLE="Cut Command - Extract Fields"

@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="sudo_wheel_group"
 
 QUESTION="[LAB] Add user to wheel group for sudo access"
-HINT="This lab has 1 task:\n\n1. Add labuser to wheel group:\n   usermod -aG wheel labuser\n\nTip: -a = append, -G = supplementary group\nwheel group members can use sudo"
+HINT="Task 1: usermod -aG wheel labuser (-a append, -G supplementary group)"
 
 # Lab configuration
 LAB_TITLE="Add User to wheel Group"

@@ -7,7 +7,10 @@ IS_LAB=true
 LAB_ID="chmod_symbolic"
 
 QUESTION="[LAB] Set file permissions using symbolic notation (ugo+rwx)"
-HINT="This lab has 4 tasks:\n\n1. Add execute for user:\n   chmod u+x /tmp/app.sh\n\n2. Remove write for group and others:\n   chmod go-w /tmp/config.txt\n\n3. Set exact permissions (user=rw, group=r, others=none):\n   chmod u=rw,g=r,o= /tmp/data.txt\n\n4. Add read for all:\n   chmod a+r /tmp/readme.txt\n   Or: chmod +r /tmp/readme.txt\n\nSymbols: u=user, g=group, o=others, a=all\nOperators: +=add, -=remove, ==set exact"
+HINT="Task 1: chmod u+x /tmp/app.sh
+Task 2: chmod go-w /tmp/config.txt
+Task 3: chmod u=rw,g=r,o= /tmp/data.txt
+Task 4: chmod a+r /tmp/readme.txt"
 
 # Lab configuration
 LAB_TITLE="chmod Symbolic Mode"

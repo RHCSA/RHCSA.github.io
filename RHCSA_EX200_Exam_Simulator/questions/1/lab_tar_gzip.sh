@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_gzip"
 
 QUESTION="[LAB] Create a gzip compressed tar archive"
-HINT="This lab has 1 task:\n\n1. Create gzip compressed archive:\n   tar -cvzf /tmp/logs.tar.gz '/var/log/*.log'\n\nOptions:\n  -c = create\n  -v = verbose\n  -z = gzip compression\n  -f = file (archive name)"
+HINT="Task 1: tar -cvzf /tmp/logs.tar.gz '/var/log/*.log'
+(-z = gzip compression)"
 
 # Lab configuration
 LAB_TITLE="Create gzip Compressed Archive"

@@ -8,7 +8,8 @@ LAB_ID="hostname"
 
 QUESTION="[LAB] Set the system hostname to server1.rhcsa.github.io"
 ANSWER="Use: hostnamectl set-hostname server1.rhcsa.github.io"
-HINT="This lab has two tasks:\n\n1. Set hostname: Use 'hostnamectl set-hostname server1.rhcsa.github.io' to set the hostname persistently.\n\n2. Update /etc/hosts: Edit the file with 'sudo vi /etc/hosts' or 'sudo nano /etc/hosts' and add a line like:\n   127.0.0.1   server1.rhcsa.github.io server1\n\nTip: After setting hostname, verify with 'hostname' or 'hostnamectl status'.\nThe /etc/hosts entry helps with local name resolution."
+HINT="Task 1: hostnamectl set-hostname server1.rhcsa.github.io
+Task 2: Add '127.0.0.1   server1.rhcsa.github.io server1' to /etc/hosts"
 
 # Lab configuration
 LAB_TITLE="Hostname Configuration"

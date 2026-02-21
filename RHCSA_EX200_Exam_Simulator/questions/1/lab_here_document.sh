@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="here_document"
 
 QUESTION="[LAB] Create a configuration file using a here document with variables"
-HINT="This lab has 2 tasks:\n\n1. Create /tmp/app.conf with here document:\n   cat << EOF > /tmp/app.conf\n   hostname=$(hostname)\n   user=$(whoami)\n   EOF\n\n2. File must contain actual hostname and username\n\nTip: Variables inside << EOF are expanded."
+HINT="Task 1: cat << EOF > /tmp/app.conf\nhostname=$(hostname)\nuser=$(whoami)\nEOF
+Task 2: Variables are expanded (actual hostname/username in output)"
 
 # Lab configuration
 LAB_TITLE="Here Document (<<)"

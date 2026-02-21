@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="gzip_decompress"
 
 QUESTION="[LAB] Decompress a gzip file"
-HINT="This lab has 1 task:\n\n1. Decompress gzip file:\n   gunzip /tmp/data.gz\n\nAlternative:\n   gzip -d /tmp/data.gz\n\nNote: gunzip and gzip -d are equivalent\nThe .gz file is replaced with the uncompressed file"
+HINT="Task 1: gunzip /tmp/data.gz
+(or gzip -d /tmp/data.gz)"
 
 # Lab configuration
 LAB_TITLE="gzip Decompression"

@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="ssh_permissions"
 
 QUESTION="[LAB] Fix SSH directory and file permissions"
-HINT="This lab has 3 tasks:\n\n1. Fix .ssh directory permissions:\n   chmod 700 /tmp/sshtest/.ssh\n\n2. Fix private key permissions:\n   chmod 600 /tmp/sshtest/.ssh/id_rsa\n\n3. Fix authorized_keys permissions:\n   chmod 600 /tmp/sshtest/.ssh/authorized_keys\n\nTip: .ssh=700, private key=600, authorized_keys=600"
+HINT="Task 1: chmod 700 /tmp/sshtest/.ssh
+Task 2: chmod 600 /tmp/sshtest/.ssh/id_rsa
+Task 3: chmod 600 /tmp/sshtest/.ssh/authorized_keys"
 
 # Lab configuration
 LAB_TITLE="Fix SSH Directory Permissions"

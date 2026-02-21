@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="list_targets"
 
 QUESTION="[LAB] Write a list of all systemd targets to a file"
-HINT="This lab has 1 task:\n\n1. List all targets and save to file:\n   systemctl list-units --type=target > /tmp/all-targets.txt\n\nAlternative:\n   systemctl list-units -t target > /tmp/all-targets.txt"
+HINT="Task 1: systemctl list-units --type=target > /tmp/all-targets.txt
+(or use -t target)"
 
 # Lab configuration
 LAB_TITLE="List Systemd Targets"

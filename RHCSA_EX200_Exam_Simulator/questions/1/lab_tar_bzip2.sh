@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_bzip2"
 
 QUESTION="[LAB] Create a bzip2 compressed tar archive"
-HINT="This lab has 1 task:\n\n1. Create bzip2 compressed archive:\n   tar -cvjf /tmp/etc_backup.tar.bz2 /etc/ssh\n\nOptions:\n  -c = create\n  -v = verbose\n  -j = bzip2 compression\n  -f = file (archive name)\n\nNote: bzip2 has better compression than gzip but is slower"
+HINT="Task 1: tar -cvjf /tmp/etc_backup.tar.bz2 /etc/ssh
+(-j = bzip2 compression)"
 
 # Lab configuration
 LAB_TITLE="Create bzip2 Compressed Archive"

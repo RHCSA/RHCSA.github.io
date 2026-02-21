@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="zcat_bzcat"
 
 QUESTION="[LAB] View compressed file contents without decompressing"
-HINT="This lab has 2 tasks:\n\n1. View gzip file and save output:\n   zcat /tmp/readme.gz > /tmp/readme_content.txt\n   OR: gunzip -c /tmp/readme.gz > /tmp/readme_content.txt\n\n2. View bzip2 file and save output:\n   bzcat /tmp/notes.bz2 > /tmp/notes_content.txt\n   OR: bunzip2 -c /tmp/notes.bz2 > /tmp/notes_content.txt\n\nNote: zcat/bzcat output to stdout without modifying original file"
+HINT="Task 1: zcat /tmp/readme.gz > /tmp/readme_content.txt
+Task 2: bzcat /tmp/notes.bz2 > /tmp/notes_content.txt"
 
 # Lab configuration
 LAB_TITLE="View Compressed Files"

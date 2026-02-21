@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="grep_recursive"
 
 QUESTION="[LAB] Use grep -r to search recursively in directories"
-HINT="This lab has 2 tasks:\n\n1. Find all TODO lines recursively:\n   grep -r 'TODO' /tmp/project/ > /tmp/todos.txt\n\n2. List only filenames with FIXME:\n   grep -rl 'FIXME' /tmp/project/ > /tmp/fixme-files.txt\n\nTip: -r = recursive, -l = filenames only."
+HINT="Task 1: grep -r 'TODO' /tmp/project/ > /tmp/todos.txt
+Task 2: grep -rl 'FIXME' /tmp/project/ > /tmp/fixme-files.txt"
 
 # Lab configuration
 LAB_TITLE="Grep Recursive Search"

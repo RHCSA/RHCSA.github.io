@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="grep_options"
 
 QUESTION="[LAB] Use grep with -i (case-insensitive) and -n (line numbers)"
-HINT="This lab has 2 tasks:\n\n1. Find 'error' case-insensitive:\n   grep -i 'error' /tmp/system.log > /tmp/all-errors.txt\n\n2. Find 'Failed' with line numbers:\n   grep -n 'Failed' /tmp/auth.log > /tmp/failed-lines.txt\n\nTip: -i = ignore case, -n = line numbers."
+HINT="Task 1: grep -i 'error' /tmp/system.log > /tmp/all-errors.txt
+Task 2: grep -n 'Failed' /tmp/auth.log > /tmp/failed-lines.txt"
 
 # Lab configuration
 LAB_TITLE="Grep Options: Case and Line Numbers"

@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="grep_context"
 
 QUESTION="[LAB] Use grep -A, -B, -C to show context around matches"
-HINT="This lab has 2 tasks:\n\n1. Find ERROR with 2 lines after:\n   grep -A 2 'ERROR' /tmp/application.log > /tmp/error-context.txt\n\n2. Find WARNING with 1 line before and after:\n   grep -C 1 'WARNING' /tmp/application.log > /tmp/warning-context.txt\n\nTip: -A = After, -B = Before, -C = Context (both)."
+HINT="Task 1: grep -A 2 'ERROR' /tmp/application.log > /tmp/error-context.txt
+Task 2: grep -C 1 'WARNING' /tmp/application.log > /tmp/warning-context.txt"
 
 # Lab configuration
 LAB_TITLE="Grep Context Lines"

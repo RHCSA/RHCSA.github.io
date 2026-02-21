@@ -7,7 +7,11 @@ IS_LAB=true
 LAB_ID="archive_comprehensive"
 
 QUESTION="[LAB] Perform multiple archive and compression operations"
-HINT="This lab has 5 tasks:\n\n1. Create uncompressed tar:\n   tar -cvf /tmp/backup1.tar /etc/hosts /etc/hostname\n\n2. Create gzip compressed tar:\n   tar -cvzf /tmp/backup2.tar.gz /etc/passwd /etc/group\n\n3. Create bzip2 compressed tar:\n   tar -cvjf /tmp/backup3.tar.bz2 /etc/ssh\n\n4. Extract to specific directory:\n   mkdir -p /tmp/extracted\n   tar -xvzf /tmp/backup2.tar.gz -C /tmp/extracted\n\n5. Compress single file:\n   gzip -k /etc/services -c > /tmp/services.gz"
+HINT="Task 1: tar -cvf /tmp/backup1.tar /etc/hosts /etc/hostname
+Task 2: tar -cvzf /tmp/backup2.tar.gz /etc/passwd /etc/group
+Task 3: tar -cvjf /tmp/backup3.tar.bz2 /etc/ssh
+Task 4: mkdir -p /tmp/extracted && tar -xvzf /tmp/backup2.tar.gz -C /tmp/extracted
+Task 5: gzip -k /etc/services -c > /tmp/services.gz"
 
 # Lab configuration
 LAB_TITLE="Comprehensive Archive Operations"

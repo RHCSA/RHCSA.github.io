@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="grep_character_class"
 
 QUESTION="[LAB] Use grep with character classes and POSIX classes"
-HINT="This lab has 3 tasks:\n\n1. Find lines with any digit:\n   grep '[0-9]' /tmp/mixed.txt > /tmp/has-digits.txt\n\n2. Find lines starting with uppercase:\n   grep '^[A-Z]' /tmp/mixed.txt > /tmp/uppercase-start.txt\n\n3. Find lines with ONLY digits:\n   grep -E '^[0-9]+$' /tmp/numbers.txt > /tmp/digits-only.txt\n\nTip: [0-9] = any digit, ^[A-Z] = starts with uppercase."
+HINT="Task 1: grep '[0-9]' /tmp/mixed.txt > /tmp/has-digits.txt
+Task 2: grep '^[A-Z]' /tmp/mixed.txt > /tmp/uppercase-start.txt
+Task 3: grep -E '^[0-9]+$' /tmp/numbers.txt > /tmp/digits-only.txt"
 
 # Lab configuration
 LAB_TITLE="Grep Character Classes"

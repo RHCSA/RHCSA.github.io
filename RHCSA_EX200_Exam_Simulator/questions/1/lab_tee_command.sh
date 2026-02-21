@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tee_command"
 
 QUESTION="[LAB] Use tee to save command output to a file while displaying it"
-HINT="This lab has 2 tasks:\n\n1. Save disk usage to file (and display):\n   df -h | tee /tmp/disk-usage.txt\n\n2. Append memory info to same file:\n   free -m | tee -a /tmp/disk-usage.txt\n\nTip: tee = write to file AND screen, -a = append."
+HINT="Task 1: df -h | tee /tmp/disk-usage.txt
+Task 2: free -m | tee -a /tmp/disk-usage.txt (-a = append)"
 
 # Lab configuration
 LAB_TITLE="Tee Command"

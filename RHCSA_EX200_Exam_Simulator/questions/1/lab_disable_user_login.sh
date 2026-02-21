@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="disable_user_login"
 
 QUESTION="[LAB] Disable login for a user account"
-HINT="This lab has 1 task:\n\n1. Set user's shell to nologin:\n   usermod -s /sbin/nologin testuser\n\nTip: /sbin/nologin prevents interactive login\nUser can still own files and run services"
+HINT="Task 1: usermod -s /sbin/nologin testuser (prevents interactive login)"
 
 # Lab configuration
 LAB_TITLE="Disable User Login"

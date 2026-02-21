@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="path_variable"
 
 QUESTION="[LAB] Add /opt/custom/bin to the PATH variable persistently for all users"
-HINT="This lab has 2 tasks:\n\n1. Create the directory:\n   mkdir -p /opt/custom/bin\n\n2. Add to PATH for all users:\n   echo 'export PATH=\$PATH:/opt/custom/bin' >> /etc/profile\n\nTip: Use >> to append, not > which overwrites!"
+HINT="Task 1: mkdir -p /opt/custom/bin
+Task 2: echo 'export PATH=\$PATH:/opt/custom/bin' >> /etc/profile"
 
 # Lab configuration
 LAB_TITLE="Modify PATH Variable"

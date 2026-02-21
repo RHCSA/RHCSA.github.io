@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="soft_links"
 
 QUESTION="[LAB] Create symbolic links to files and directories"
-HINT="This lab has 3 tasks:\n\n1. Create symlink to file:\n   ln -s /etc/passwd /tmp/passwd_link\n   -s = symbolic (soft) link\n\n2. Create symlink to directory:\n   ln -s /var/log /tmp/logs\n   Symlinks can point to directories\n\n3. Verify symlink target:\n   readlink /tmp/passwd_link > /tmp/link_target.txt\n\nTip: ls -l shows symlinks with '->' arrow"
+HINT="Task 1: ln -s /etc/passwd /tmp/passwd_link
+Task 2: ln -s /var/log /tmp/logs
+Task 3: readlink /tmp/passwd_link > /tmp/link_target.txt"
 
 # Lab configuration
 LAB_TITLE="Symbolic Links"

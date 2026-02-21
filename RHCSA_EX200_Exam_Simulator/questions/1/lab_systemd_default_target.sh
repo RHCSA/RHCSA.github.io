@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="systemd_default_target"
 
 QUESTION="[LAB] Set the default systemd boot target"
-HINT="This lab has 1 task:\n\n1. Set default target to multi-user:\n   systemctl set-default multi-user.target\n\nTip: multi-user.target = text mode (runlevel 3)\ngraphical.target = GUI mode (runlevel 5)"
+HINT="Task 1: systemctl set-default multi-user.target (text mode = runlevel 3)"
 
 # Lab configuration
 LAB_TITLE="Set Default Systemd Target"

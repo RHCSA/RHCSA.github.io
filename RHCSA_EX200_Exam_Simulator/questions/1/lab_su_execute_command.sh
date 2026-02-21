@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="su_execute_command"
 
 QUESTION="[LAB] Execute a command as another user using su -c"
-HINT="This lab has 1 task:\n\n1. Run whoami as operator and save output:\n   su - operator -c 'whoami' > ~/i_am\n\nTip: su -c allows running single command\nYou return to your shell after command completes"
+HINT="Task 1: su - operator -c 'whoami' > ~/i_am
+(-c allows running single command as user)"
 
 # Lab configuration
 LAB_TITLE="Execute Command as Another User"

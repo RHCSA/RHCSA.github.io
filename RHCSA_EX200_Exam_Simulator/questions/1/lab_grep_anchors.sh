@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="grep_anchors"
 
 QUESTION="[LAB] Use grep anchors (^ and $) to match line patterns"
-HINT="This lab has 3 tasks:\n\n1. Lines starting with root:\n   grep '^root' /etc/passwd > /tmp/root-lines.txt\n\n2. Lines ending with bash:\n   grep 'bash$' /etc/passwd > /tmp/bash-shell.txt\n\n3. Count empty lines:\n   grep -c '^$' /tmp/testfile.txt > /tmp/empty-count.txt\n\nTip: ^ = start, $ = end, -c = count."
+HINT="Task 1: grep '^root' /etc/passwd > /tmp/root-lines.txt
+Task 2: grep 'bash$' /etc/passwd > /tmp/bash-shell.txt
+Task 3: grep -c '^$' /tmp/testfile.txt > /tmp/empty-count.txt"
 
 # Lab configuration
 LAB_TITLE="Grep with Line Anchors"

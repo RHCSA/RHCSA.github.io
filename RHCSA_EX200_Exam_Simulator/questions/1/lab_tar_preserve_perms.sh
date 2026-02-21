@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_preserve_perms"
 
 QUESTION="[LAB] Create a tar archive preserving file permissions"
-HINT="This lab has 1 task:\n\n1. Create archive with preserved permissions:\n   tar -cvpf /tmp/etc_backup.tar /etc/ssh\n\nOptions:\n  -c = create\n  -v = verbose\n  -p = preserve permissions\n  -f = file\n\nImportant: -p is essential for system backups"
+HINT="Task 1: tar -cvpf /tmp/etc_backup.tar /etc/ssh
+(-p = preserve permissions)"
 
 # Lab configuration
 LAB_TITLE="tar with Preserved Permissions"

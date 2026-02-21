@@ -7,7 +7,11 @@ IS_LAB=true
 LAB_ID="permissions_comprehensive"
 
 QUESTION="[LAB] Comprehensive permissions lab combining multiple skills"
-HINT="This lab has 5 tasks:\n\n1. Create file and set permissions:\n   touch /tmp/exam/report.txt\n   chmod 640 /tmp/exam/report.txt\n   (640 = user:rw, group:r, others:none)\n\n2. Create directory with specific permissions:\n   mkdir /tmp/exam/data\n   chmod 750 /tmp/exam/data\n   (750 = user:rwx, group:rx, others:none)\n\n3. Change ownership:\n   chown nobody:nobody /tmp/exam/report.txt\n\n4. Make new files inherit directory group (SGID):\n   chmod g+s /tmp/exam/data\n   Or: chmod 2750 /tmp/exam/data\n\n5. Save permissions to file:\n   stat -c %a /tmp/exam/report.txt > /tmp/exam/perms.txt"
+HINT="Task 1: touch /tmp/exam/report.txt && chmod 640 /tmp/exam/report.txt
+Task 2: mkdir /tmp/exam/data && chmod 750 /tmp/exam/data
+Task 3: chown nobody:nobody /tmp/exam/report.txt
+Task 4: chmod g+s /tmp/exam/data (or chmod 2750)
+Task 5: stat -c %a /tmp/exam/report.txt > /tmp/exam/perms.txt"
 
 # Lab configuration
 LAB_TITLE="Comprehensive Permissions"

@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_exclude"
 
 QUESTION="[LAB] Create a tar archive excluding certain file types"
-HINT="This lab has 1 task:\n\n1. Create archive excluding .log files:\n   tar -cvzf /tmp/var_backup.tar.gz --exclude='*.log' /var/log\n\nOptions:\n  --exclude='pattern' = exclude files matching pattern\n  Multiple --exclude options can be used\n\nExample excluding multiple patterns:\n  tar -cvzf backup.tar.gz --exclude='*.log' --exclude='*.tmp' /path"
+HINT="Task 1: tar -cvzf /tmp/var_backup.tar.gz --exclude='*.log' /var/log
+(--exclude='pattern' to exclude files)"
 
 # Lab configuration
 LAB_TITLE="tar with Exclusions"

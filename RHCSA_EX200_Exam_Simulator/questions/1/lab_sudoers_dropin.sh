@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="sudoers_dropin"
 
 QUESTION="[LAB] Create a sudoers drop-in configuration file for a group"
-HINT="This lab has 1 task:\n\n1. Create drop-in file for developers group:\n   visudo -f /etc/sudoers.d/developers\n   \n   Add:\n   %developers ALL=(ALL) NOPASSWD: /usr/bin/ping\n\nTip: Use %groupname for groups\n/etc/sudoers.d/ files are included automatically"
+HINT="Task 1: Add to /etc/sudoers.d/developers:
+%developers ALL=(ALL) NOPASSWD: /usr/bin/ping"
 
 # Lab configuration
 LAB_TITLE="Create sudoers Drop-in File"

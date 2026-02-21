@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="hard_links"
 
 QUESTION="[LAB] Create hard links and verify they share the same inode"
-HINT="This lab has 3 tasks:\n\n1. Create a hard link:\n   ln /tmp/original.txt /tmp/hardlink.txt\n   Hard links point to same inode (data blocks)\n\n2. Verify same inode:\n   ls -i /tmp/original.txt /tmp/hardlink.txt\n   Both files show same inode number\n\n3. Create hard link in different directory:\n   ln /tmp/original.txt /tmp/linkdir/file_link\n   Hard links can exist in different directories\n\nTip: Use 'stat' to see link count"
+HINT="Task 1: ln /tmp/original.txt /tmp/hardlink.txt
+Task 2: ls -i /tmp/original.txt /tmp/hardlink.txt (verify same inode)
+Task 3: ln /tmp/original.txt /tmp/linkdir/file_link"
 
 # Lab configuration
 LAB_TITLE="Hard Links"

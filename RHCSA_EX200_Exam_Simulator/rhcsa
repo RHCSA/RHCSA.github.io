@@ -578,7 +578,7 @@ calculate_top_pane_lines() {
     local hint="$3"
     
     # Base lines: title (2) + separator (1) + blank (1) + table header (2) + footer (3) + padding (3)
-    local base_lines=12
+    local base_lines=10
     
     # Lines per task: description (2 lines average) + separator (1)
     local task_lines=$((task_count * 3))
@@ -758,11 +758,7 @@ run_lab_monitor() {
             clear_screen
             move_cursor 1 1
             
-            echo ""
-            echo -e "  ${TITLE}💻 Interactive Lab Exercise${RESET}"
-            echo -e "  ${TITLE}   ${lab_title}${RESET}"
-            echo -e "  ${DIM}────────────────────────────────────────────────────────${RESET}"
-            echo ""
+            echo -e "  ${TITLE}💻 Interactive Lab Exercise - ${lab_title}${RESET}"
             
             # Table header
             printf "  %-${desc_width}s | %s\n" "Task Description" "Status"
@@ -771,8 +767,8 @@ run_lab_monitor() {
             need_full_redraw=false
         fi
         
-        # Move to status area (after header: 1 blank + 2 title + 1 separator + 1 blank + 1 table header + 1 separator = line 8)
-        local status_start=8
+        # Move to status area (after header: 1 title + 1 table header + 1 separator = line 4)
+        local status_start=4
         move_cursor $status_start 1
         
         # Clear the status area (enough lines for tasks + completion message + hint + footer)

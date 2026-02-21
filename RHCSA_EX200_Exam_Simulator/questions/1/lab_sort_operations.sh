@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="sort_operations"
 
 QUESTION="[LAB] Use sort with different options for various sorting needs"
-HINT="This lab has 3 tasks:\n\n1. Numeric sort:\n   sort -n /tmp/numbers.txt > /tmp/sorted_numeric.txt\n   -n = numeric sort\n\n2. Alphabetic, case-insensitive, unique:\n   sort -dfu /tmp/words.txt > /tmp/sorted_words.txt\n   -d = dictionary order\n   -f = case-insensitive (fold)\n   -u = unique only\n\n3. Reverse numeric sort:\n   sort -nr /tmp/numbers.txt > /tmp/sorted_reverse.txt\n   -r = reverse order"
+HINT="Task 1: sort -n /tmp/numbers.txt > /tmp/sorted_numeric.txt
+Task 2: sort -dfu /tmp/words.txt > /tmp/sorted_words.txt (-d=dict, -f=fold, -u=unique)
+Task 3: sort -nr /tmp/numbers.txt > /tmp/sorted_reverse.txt"
 
 # Lab configuration
 LAB_TITLE="sort Command Operations"

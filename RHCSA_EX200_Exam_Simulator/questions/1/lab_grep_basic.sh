@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="grep_basic"
 
 QUESTION="[LAB] Use grep to search and filter text in files"
-HINT="This lab has 3 tasks:\n\n1. Find bash users:\n   grep '/bin/bash' /etc/passwd > /tmp/bash-users.txt\n\n2. Count nologin users:\n   grep -c 'nologin' /etc/passwd > /tmp/nologin-count.txt\n\n3. Exclude comments from config:\n   grep -v '^#' /tmp/testconfig.conf > /tmp/active-config.txt\n\nTip: -c counts, -v inverts match."
+HINT="Task 1: grep '/bin/bash' /etc/passwd > /tmp/bash-users.txt
+Task 2: grep -c 'nologin' /etc/passwd > /tmp/nologin-count.txt
+Task 3: grep -v '^#' /tmp/testconfig.conf > /tmp/active-config.txt"
 
 # Lab configuration
 LAB_TITLE="Basic grep Searching"

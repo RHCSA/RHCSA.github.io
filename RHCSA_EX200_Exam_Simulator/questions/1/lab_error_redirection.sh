@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="error_redirection"
 
 QUESTION="[LAB] Run /tmp/testscript.sh and redirect stdout to one file and stderr to another"
-HINT="This lab has 3 tasks:\n\n1. Run the test script with separated output:\n   /tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt\n\n2. stdout (SUCCESS) goes to /tmp/output.txt\n\n3. stderr (ERROR) goes to /tmp/errors.txt\n\nTip: > = stdout, 2> = stderr."
+HINT="Task 1: /tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt
+Task 2: stdout (SUCCESS) goes to output.txt
+Task 3: stderr (ERROR) goes to errors.txt"
 
 # Lab configuration
 LAB_TITLE="Error Redirection (2>)"

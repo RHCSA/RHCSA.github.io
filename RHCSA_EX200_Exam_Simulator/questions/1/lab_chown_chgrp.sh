@@ -7,7 +7,10 @@ IS_LAB=true
 LAB_ID="chown_chgrp"
 
 QUESTION="[LAB] Change file ownership using chown and chgrp"
-HINT="This lab has 4 tasks:\n\n1. Change owner only:\n   chown nobody /tmp/file1.txt\n\n2. Change owner and group:\n   chown nobody:nobody /tmp/file2.txt\n\n3. Change only group (two methods):\n   chown :nobody /tmp/file3.txt\n   Or: chgrp nobody /tmp/file3.txt\n\n4. Recursive ownership change:\n   chown -R nobody:nobody /tmp/project/\n\nTip: Use chown user:group for both, chgrp for group only"
+HINT="Task 1: chown nobody /tmp/file1.txt
+Task 2: chown nobody:nobody /tmp/file2.txt
+Task 3: chgrp nobody /tmp/file3.txt (or chown :nobody)
+Task 4: chown -R nobody:nobody /tmp/project/"
 
 # Lab configuration
 LAB_TITLE="chown and chgrp"

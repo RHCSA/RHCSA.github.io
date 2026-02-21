@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="cp_brace_count"
 
 QUESTION="[LAB] Copy files using brace expansion and count files"
-HINT="This lab has 2 tasks:\n\n1. Copy files 20-25 using brace expansion:\n   cp -arp /tmp/source/dir1/dir2/files{20..25} /tmp/destination/\n\n   Options:\n   -a = archive (preserve all attributes)\n   -r = recursive\n   -p = preserve permissions\n   files{20..25} expands to: files20 files21 files22 files23 files24 files25\n\n2. Count files in a directory:\n   ls /tmp/destination/ | wc -l\n   Save result to /tmp/file_count.txt:\n   ls /tmp/destination/ | wc -l > /tmp/file_count.txt"
+HINT="Task 1: cp -arp /tmp/source/dir1/dir2/files{20..25} /tmp/destination/
+Task 2: ls /tmp/destination/ | wc -l > /tmp/file_count.txt"
 
 # Lab configuration
 LAB_TITLE="Copy with Brace Expansion & Count Files"

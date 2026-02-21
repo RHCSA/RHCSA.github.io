@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="ssh_copy_id"
 
 QUESTION="[LAB] Enable passwordless SSH authentication to a server"
-HINT="This lab has 1 task:\n\n1. Copy your public key to the remote server:\n   ssh-copy-id root@127.0.0.1\n\n   (Enter root password when prompted)\n\nTip: ssh-copy-id adds your public key to ~/.ssh/authorized_keys on the remote host\nThis enables passwordless login with the matching private key"
+HINT="Task 1: ssh-copy-id root@127.0.0.1
+(Enter password when prompted, adds key to authorized_keys)"
 
 # Lab configuration
 LAB_TITLE="Copy SSH Key with ssh-copy-id"

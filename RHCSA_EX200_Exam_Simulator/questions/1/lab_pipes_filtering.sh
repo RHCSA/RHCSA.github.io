@@ -7,7 +7,9 @@ IS_LAB=true
 LAB_ID="pipes_filtering"
 
 QUESTION="[LAB] Use pipes to filter and process command output"
-HINT="This lab has 3 tasks:\n\n1. Count nologin users:\n   grep 'nologin' /etc/passwd | wc -l > /tmp/nologin-count.txt\n\n2. List files containing 'conf' in /etc, sorted:\n   ls /etc | grep 'conf' | sort > /tmp/conf-files.txt\n\n3. List 5 largest files in /var/log:\n   ls -lS /var/log | head -6 > /tmp/largest-logs.txt\n\nTip: | pipes output to next command."
+HINT="Task 1: grep 'nologin' /etc/passwd | wc -l > /tmp/nologin-count.txt
+Task 2: ls /etc | grep 'conf' | sort > /tmp/conf-files.txt
+Task 3: ls -lS /var/log | head -6 > /tmp/largest-logs.txt"
 
 # Lab configuration
 LAB_TITLE="Pipes and Filtering"

@@ -7,7 +7,10 @@ IS_LAB=true
 LAB_ID="sed_operations"
 
 QUESTION="[LAB] Use sed for text substitution and line deletion"
-HINT="This lab has 4 tasks:\n\n1. Replace text in-place:\n   sed -i 's/error/warning/' /tmp/logfile.txt\n   -i = edit file in place\n\n2. Replace all occurrences (global):\n   sed -i 's/DEBUG/INFO/g' /tmp/logfile.txt\n   g = global (all occurrences on each line)\n\n3. Case-insensitive global replace:\n   sed -i 's/fail/pass/gi' /tmp/logfile.txt\n   gi = global + ignore case\n\n4. Delete lines matching pattern:\n   sed -i '/DEPRECATED/d' /tmp/logfile.txt\n   /pattern/d = delete lines containing pattern"
+HINT="Task 1: sed -i 's/error/warning/' /tmp/logfile.txt
+Task 2: sed -i 's/DEBUG/INFO/g' /tmp/logfile.txt (g = global)
+Task 3: sed -i 's/fail/pass/gi' /tmp/logfile.txt (gi = global + ignore case)
+Task 4: sed -i '/DEPRECATED/d' /tmp/logfile.txt (d = delete lines)"
 
 # Lab configuration
 LAB_TITLE="sed Text Operations"

@@ -7,7 +7,10 @@ IS_LAB=true
 LAB_ID="special_perms"
 
 QUESTION="[LAB] Set special permissions: SUID, SGID, and Sticky Bit"
-HINT="This lab has 4 tasks:\n\n1. Set SUID on executable:\n   chmod u+s /tmp/special/myapp\n   Or: chmod 4755 /tmp/special/myapp\n   Result: -rwsr-xr-x\n\n2. Set SGID on directory:\n   chmod g+s /tmp/special/shared/\n   Or: chmod 2775 /tmp/special/shared/\n   Result: drwxrwsr-x\n\n3. Set Sticky Bit on directory:\n   chmod o+t /tmp/special/dropbox/\n   Or: chmod 1777 /tmp/special/dropbox/\n   Result: drwxrwxrwt\n\n4. Set SGID + Sticky Bit:\n   chmod 3775 /tmp/special/project/\n   Or: chmod g+s,o+t /tmp/special/project/\n\nSpecial bits: SUID=4, SGID=2, Sticky=1"
+HINT="Task 1: chmod u+s /tmp/special/myapp (or chmod 4755)
+Task 2: chmod g+s /tmp/special/shared/ (or chmod 2775)
+Task 3: chmod o+t /tmp/special/dropbox/ (or chmod 1777)
+Task 4: chmod 3775 /tmp/special/project/ (SGID+Sticky)"
 
 # Lab configuration
 LAB_TITLE="Special Permissions"

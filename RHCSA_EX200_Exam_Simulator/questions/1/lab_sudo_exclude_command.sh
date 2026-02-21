@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="sudo_exclude_command"
 
 QUESTION="[LAB] Configure sudo to allow all commands except specific ones"
-HINT="This lab has 1 task:\n\n1. Configure sudo for restricteduser:\n   visudo -f /etc/sudoers.d/restricteduser\n   OR: visudo (to edit /etc/sudoers)\n   \n   Add:\n   restricteduser ALL=(ALL) ALL, !/usr/bin/su\n\nTip: ! before command = deny that command\nUser can run everything except su"
+HINT="Task 1: Add to /etc/sudoers.d/restricteduser:
+restricteduser ALL=(ALL) ALL, !/usr/bin/su"
 
 # Lab configuration
 LAB_TITLE="sudo with Command Exclusion"

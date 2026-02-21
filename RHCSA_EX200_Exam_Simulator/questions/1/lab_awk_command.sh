@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="awk_command"
 
 QUESTION="[LAB] Use awk to extract specific columns from command output"
-HINT="The awk command is powerful for column extraction:\n\n- Use '{print \$1, \$2}' to print columns 1 and 2\n- \$1 = first column (USER), \$2 = second column (PID)\n- Pipe ps aux output to awk\n\nExample: ps aux | awk '{print \$1, \$2}' > /tmp/ps-users.txt"
+HINT="Task 1: ps aux | awk '{print \$1, \$2}' > /tmp/ps-users.txt
+(\$1 = USER, \$2 = PID)"
 
 # Lab configuration
 LAB_TITLE="Awk Command - Extract Columns"

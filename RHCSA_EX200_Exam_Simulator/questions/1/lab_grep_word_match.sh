@@ -7,7 +7,7 @@ IS_LAB=true
 LAB_ID="grep_word_match"
 
 QUESTION="[LAB] Use grep -w to match whole words only"
-HINT="This lab has 1 task:\n\n1. Find whole word 'log' only:\n   grep -w 'log' /tmp/services.txt > /tmp/log-only.txt\n\nTip: -w matches whole words (not 'syslog' or 'login')."
+HINT="Task 1: grep -w 'log' /tmp/services.txt > /tmp/log-only.txt (-w matches whole words)"
 
 # Lab configuration
 LAB_TITLE="Grep Word Boundaries"

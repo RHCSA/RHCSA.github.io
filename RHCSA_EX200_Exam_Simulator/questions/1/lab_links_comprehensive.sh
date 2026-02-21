@@ -7,7 +7,11 @@ IS_LAB=true
 LAB_ID="links_comprehensive"
 
 QUESTION="[LAB] Comprehensive lab covering hard and soft links"
-HINT="This lab has 5 tasks:\n\n1. Create file and hard link:\n   echo 'data' > /tmp/datafile.txt\n   ln /tmp/datafile.txt /tmp/datafile_hard.txt\n\n2. Create symlink to directory:\n   ln -s /etc /tmp/etc_link\n\n3. Get inode of file:\n   stat -c %i /tmp/datafile.txt > /tmp/inode.txt\n   Or: ls -i /tmp/datafile.txt | awk '{print \$1}' > /tmp/inode.txt\n\n4. Force update symlink to directory:\n   ln -sfn /var /tmp/etc_link\n   -n = don't follow symlink (required for directory symlinks)\n\n5. Get link count:\n   stat -c %h /tmp/datafile.txt > /tmp/linkcount.txt\n   (Should be 2 after creating hard link)"
+HINT="Task 1: echo 'data' > /tmp/datafile.txt && ln /tmp/datafile.txt /tmp/datafile_hard.txt
+Task 2: ln -s /etc /tmp/etc_link
+Task 3: stat -c %i /tmp/datafile.txt > /tmp/inode.txt
+Task 4: ln -sfn /var /tmp/etc_link (-n = don't follow symlink)
+Task 5: stat -c %h /tmp/datafile.txt > /tmp/linkcount.txt"
 
 # Lab configuration
 LAB_TITLE="Comprehensive Links Lab"

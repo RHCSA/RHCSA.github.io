@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="tar_extract_single"
 
 QUESTION="[LAB] Extract a single file from a tar archive"
-HINT="This lab has 2 tasks:\n\n1. List archive contents first:\n   tar -tvzf /tmp/system.tar.gz > /tmp/archive_list.txt\n\n2. Extract only specific file:\n   tar -xvzf /tmp/system.tar.gz etc/hostname\n\nTip: Use exact path as shown in tar -tvzf output\nThe file will be extracted to ./etc/hostname"
+HINT="Task 1: tar -tvzf /tmp/system.tar.gz > /tmp/archive_list.txt
+Task 2: tar -xvzf /tmp/system.tar.gz etc/hostname"
 
 # Lab configuration
 LAB_TITLE="Extract Single File from Archive"

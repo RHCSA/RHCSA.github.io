@@ -7,7 +7,8 @@ IS_LAB=true
 LAB_ID="background_process"
 
 QUESTION="[LAB] Start a long-running process in the background that continues running after logout"
-HINT="This lab has 2 tasks:\n\n1. Start a background process: Run 'sleep 300' in the background using:\n   sleep 300 &\n   Or better: nohup sleep 300 &\n\n2. Ensure it survives logout: The 'nohup' command prevents the process from being killed when you log out.\n   Alternative: Run 'sleep 300 &' then 'disown'\n\nTip: Use 'jobs' to see background jobs in current shell.\nUse 'ps aux | grep sleep' to verify the process is running."
+HINT="Task 1: nohup sleep 300 & (or sleep 300 &)
+Task 2: nohup ensures process survives logout (or use disown)"
 
 # Lab configuration
 LAB_TITLE="Run Command in Background"
