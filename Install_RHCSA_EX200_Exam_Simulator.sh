@@ -87,10 +87,12 @@ echo -e "  ${YELLOW}[3/5]${NC} Downloading RHCSA Exam Simulator files..."
 mkdir -p "$TMP_DIR/RHCSA_EX200_Exam_Simulator/questions"
 
 # Download main rhcsa executable
+echo -e "        ${CYAN}↓${NC} Downloading main executable..."
 curl -sL "${GITHUB_RAW_BASE}/rhcsa" -o "$TMP_DIR/RHCSA_EX200_Exam_Simulator/rhcsa"
 
 # Download questions - iterate through question directories (1-10)
 for i in {1..10}; do
+    echo -ne "        ${CYAN}↓${NC} Downloading Chapter $i questions...     \r"
     mkdir -p "$TMP_DIR/RHCSA_EX200_Exam_Simulator/questions/$i"
     
     # Get list of files in the question directory using GitHub API
@@ -104,10 +106,14 @@ for i in {1..10}; do
             curl -sL "${GITHUB_RAW_BASE}/questions/$i/question${q}.sh" -o "$TMP_DIR/RHCSA_EX200_Exam_Simulator/questions/$i/question${q}.sh" 2>/dev/null || true
         done
     else
+        file_count=0
         for file in $files; do
             curl -sL "${GITHUB_RAW_BASE}/questions/$i/$file" -o "$TMP_DIR/RHCSA_EX200_Exam_Simulator/questions/$i/$file" 2>/dev/null || true
+            ((file_count++))
+            echo -ne "        ${CYAN}↓${NC} Chapter $i: Downloaded $file_count files...     \r"
         done
     fi
+    echo -e "        ${GREEN}✓${NC} Chapter $i questions downloaded          "
 done
 
 # Download README if exists
@@ -116,13 +122,35 @@ curl -sL "${GITHUB_RAW_BASE}/questions/README.md" -o "$TMP_DIR/RHCSA_EX200_Exam_
 # Remove empty files
 find "$TMP_DIR" -type f -empty -delete 2>/dev/null || true
 
-echo -e "        ${GREEN}✓${NC} Download complete"
+echo -e "        ${GREEN}✓${NC} All files downloaded"
 
 # Step 4: Install
 echo -e "  ${YELLOW}[4/5]${NC} Installing to ${INSTALL_DIR}..."
+
+# Preserve progress file from previous installation
+PROGRESS_FILE="${INSTALL_DIR}/.progress"
+PROGRESS_BACKUP="/tmp/.rhcsa_progress_backup_$$"
+if [[ -f "$PROGRESS_FILE" ]]; then
+    cp "$PROGRESS_FILE" "$PROGRESS_BACKUP" 2>/dev/null
+    echo -e "        ${CYAN}ℹ${NC} Preserving previous progress..."
+fi
+# Also check legacy location
+if [[ -f "/tmp/.rhcsa_progress" ]] && [[ ! -f "$PROGRESS_BACKUP" ]]; then
+    cp "/tmp/.rhcsa_progress" "$PROGRESS_BACKUP" 2>/dev/null
+    echo -e "        ${CYAN}ℹ${NC} Migrating progress from legacy location..."
+fi
+
+# Remove previous installation
 rm -rf "$INSTALL_DIR" 2>/dev/null || true
 mkdir -p "$INSTALL_DIR"
 cp -r "$TMP_DIR/RHCSA_EX200_Exam_Simulator/"* "$INSTALL_DIR/"
+
+# Restore progress file
+if [[ -f "$PROGRESS_BACKUP" ]]; then
+    cp "$PROGRESS_BACKUP" "$PROGRESS_FILE" 2>/dev/null
+    rm -f "$PROGRESS_BACKUP" 2>/dev/null
+    echo -e "        ${GREEN}✓${NC} Progress restored"
+fi
 
 # Convert Windows line endings to Unix (CRLF -> LF)
 find "$INSTALL_DIR" -type f -name "*.sh" -exec sed -i 's/\r$//' {} \; 2>/dev/null || true
