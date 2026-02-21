@@ -698,9 +698,6 @@ LAUNCHER_EOF
     # Select the bottom pane and set it up
     tmux select-pane -t "$session_name:0.1"
     
-    # Explicitly resize the top pane to calculated size
-    resize_top_pane "$top_pane_lines"
-    
     # Attach to the session
     show_cursor
     CLEAR_ON_EXIT=false
@@ -743,15 +740,32 @@ run_lab_monitor() {
         wait_count=$((wait_count + 1))
     done
     
+    # Small delay to let split settle
+    sleep 0.3
+    
     # Resize pane immediately on startup to fit content
     local initial_pane_size=$(calculate_top_pane_lines "$task_count" "false" "")
-    resize_top_pane "$initial_pane_size"
+    tmux resize-pane -t 0 -y "$initial_pane_size" 2>/dev/null || true
+    
+    # Force tmux to refresh after resize
+    tmux refresh-client 2>/dev/null || true
     
     # Track terminal size for resize detection
     local current_term_width=$(tput cols)
     local current_term_height=$(tput lines)
     
+    # Track if this is the first loop iteration
+    local first_iteration=true
+    
     while true; do
+        # On first iteration, ensure pane is properly sized before drawing
+        if $first_iteration; then
+            sleep 0.2
+            local pane_size=$(calculate_top_pane_lines "$task_count" "$show_hint" "$hint")
+            tmux resize-pane -t 0 -y "$pane_size" 2>/dev/null || true
+            first_iteration=false
+        fi
+        
         # Check for terminal resize (instant via SIGWINCH)
         if check_resize_flag; then
             need_full_redraw=true
