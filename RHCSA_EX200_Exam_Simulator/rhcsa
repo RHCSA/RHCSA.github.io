@@ -697,6 +697,9 @@ LAUNCHER_EOF
     
     # Select the bottom pane and set it up
     tmux select-pane -t "$session_name:0.1"
+
+    # Explicitly resize the top pane to calculated size
+    resize_top_pane "$top_pane_lines"
     
     # Attach to the session
     show_cursor
