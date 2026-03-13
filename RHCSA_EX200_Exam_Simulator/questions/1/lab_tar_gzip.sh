@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create gzip Compressed Archive
 

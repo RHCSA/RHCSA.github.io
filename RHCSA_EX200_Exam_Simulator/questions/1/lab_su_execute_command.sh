@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Execute Command as Another User with su
 

@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # Objective 7: Networking
 # LAB: Hostname Configuration
 

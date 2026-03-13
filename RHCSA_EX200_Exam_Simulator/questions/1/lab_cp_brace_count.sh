@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Copy Files with Brace Expansion and Count Files
 

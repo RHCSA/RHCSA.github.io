@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create authorized_keys File
 

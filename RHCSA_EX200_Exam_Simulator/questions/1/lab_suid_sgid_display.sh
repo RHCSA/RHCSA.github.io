@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: SUID/SGID Display - Understanding lowercase s vs uppercase S
 

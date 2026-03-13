@@ -183,6 +183,15 @@ load_questions_for_objective() {
         ANSWER=""
         HINT=""
         IS_LAB=""
+        LAB_TASK_COUNT=0
+        
+        # Clear TASK variables from previous files to prevent hint pollution
+        for i in {1..10}; do
+            unset "TASK_${i}_QUESTION" "TASK_${i}_HINT"
+            for j in {1..5}; do
+                unset "TASK_${i}_COMMAND_${j}"
+            done
+        done
         
         # Source the file to load variables
         source "$file"
@@ -526,6 +535,15 @@ load_lab_file() {
         echo "Error: Lab file not found"
         return 1
     fi
+    
+    # Clear previous lab's TASK variables to prevent hint pollution
+    unset LAB_TASK_COUNT HINT QUESTION LAB_ID IS_LAB
+    for i in {1..10}; do
+        unset "TASK_${i}_QUESTION" "TASK_${i}_HINT"
+        for j in {1..5}; do
+            unset "TASK_${i}_COMMAND_${j}"
+        done
+    done
     
     # Source the lab file to load its functions
     source "$CURRENT_LAB_FILE"
