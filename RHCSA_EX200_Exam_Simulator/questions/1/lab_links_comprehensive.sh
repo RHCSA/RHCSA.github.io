@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Comprehensive Hard and Soft Links
 
@@ -6,28 +6,47 @@
 IS_LAB=true
 LAB_ID="links_comprehensive"
 
-QUESTION="[LAB] Comprehensive lab covering hard and soft links"
-HINT="Task 1: echo 'data' > /tmp/datafile.txt && ln /tmp/datafile.txt /tmp/datafile_hard.txt
-Task 2: ln -s /etc /tmp/etc_link
-Task 3: stat -c %i /tmp/datafile.txt > /tmp/inode.txt
-Task 4: ln -sfn /var /tmp/etc_link (-n = don't follow symlink)
-Task 5: stat -c %h /tmp/datafile.txt > /tmp/linkcount.txt"
+QUESTION="Comprehensive lab covering hard and soft links"
 
 # Lab configuration
-LAB_TITLE="Comprehensive Links Lab"
 LAB_TASK_COUNT=5
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create /tmp/datafile.txt with 'data' and hard link /tmp/datafile_hard.txt" ;;
-        1) echo "Create symlink /tmp/etc_link pointing to /etc" ;;
-        2) echo "Save the inode number of /tmp/datafile.txt to /tmp/inode.txt" ;;
-        3) echo "Update /tmp/etc_link to point to /var instead (use ln -sfn)" ;;
-        4) echo "Save the hard link count of /tmp/datafile.txt to /tmp/linkcount.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create /tmp/datafile.txt with 'data' and hard link /tmp/datafile_hard.txt"
+TASK_1_HINT="Hard links share the same inode number as the original file"
+TASK_1_COMMAND_1="echo 'data' > /tmp/datafile.txt && ln /tmp/datafile.txt /tmp/datafile_hard.txt"
+
+# Task 2
+TASK_2_QUESTION="Create symlink /tmp/etc_link pointing to /etc"
+TASK_2_HINT="Use ln -s to create symbolic links"
+TASK_2_COMMAND_1="ln -s /etc /tmp/etc_link"
+
+# Task 3
+TASK_3_QUESTION="Save the inode number of /tmp/datafile.txt to /tmp/inode.txt"
+TASK_3_HINT="Use stat -c %i to get the inode number"
+TASK_3_COMMAND_1="stat -c %i /tmp/datafile.txt > /tmp/inode.txt"
+
+# Task 4
+TASK_4_QUESTION="Update /tmp/etc_link to point to /var instead (use ln -sfn)"
+TASK_4_HINT="Use -n to not follow existing symlink, -f to force"
+TASK_4_COMMAND_1="ln -sfn /var /tmp/etc_link"
+
+# Task 5
+TASK_5_QUESTION="Save the hard link count of /tmp/datafile.txt to /tmp/linkcount.txt"
+TASK_5_HINT="Use stat -c %h to get the hard link count"
+TASK_5_COMMAND_1="stat -c %h /tmp/datafile.txt > /tmp/linkcount.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

@@ -1,37 +1,51 @@
-#!/bin/bash
-
+﻿#!/bin/bash
+# Objective 1: Understand and use essential tools
 # LAB: umask - Control default permissions for new files and directories
 
+# This is a LAB exercise
 IS_LAB=true
 LAB_ID="umask"
 
-QUESTION="[LAB] Use umask to control default permissions for newly created files and directories"
+QUESTION="Use umask to control default permissions for newly created files and directories"
 
-HINT="Task 1: umask 022; touch /tmp/exam/file1.txt
-       (Creates file with 644: rw-r--r-- standard default)
-
-Task 2: umask 077; touch /tmp/exam/file2.txt
-       (Creates file with 600: rw------- private file)
-
-Task 3: umask 027; mkdir /tmp/exam/dir1
-       (Creates directory with 750: rwxr-x--- restrictive)
-
-Task 4: umask 002; mkdir /tmp/exam/dir2
-       (Creates directory with 775: rwxrwxr-x group-friendly)"
-
-LAB_TITLE="umask - Default Permission Control"
+# Lab configuration
 LAB_TASK_COUNT=4
 
-# Task descriptions
-get_task_description() {
-    local task_num=$1
-    case $task_num in
-        0) echo "Set umask so new files get user:rw, group:r, others:r then create /tmp/exam/file1.txt" ;;
-        1) echo "Set umask so new files get user:rw, group:none, others:none then create /tmp/exam/file2.txt" ;;
-        2) echo "Set umask so new dirs get user:rwx, group:rx, others:none then create /tmp/exam/dir1" ;;
-        3) echo "Set umask so new dirs get user:rwx, group:rwx, others:rx then create /tmp/exam/dir2" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Set umask so new files get user:rw, group:r, others:r then create /tmp/exam/file1.txt"
+TASK_1_HINT="Set umask 022 before creating the file to get 644 permissions"
+TASK_1_COMMAND_1="umask 022"
+TASK_1_COMMAND_2="touch /tmp/exam/file1.txt"
+
+# Task 2
+TASK_2_QUESTION="Set umask so new files get user:rw, group:none, others:none then create /tmp/exam/file2.txt"
+TASK_2_HINT="Set umask 077 before creating the file to get 600 permissions"
+TASK_2_COMMAND_1="umask 077"
+TASK_2_COMMAND_2="touch /tmp/exam/file2.txt"
+
+# Task 3
+TASK_3_QUESTION="Set umask so new dirs get user:rwx, group:rx, others:none then create /tmp/exam/dir1"
+TASK_3_HINT="Set umask 027 before creating the directory to get 750 permissions"
+TASK_3_COMMAND_1="umask 027"
+TASK_3_COMMAND_2="mkdir /tmp/exam/dir1"
+
+# Task 4
+TASK_4_QUESTION="Set umask so new dirs get user:rwx, group:rwx, others:rx then create /tmp/exam/dir2"
+TASK_4_HINT="Set umask 002 before creating the directory to get 775 permissions"
+TASK_4_COMMAND_1="umask 002"
+TASK_4_COMMAND_2="mkdir /tmp/exam/dir2"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare lab environment
 prepare_lab() {

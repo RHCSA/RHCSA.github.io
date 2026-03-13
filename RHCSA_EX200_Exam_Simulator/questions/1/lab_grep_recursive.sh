@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep Recursive Search
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="grep_recursive"
 
-QUESTION="[LAB] Use grep -r to search recursively in directories"
-HINT="Task 1: grep -r 'TODO' /tmp/project/ > /tmp/todos.txt
-Task 2: grep -rl 'FIXME' /tmp/project/ > /tmp/fixme-files.txt"
+QUESTION="Use grep -r to search recursively in directories"
 
 # Lab configuration
-LAB_TITLE="Grep Recursive Search"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find all lines containing 'TODO' in /tmp/project/ recursively, save to /tmp/todos.txt" ;;
-        1) echo "List only filenames (not content) containing 'FIXME' in /tmp/project/, save to /tmp/fixme-files.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Find all lines containing 'TODO' in /tmp/project/ recursively, save to /tmp/todos.txt"
+TASK_1_HINT="Use -r for recursive search through directories"
+TASK_1_COMMAND_1="grep -r 'TODO' /tmp/project/ > /tmp/todos.txt"
+
+# Task 2
+TASK_2_QUESTION="List only filenames (not content) containing 'FIXME' in /tmp/project/, save to /tmp/fixme-files.txt"
+TASK_2_HINT="Use -l to show only filenames, not matching lines"
+TASK_2_COMMAND_1="grep -rl 'FIXME' /tmp/project/ > /tmp/fixme-files.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files and directories...${RESET}"

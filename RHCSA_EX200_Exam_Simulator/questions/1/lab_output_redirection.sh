@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Output Redirection
 
@@ -6,24 +6,37 @@
 IS_LAB=true
 LAB_ID="output_redirection"
 
-QUESTION="[LAB] Practice output redirection: create files using > and >> operators"
-HINT="Task 1: echo 'Hello World' > /tmp/myfile.txt
-Task 2: echo 'Second Line' >> /tmp/myfile.txt
-Task 3: echo 'Third Line' >> /tmp/myfile.txt"
+QUESTION="Practice output redirection: create files using > and >> operators"
 
 # Lab configuration
-LAB_TITLE="Output Redirection (> and >>)"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create /tmp/myfile.txt containing 'Hello World'" ;;
-        1) echo "Append 'Second Line' to /tmp/myfile.txt" ;;
-        2) echo "Append 'Third Line' to /tmp/myfile.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create /tmp/myfile.txt containing 'Hello World'"
+TASK_1_HINT="Use echo with > to create/overwrite file"
+TASK_1_COMMAND_1="echo 'Hello World' > /tmp/myfile.txt"
+
+# Task 2
+TASK_2_QUESTION="Append 'Second Line' to /tmp/myfile.txt"
+TASK_2_HINT="Use echo with >> to append to file"
+TASK_2_COMMAND_1="echo 'Second Line' >> /tmp/myfile.txt"
+
+# Task 3
+TASK_3_QUESTION="Append 'Third Line' to /tmp/myfile.txt"
+TASK_3_HINT="Use echo with >> to append to file"
+TASK_3_COMMAND_1="echo 'Third Line' >> /tmp/myfile.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Tee Command
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="tee_command"
 
-QUESTION="[LAB] Use tee to save command output to a file while displaying it"
-HINT="Task 1: df -h | tee /tmp/disk-usage.txt
-Task 2: free -m | tee -a /tmp/disk-usage.txt (-a = append)"
+QUESTION="Use tee to save command output to a file while displaying it"
 
 # Lab configuration
-LAB_TITLE="Tee Command"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Run 'df -h' and use tee to both display the output and save it to /tmp/disk-usage.txt" ;;
-        1) echo "Append 'free -m' output to /tmp/disk-usage.txt using tee -a" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Run 'df -h' and use tee to both display the output and save it to /tmp/disk-usage.txt"
+TASK_1_HINT="tee writes to both stdout and a file simultaneously"
+TASK_1_COMMAND_1="df -h | tee /tmp/disk-usage.txt"
+
+# Task 2
+TASK_2_QUESTION="Append 'free -m' output to /tmp/disk-usage.txt using tee -a"
+TASK_2_HINT="Use -a flag with tee to append instead of overwrite"
+TASK_2_COMMAND_1="free -m | tee -a /tmp/disk-usage.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing file...${RESET}"

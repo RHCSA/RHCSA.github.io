@@ -60,23 +60,28 @@ HINT="This is one of the most basic commands. Think about 'listing' files."
 IS_LAB=true
 LAB_ID="unique_lab_id"
 
-# Question text (prefix with [LAB] for menu display)
-QUESTION="[LAB] Brief description of the lab task"
-ANSWER="Summary of the solution"
-HINT="Detailed hints with step-by-step guidance"
+# Question text (displayed as lab title)
+QUESTION="Brief description of the lab task"
 
 # Lab configuration
-LAB_TITLE="Human Readable Lab Title"
 LAB_TASK_COUNT=2  # Number of tasks in this lab
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "First task description" ;;
-        1) echo "Second task description" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="First task description"
+TASK_1_HINT="Hint for task 1"
+TASK_1_COMMAND_1="command to complete task 1"
+
+# Task 2
+TASK_2_QUESTION="Second task description"
+TASK_2_HINT="Hint for task 2"
+TASK_2_COMMAND_1="command to complete task 2"
+
+# Auto-generate HINT from commands (uses helper function from TUI)
+HINT=$(_build_hint)
 
 # Prepare the lab environment (reset state before lab starts)
 prepare_lab() {
@@ -113,21 +118,31 @@ check_tasks() {
 IS_LAB=true
 LAB_ID="firewall"
 
-QUESTION="[LAB] Configure firewall to allow HTTP and HTTPS traffic"
-ANSWER="Use firewall-cmd to add http and https services permanently"
-HINT="Use 'firewall-cmd --permanent --add-service=http' and similar for https.\nDon't forget to reload with 'firewall-cmd --reload'."
+QUESTION="Configure firewall to allow HTTP and HTTPS traffic"
 
-LAB_TITLE="Firewall Configuration"
 LAB_TASK_COUNT=3
 
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Enable and start firewalld service" ;;
-        1) echo "Allow HTTP (port 80) through the firewall permanently" ;;
-        2) echo "Allow HTTPS (port 443) through the firewall permanently" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Enable and start firewalld service"
+TASK_1_HINT="Use systemctl to enable and start the service"
+TASK_1_COMMAND_1="systemctl enable --now firewalld"
+
+# Task 2
+TASK_2_QUESTION="Allow HTTP (port 80) through the firewall permanently"
+TASK_2_HINT="Use firewall-cmd with --permanent flag"
+TASK_2_COMMAND_1="firewall-cmd --permanent --add-service=http"
+
+# Task 3
+TASK_3_QUESTION="Allow HTTPS (port 443) through the firewall permanently"
+TASK_3_HINT="Same as HTTP but for https service"
+TASK_3_COMMAND_1="firewall-cmd --permanent --add-service=https"
+
+# Auto-generate HINT from task commands
+HINT=$(_build_hint)
 
 prepare_lab() {
     echo -e "  ${DIM}• Stopping firewalld...${RESET}"

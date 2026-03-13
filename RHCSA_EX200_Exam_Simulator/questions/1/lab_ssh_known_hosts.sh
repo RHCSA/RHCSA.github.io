@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Remove Host from known_hosts
 
@@ -6,21 +6,23 @@
 IS_LAB=true
 LAB_ID="ssh_known_hosts"
 
-QUESTION="[LAB] Remove a host from ~/.ssh/known_hosts"
-HINT="Task 1: ssh-keygen -R server5.example.com (-R removes all keys for that hostname)"
+QUESTION="Remove a host from ~/.ssh/known_hosts"
 
 # Lab configuration
-LAB_TITLE="Remove Host from known_hosts"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Remove 'server5.example.com' entry from ~/.ssh/known_hosts" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Remove 'server5.example.com' entry from ~/.ssh/known_hosts"
+TASK_1_HINT="-R option removes all keys for specified hostname"
+TASK_1_COMMAND_1="ssh-keygen -R server5.example.com"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

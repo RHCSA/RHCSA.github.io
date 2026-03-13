@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Change File Ownership with chown and chgrp
 
@@ -6,26 +6,42 @@
 IS_LAB=true
 LAB_ID="chown_chgrp"
 
-QUESTION="[LAB] Change file ownership using chown and chgrp"
-HINT="Task 1: chown nobody /tmp/file1.txt
-Task 2: chown nobody:nobody /tmp/file2.txt
-Task 3: chgrp nobody /tmp/file3.txt (or chown :nobody)
-Task 4: chown -R nobody:nobody /tmp/project/"
+QUESTION="Change file ownership using chown and chgrp"
 
 # Lab configuration
-LAB_TITLE="chown and chgrp"
 LAB_TASK_COUNT=4
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Change owner of /tmp/file1.txt to 'nobody'" ;;
-        1) echo "Change owner to 'nobody' AND group to 'nobody' on /tmp/file2.txt" ;;
-        2) echo "Change ONLY the group of /tmp/file3.txt to 'nobody'" ;;
-        3) echo "Recursively change owner to 'nobody' and group to 'nobody' on /tmp/project/" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Change owner of /tmp/file1.txt to 'nobody'"
+TASK_1_HINT="Use chown with just the username to change owner"
+TASK_1_COMMAND_1="chown nobody /tmp/file1.txt"
+
+# Task 2
+TASK_2_QUESTION="Change owner to 'nobody' AND group to 'nobody' on /tmp/file2.txt"
+TASK_2_HINT="Use chown with user:group syntax to change both owner and group"
+TASK_2_COMMAND_1="chown nobody:nobody /tmp/file2.txt"
+
+# Task 3
+TASK_3_QUESTION="Change ONLY the group of /tmp/file3.txt to 'nobody'"
+TASK_3_HINT="Use chgrp to change only the group, or chown :group syntax"
+TASK_3_COMMAND_1="chgrp nobody /tmp/file3.txt"
+
+# Task 4
+TASK_4_QUESTION="Recursively change owner to 'nobody' and group to 'nobody' on /tmp/project/"
+TASK_4_HINT="Use chown -R for recursive ownership change on directories"
+TASK_4_COMMAND_1="chown -R nobody:nobody /tmp/project/"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

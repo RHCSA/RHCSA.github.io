@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Here Document
 
@@ -6,23 +6,31 @@
 IS_LAB=true
 LAB_ID="here_document"
 
-QUESTION="[LAB] Create a configuration file using a here document with variables"
-HINT="Task 1: cat << EOF > /tmp/app.conf\nhostname=$(hostname)\nuser=$(whoami)\nEOF
-Task 2: Variables are expanded (actual hostname/username in output)"
+QUESTION="Create a configuration file using a here document with variables"
 
 # Lab configuration
-LAB_TITLE="Here Document (<<)"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create /tmp/app.conf with here document containing hostname" ;;
-        1) echo "File must contain current username" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Create /tmp/app.conf with here document containing hostname"
+TASK_1_HINT="Use cat << EOF > file to create a here document"
+TASK_1_COMMAND_1="cat << EOF > /tmp/app.conf
+hostname=\$(hostname)
+user=\$(whoami)
+EOF"
+
+# Task 2
+TASK_2_QUESTION="File must contain current username"
+TASK_2_HINT="Variables are expanded (actual hostname/username in output)"
+TASK_2_COMMAND_1="# Verified by check_tasks - username must be in file"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing config file...${RESET}"

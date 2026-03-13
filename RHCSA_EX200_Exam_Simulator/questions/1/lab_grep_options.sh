@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep Case Insensitive and Line Numbers
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="grep_options"
 
-QUESTION="[LAB] Use grep with -i (case-insensitive) and -n (line numbers)"
-HINT="Task 1: grep -i 'error' /tmp/system.log > /tmp/all-errors.txt
-Task 2: grep -n 'Failed' /tmp/auth.log > /tmp/failed-lines.txt"
+QUESTION="Use grep with -i (case-insensitive) and -n (line numbers)"
 
 # Lab configuration
-LAB_TITLE="Grep Options: Case and Line Numbers"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find all lines containing 'error' (any case: ERROR, Error, error) from /tmp/system.log, save to /tmp/all-errors.txt" ;;
-        1) echo "Find 'Failed' in /tmp/auth.log with line numbers shown, save to /tmp/failed-lines.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Find all lines containing 'error' (any case: ERROR, Error, error) from /tmp/system.log, save to /tmp/all-errors.txt"
+TASK_1_HINT="Use -i for case-insensitive matching"
+TASK_1_COMMAND_1="grep -i 'error' /tmp/system.log > /tmp/all-errors.txt"
+
+# Task 2
+TASK_2_QUESTION="Find 'Failed' in /tmp/auth.log with line numbers shown, save to /tmp/failed-lines.txt"
+TASK_2_HINT="Use -n to show line numbers with matches"
+TASK_2_COMMAND_1="grep -n 'Failed' /tmp/auth.log > /tmp/failed-lines.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

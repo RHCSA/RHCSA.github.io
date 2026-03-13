@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Hard Link vs Soft Link - Target Deletion Test
 
@@ -6,26 +6,42 @@
 IS_LAB=true
 LAB_ID="link_survival"
 
-QUESTION="[LAB] Understand link behavior when original file is deleted"
-HINT="Task 1: echo 'important data' > /tmp/source.txt
-Task 2: ln /tmp/source.txt /tmp/hard.txt
-Task 3: ln -s /tmp/source.txt /tmp/soft.txt
-Task 4: rm /tmp/source.txt, test which link works, save 'hard' or 'soft' to /tmp/surviving_link.txt"
+QUESTION="Understand link behavior when original file is deleted"
 
 # Lab configuration
-LAB_TITLE="Link Survival Test"
 LAB_TASK_COUNT=4
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create /tmp/source.txt with content 'important data'" ;;
-        1) echo "Create hard link /tmp/hard.txt to /tmp/source.txt" ;;
-        2) echo "Create soft link /tmp/soft.txt to /tmp/source.txt" ;;
-        3) echo "Delete /tmp/source.txt and save which link survives ('hard' or 'soft') to /tmp/surviving_link.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create /tmp/source.txt with content 'important data'"
+TASK_1_HINT="Use echo with redirection to create the file"
+TASK_1_COMMAND_1="echo 'important data' > /tmp/source.txt"
+
+# Task 2
+TASK_2_QUESTION="Create hard link /tmp/hard.txt to /tmp/source.txt"
+TASK_2_HINT="Use ln without -s to create a hard link"
+TASK_2_COMMAND_1="ln /tmp/source.txt /tmp/hard.txt"
+
+# Task 3
+TASK_3_QUESTION="Create soft link /tmp/soft.txt to /tmp/source.txt"
+TASK_3_HINT="Use ln -s to create a symbolic link"
+TASK_3_COMMAND_1="ln -s /tmp/source.txt /tmp/soft.txt"
+
+# Task 4
+TASK_4_QUESTION="Delete /tmp/source.txt and save which link survives ('hard' or 'soft') to /tmp/surviving_link.txt"
+TASK_4_HINT="Hard links share inode with original, soft links point to path"
+TASK_4_COMMAND_1="rm /tmp/source.txt && echo 'hard' > /tmp/surviving_link.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

@@ -1,32 +1,40 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Man Page Sections - Finding the Right Documentation
 
 IS_LAB=true
 LAB_ID="man_sections"
 
-QUESTION="[LAB] Use man page sections to find command docs vs config file docs"
+QUESTION="Use man page sections to find command docs vs config file docs"
 
-HINT="Task 1: man 5 passwd > /tmp/exam/passwd_file.txt
-       (Section 5 = file formats, not the command)
-
-Task 2: man 5 crontab > /tmp/exam/crontab_format.txt
-       (Section 5 = crontab file format, not the command)
-
-Task 3: man 8 useradd > /tmp/exam/useradd_admin.txt
-       (Section 8 = system administration commands)"
-
-LAB_TITLE="Man Page Sections (1, 5, 8)"
 LAB_TASK_COUNT=3
 
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Get man page for passwd FILE FORMAT (section 5), save to /tmp/exam/passwd_file.txt" ;;
-        1) echo "Get man page for crontab FILE FORMAT (section 5), save to /tmp/exam/crontab_format.txt" ;;
-        2) echo "Get man page for useradd ADMIN command (section 8), save to /tmp/exam/useradd_admin.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Get man page for passwd FILE FORMAT (section 5), save to /tmp/exam/passwd_file.txt"
+TASK_1_HINT="Section 5 = file formats, not the command"
+TASK_1_COMMAND_1="man 5 passwd > /tmp/exam/passwd_file.txt"
+
+# Task 2
+TASK_2_QUESTION="Get man page for crontab FILE FORMAT (section 5), save to /tmp/exam/crontab_format.txt"
+TASK_2_HINT="Section 5 = crontab file format, not the command"
+TASK_2_COMMAND_1="man 5 crontab > /tmp/exam/crontab_format.txt"
+
+# Task 3
+TASK_3_QUESTION="Get man page for useradd ADMIN command (section 8), save to /tmp/exam/useradd_admin.txt"
+TASK_3_HINT="Section 8 = system administration commands"
+TASK_3_COMMAND_1="man 8 useradd > /tmp/exam/useradd_admin.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 prepare_lab() {
     echo "  • Creating man sections lab environment..."

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Fix SSH Directory Permissions
 
@@ -6,24 +6,37 @@
 IS_LAB=true
 LAB_ID="ssh_permissions"
 
-QUESTION="[LAB] Fix SSH directory and file permissions"
-HINT="Task 1: chmod 700 /tmp/sshtest/.ssh
-Task 2: chmod 600 /tmp/sshtest/.ssh/id_rsa
-Task 3: chmod 600 /tmp/sshtest/.ssh/authorized_keys"
+QUESTION="Fix SSH directory and file permissions"
 
 # Lab configuration
-LAB_TITLE="Fix SSH Directory Permissions"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Fix /tmp/sshtest/.ssh directory permissions (should be 700)" ;;
-        1) echo "Fix /tmp/sshtest/.ssh/id_rsa private key permissions (should be 600)" ;;
-        2) echo "Fix /tmp/sshtest/.ssh/authorized_keys permissions (should be 600)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Fix /tmp/sshtest/.ssh directory permissions (should be 700)"
+TASK_1_HINT="SSH directories must be private to prevent unauthorized access"
+TASK_1_COMMAND_1="chmod 700 /tmp/sshtest/.ssh"
+
+# Task 2
+TASK_2_QUESTION="Fix /tmp/sshtest/.ssh/id_rsa private key permissions (should be 600)"
+TASK_2_HINT="Private keys must not be readable by others"
+TASK_2_COMMAND_1="chmod 600 /tmp/sshtest/.ssh/id_rsa"
+
+# Task 3
+TASK_3_QUESTION="Fix /tmp/sshtest/.ssh/authorized_keys permissions (should be 600)"
+TASK_3_HINT="authorized_keys should be readable/writable only by owner"
+TASK_3_COMMAND_1="chmod 600 /tmp/sshtest/.ssh/authorized_keys"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

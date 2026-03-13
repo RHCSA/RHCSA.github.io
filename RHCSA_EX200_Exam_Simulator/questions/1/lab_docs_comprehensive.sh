@@ -1,40 +1,50 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Comprehensive System Documentation Lab
 
 IS_LAB=true
 LAB_ID="docs_comprehensive"
 
-QUESTION="[LAB] Comprehensive practice: man sections, apropos, help, and /usr/share/doc"
+QUESTION="Comprehensive practice: man sections, apropos, help, and /usr/share/doc"
 
-HINT="Task 1: man 5 shadow > /tmp/exam/shadow_format.txt
-       (Get shadow password file format documentation)
-
-Task 2: apropos -s 8 filesystem > /tmp/exam/fs_admin.txt
-       (Find filesystem admin commands in section 8)
-
-Task 3: man -w ls > /tmp/exam/man_location.txt
-       (Find where man page file is stored)
-
-Task 4: help alias > /tmp/exam/alias_help.txt
-       (Get help for alias builtin)
-
-Task 5: rpm -qd coreutils | head -10 > /tmp/exam/coreutils_docs.txt
-       (List first 10 doc files for coreutils)"
-
-LAB_TITLE="Documentation Comprehensive"
 LAB_TASK_COUNT=5
 
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Get /etc/shadow file format documentation (section 5), save to /tmp/exam/shadow_format.txt" ;;
-        1) echo "Find filesystem admin commands (section 8), save to /tmp/exam/fs_admin.txt" ;;
-        2) echo "Find where ls man page file is stored, save to /tmp/exam/man_location.txt" ;;
-        3) echo "Get help for 'alias' builtin, save to /tmp/exam/alias_help.txt" ;;
-        4) echo "List first 10 doc files for coreutils, save to /tmp/exam/coreutils_docs.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Get /etc/shadow file format documentation (section 5), save to /tmp/exam/shadow_format.txt"
+TASK_1_HINT="Section 5 contains file format documentation"
+TASK_1_COMMAND_1="man 5 shadow > /tmp/exam/shadow_format.txt"
+
+# Task 2
+TASK_2_QUESTION="Find filesystem admin commands (section 8), save to /tmp/exam/fs_admin.txt"
+TASK_2_HINT="Use apropos -s 8 to search only admin commands"
+TASK_2_COMMAND_1="apropos -s 8 filesystem > /tmp/exam/fs_admin.txt"
+
+# Task 3
+TASK_3_QUESTION="Find where ls man page file is stored, save to /tmp/exam/man_location.txt"
+TASK_3_HINT="man -w shows the location of the man page file"
+TASK_3_COMMAND_1="man -w ls > /tmp/exam/man_location.txt"
+
+# Task 4
+TASK_4_QUESTION="Get help for 'alias' builtin, save to /tmp/exam/alias_help.txt"
+TASK_4_HINT="Use help command for shell builtins"
+TASK_4_COMMAND_1="help alias > /tmp/exam/alias_help.txt"
+
+# Task 5
+TASK_5_QUESTION="List first 10 doc files for coreutils, save to /tmp/exam/coreutils_docs.txt"
+TASK_5_HINT="rpm -qd lists doc files, pipe to head for first 10"
+TASK_5_COMMAND_1="rpm -qd coreutils | head -10 > /tmp/exam/coreutils_docs.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 prepare_lab() {
     echo "  • Creating comprehensive documentation lab environment..."

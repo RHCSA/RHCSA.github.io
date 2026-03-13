@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create and Verify Hard Links
 
@@ -6,24 +6,37 @@
 IS_LAB=true
 LAB_ID="hard_links"
 
-QUESTION="[LAB] Create hard links and verify they share the same inode"
-HINT="Task 1: ln /tmp/original.txt /tmp/hardlink.txt
-Task 2: ls -i /tmp/original.txt /tmp/hardlink.txt (verify same inode)
-Task 3: ln /tmp/original.txt /tmp/linkdir/file_link"
+QUESTION="Create hard links and verify they share the same inode"
 
 # Lab configuration
-LAB_TITLE="Hard Links"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create a hard link /tmp/hardlink.txt pointing to /tmp/original.txt" ;;
-        1) echo "Verify both files have the same inode number (use ls -i)" ;;
-        2) echo "Create another hard link /tmp/linkdir/file_link to /tmp/original.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create a hard link /tmp/hardlink.txt pointing to /tmp/original.txt"
+TASK_1_HINT="Use ln command without -s option to create a hard link"
+TASK_1_COMMAND_1="ln /tmp/original.txt /tmp/hardlink.txt"
+
+# Task 2
+TASK_2_QUESTION="Verify both files have the same inode number (use ls -i)"
+TASK_2_HINT="Use ls -i to display inode numbers and verify they match"
+TASK_2_COMMAND_1="ls -i /tmp/original.txt /tmp/hardlink.txt"
+
+# Task 3
+TASK_3_QUESTION="Create another hard link /tmp/linkdir/file_link to /tmp/original.txt"
+TASK_3_HINT="Use ln to create hard link in different directory"
+TASK_3_COMMAND_1="ln /tmp/original.txt /tmp/linkdir/file_link"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

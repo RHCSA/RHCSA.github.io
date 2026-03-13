@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Stream Editor (sed) Operations
 
@@ -6,27 +6,38 @@
 IS_LAB=true
 LAB_ID="sed_operations"
 
-QUESTION="[LAB] Use sed for text substitution and line deletion"
-HINT="Task 1: sed -i 's/error/warning/' /tmp/logfile.txt
-Task 2: sed -i 's/DEBUG/INFO/g' /tmp/logfile.txt (g = global)
-Task 3: sed -i 's/fail/pass/gi' /tmp/logfile.txt (gi = global + ignore case)
-Task 4: sed -i '/DEPRECATED/d' /tmp/logfile.txt (d = delete lines)"
+QUESTION="Use sed for text substitution and line deletion"
 
 # Lab configuration
-LAB_TITLE="sed Text Operations"
 LAB_TASK_COUNT=4
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Replace first 'error' with 'warning' on each line in /tmp/logfile.txt (in-place)" ;;
-        1) echo "Replace ALL occurrences of 'DEBUG' with 'INFO' in /tmp/logfile.txt (global)" ;;
-        2) echo "Replace all 'fail' with 'pass' case-insensitively in /tmp/logfile.txt" ;;
-        3) echo "Delete all lines containing 'DEPRECATED' from /tmp/logfile.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Replace first 'error' with 'warning' on each line in /tmp/logfile.txt (in-place)"
+TASK_1_HINT="Without 'g' flag, sed replaces only the first occurrence"
+TASK_1_COMMAND_1="sed -i 's/error/warning/' /tmp/logfile.txt"
+
+# Task 2
+TASK_2_QUESTION="Replace ALL occurrences of 'DEBUG' with 'INFO' in /tmp/logfile.txt (global)"
+TASK_2_HINT="g = global, replaces all occurrences on each line"
+TASK_2_COMMAND_1="sed -i 's/DEBUG/INFO/g' /tmp/logfile.txt"
+
+# Task 3
+TASK_3_QUESTION="Replace all 'fail' with 'pass' case-insensitively in /tmp/logfile.txt"
+TASK_3_HINT="gi = global + ignore case"
+TASK_3_COMMAND_1="sed -i 's/fail/pass/gi' /tmp/logfile.txt"
+
+# Task 4
+TASK_4_QUESTION="Delete all lines containing 'DEPRECATED' from /tmp/logfile.txt"
+TASK_4_HINT="d = delete lines matching the pattern"
+TASK_4_COMMAND_1="sed -i '/DEPRECATED/d' /tmp/logfile.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test log file...${RESET}"

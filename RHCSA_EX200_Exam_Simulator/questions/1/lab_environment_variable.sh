@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Set Environment Variable
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="environment_variable"
 
-QUESTION="[LAB] Create a persistent environment variable COMPANY with value 'RedHat' for all users"
-HINT="Task 1: echo 'export COMPANY=RedHat' > /etc/profile.d/company.sh
-(Alternative: echo 'COMPANY=RedHat' >> /etc/environment)"
+QUESTION="Create a persistent environment variable COMPANY with value 'RedHat' for all users"
 
 # Lab configuration
-LAB_TITLE="Set Environment Variable"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Set COMPANY=RedHat persistently for all users" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Set COMPANY=RedHat persistently for all users"
+TASK_1_HINT="Create a script in /etc/profile.d/ or add to /etc/environment"
+TASK_1_COMMAND_1="echo 'export COMPANY=RedHat' > /etc/profile.d/company.sh"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing COMPANY variable configurations...${RESET}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Comprehensive tar/gzip/bzip2 Operations
 
@@ -6,29 +6,43 @@
 IS_LAB=true
 LAB_ID="archive_comprehensive"
 
-QUESTION="[LAB] Perform multiple archive and compression operations"
-HINT="Task 1: tar -cvf /tmp/backup1.tar /etc/hosts /etc/hostname
-Task 2: tar -cvzf /tmp/backup2.tar.gz /etc/passwd /etc/group
-Task 3: tar -cvjf /tmp/backup3.tar.bz2 /etc/ssh
-Task 4: mkdir -p /tmp/extracted && tar -xvzf /tmp/backup2.tar.gz -C /tmp/extracted
-Task 5: gzip -k /etc/services -c > /tmp/services.gz"
+QUESTION="Perform multiple archive and compression operations"
 
 # Lab configuration
-LAB_TITLE="Comprehensive Archive Operations"
 LAB_TASK_COUNT=5
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create uncompressed tar archive /tmp/backup1.tar with /etc/hosts and /etc/hostname" ;;
-        1) echo "Create gzip compressed archive /tmp/backup2.tar.gz with /etc/passwd and /etc/group" ;;
-        2) echo "Create bzip2 compressed archive /tmp/backup3.tar.bz2 with /etc/ssh" ;;
-        3) echo "Extract /tmp/backup2.tar.gz to /tmp/extracted directory" ;;
-        4) echo "Compress /etc/services to /tmp/services.gz (keep original)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Create uncompressed tar archive /tmp/backup1.tar with /etc/hosts and /etc/hostname"
+TASK_1_HINT="Use -cvf for create, verbose, file"
+TASK_1_COMMAND_1="tar -cvf /tmp/backup1.tar /etc/hosts /etc/hostname"
+
+# Task 2
+TASK_2_QUESTION="Create gzip compressed archive /tmp/backup2.tar.gz with /etc/passwd and /etc/group"
+TASK_2_HINT="-z = gzip compression"
+TASK_2_COMMAND_1="tar -cvzf /tmp/backup2.tar.gz /etc/passwd /etc/group"
+
+# Task 3
+TASK_3_QUESTION="Create bzip2 compressed archive /tmp/backup3.tar.bz2 with /etc/ssh"
+TASK_3_HINT="-j = bzip2 compression"
+TASK_3_COMMAND_1="tar -cvjf /tmp/backup3.tar.bz2 /etc/ssh"
+
+# Task 4
+TASK_4_QUESTION="Extract /tmp/backup2.tar.gz to /tmp/extracted directory"
+TASK_4_HINT="-C specifies target directory for extraction"
+TASK_4_COMMAND_1="mkdir -p /tmp/extracted && tar -xvzf /tmp/backup2.tar.gz -C /tmp/extracted"
+
+# Task 5
+TASK_5_QUESTION="Compress /etc/services to /tmp/services.gz (keep original)"
+TASK_5_HINT="Use -c to write to stdout and redirect"
+TASK_5_COMMAND_1="gzip -k /etc/services -c > /tmp/services.gz"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Cleaning up any existing files...${RESET}"

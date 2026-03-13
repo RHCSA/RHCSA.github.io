@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: File Transfer Using SCP
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="ssh_scp_transfer"
 
-QUESTION="[LAB] File transfer to/from a server using SCP"
-HINT="Task 1: scp /tmp/upload_test.txt root@127.0.0.1:/tmp/uploaded.txt
-Task 2: scp root@127.0.0.1:/tmp/remote_file.txt /tmp/downloaded.txt"
+QUESTION="File transfer to/from a server using SCP"
 
 # Lab configuration
-LAB_TITLE="File Transfer Using SCP"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Use scp to upload /tmp/upload_test.txt to root@127.0.0.1:/tmp/uploaded.txt" ;;
-        1) echo "Use scp to download root@127.0.0.1:/tmp/remote_file.txt to /tmp/downloaded.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Use scp to upload /tmp/upload_test.txt to root@127.0.0.1:/tmp/uploaded.txt"
+TASK_1_HINT="scp syntax: scp source user@host:destination"
+TASK_1_COMMAND_1="scp /tmp/upload_test.txt root@127.0.0.1:/tmp/uploaded.txt"
+
+# Task 2
+TASK_2_QUESTION="Use scp to download root@127.0.0.1:/tmp/remote_file.txt to /tmp/downloaded.txt"
+TASK_2_HINT="To download, put remote path first and local path second"
+TASK_2_COMMAND_1="scp root@127.0.0.1:/tmp/remote_file.txt /tmp/downloaded.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

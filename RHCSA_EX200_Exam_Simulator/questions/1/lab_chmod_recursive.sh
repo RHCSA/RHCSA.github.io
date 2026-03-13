@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Recursive Permission Changes
 
@@ -6,24 +6,37 @@
 IS_LAB=true
 LAB_ID="chmod_recursive"
 
-QUESTION="[LAB] Set different permissions for files and directories recursively"
-HINT="Task 1: find /tmp/webroot -type d -exec chmod 755 {} \\;
-Task 2: find /tmp/webroot -type f -exec chmod 644 {} \\;
-Task 3: chmod -R o-w /tmp/webroot/"
+QUESTION="Set different permissions for files and directories recursively"
 
 # Lab configuration
-LAB_TITLE="Recursive chmod"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Set ALL directories in /tmp/webroot/ to 755" ;;
-        1) echo "Set ALL files in /tmp/webroot/ to 644" ;;
-        2) echo "Remove write permission for others on everything in /tmp/webroot/" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Set ALL directories in /tmp/webroot/ to 755"
+TASK_1_HINT="Use find with -type d to target directories and -exec chmod to change permissions"
+TASK_1_COMMAND_1="find /tmp/webroot -type d -exec chmod 755 {} \\;"
+
+# Task 2
+TASK_2_QUESTION="Set ALL files in /tmp/webroot/ to 644"
+TASK_2_HINT="Use find with -type f to target files and -exec chmod to change permissions"
+TASK_2_COMMAND_1="find /tmp/webroot -type f -exec chmod 644 {} \\;"
+
+# Task 3
+TASK_3_QUESTION="Remove write permission for others on everything in /tmp/webroot/"
+TASK_3_HINT="Use chmod -R with o-w to recursively remove write for others"
+TASK_3_COMMAND_1="chmod -R o-w /tmp/webroot/"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Compress File with bzip2
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="bzip2_compress"
 
-QUESTION="[LAB] Compress a file using bzip2 with maximum compression"
-HINT="Task 1: bzip2 -9 /tmp/largefile.txt
-(-9 = maximum compression)"
+QUESTION="Compress a file using bzip2 with maximum compression"
 
 # Lab configuration
-LAB_TITLE="bzip2 Maximum Compression"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Compress /tmp/largefile.txt using bzip2 with maximum compression (-9)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Compress /tmp/largefile.txt using bzip2 with maximum compression (-9)"
+TASK_1_HINT="-9 = maximum compression"
+TASK_1_COMMAND_1="bzip2 -9 /tmp/largefile.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test file for compression...${RESET}"

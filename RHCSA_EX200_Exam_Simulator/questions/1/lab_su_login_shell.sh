@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Switch User with Login Shell
 
@@ -6,22 +6,25 @@
 IS_LAB=true
 LAB_ID="su_login_shell"
 
-QUESTION="[LAB] Switch to another user with full login environment"
-HINT="Task 1: su - devuser, then touch ~/i_was_here.txt, then exit
-(su - loads full login shell environment)"
+QUESTION="Switch to another user with full login environment"
 
 # Lab configuration
-LAB_TITLE="Switch User with Login Shell"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Switch to 'devuser' with login shell (su -) and create ~/i_was_here.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Switch to 'devuser' with login shell (su -) and create ~/i_was_here.txt"
+TASK_1_HINT="su - loads full login shell environment including profile scripts"
+TASK_1_COMMAND_1="su - devuser"
+TASK_1_COMMAND_2="touch ~/i_was_here.txt"
+TASK_1_COMMAND_3="exit"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test user devuser...${RESET}"

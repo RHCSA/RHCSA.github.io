@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: List tar Archive Contents
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="tar_list"
 
-QUESTION="[LAB] List contents of a tar archive and save to file"
-HINT="Task 1: tar -tvzf /tmp/archive.tar.gz > /tmp/archive_contents.txt
-(-t = list contents)"
+QUESTION="List contents of a tar archive and save to file"
 
 # Lab configuration
-LAB_TITLE="List tar Archive Contents"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "List the contents of /tmp/archive.tar.gz and save the output to /tmp/archive_contents.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="List the contents of /tmp/archive.tar.gz and save the output to /tmp/archive_contents.txt"
+TASK_1_HINT="-t = list contents of archive"
+TASK_1_COMMAND_1="tar -tvzf /tmp/archive.tar.gz > /tmp/archive_contents.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test archive...${RESET}"

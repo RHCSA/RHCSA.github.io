@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create bzip2 Compressed Archive
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="tar_bzip2"
 
-QUESTION="[LAB] Create a bzip2 compressed tar archive"
-HINT="Task 1: tar -cvjf /tmp/etc_backup.tar.bz2 /etc/ssh
-(-j = bzip2 compression)"
+QUESTION="Create a bzip2 compressed tar archive"
 
 # Lab configuration
-LAB_TITLE="Create bzip2 Compressed Archive"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create a bzip2 compressed tar archive named /tmp/etc_backup.tar.bz2 of the /etc/ssh directory" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Create a bzip2 compressed tar archive named /tmp/etc_backup.tar.bz2 of the /etc/ssh directory"
+TASK_1_HINT="-j = bzip2 compression"
+TASK_1_COMMAND_1="tar -cvjf /tmp/etc_backup.tar.bz2 /etc/ssh"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing any existing etc_backup.tar.bz2...${RESET}"

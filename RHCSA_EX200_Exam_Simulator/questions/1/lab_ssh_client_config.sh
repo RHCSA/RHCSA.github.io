@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Configure SSH Client Config File
 
@@ -6,23 +6,24 @@
 IS_LAB=true
 LAB_ID="ssh_client_config"
 
-QUESTION="[LAB] Create SSH client configuration file"
-HINT="Task 1: Create ~/.ssh/config with:
-  Host labserver\n    HostName 192.168.1.100\n    User admin\n    Port 2222
-Then: chmod 600 ~/.ssh/config"
+QUESTION="Create SSH client configuration file"
 
 # Lab configuration
-LAB_TITLE="Configure SSH Client Config"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create SSH client config (~/.ssh/config) with Host 'labserver' (HostName 192.168.1.100, User admin, Port 2222) and set permissions to 600" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Create SSH client config (~/.ssh/config) with Host 'labserver' (HostName 192.168.1.100, User admin, Port 2222) and set permissions to 600"
+TASK_1_HINT="Use vim/nano to create config file with Host block, then chmod 600"
+TASK_1_COMMAND_1="vim ~/.ssh/config"
+TASK_1_COMMAND_2="chmod 600 ~/.ssh/config"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

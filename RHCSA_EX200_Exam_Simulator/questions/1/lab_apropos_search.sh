@@ -1,32 +1,40 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Search Man Pages with apropos and man -k
 
 IS_LAB=true
 LAB_ID="apropos_search"
 
-QUESTION="[LAB] Use apropos and man -k to search for commands by keyword"
+QUESTION="Use apropos and man -k to search for commands by keyword"
 
-HINT="Task 1: apropos password > /tmp/exam/password_cmds.txt
-       (Search all man pages containing 'password')
-
-Task 2: man -k partition > /tmp/exam/partition_cmds.txt
-       (man -k is same as apropos)
-
-Task 3: apropos -s 8 user > /tmp/exam/user_admin.txt
-       (Search only section 8 - admin commands)"
-
-LAB_TITLE="Search Man Pages (apropos)"
 LAB_TASK_COUNT=3
 
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find all commands related to 'password', save to /tmp/exam/password_cmds.txt" ;;
-        1) echo "Find all commands related to 'partition', save to /tmp/exam/partition_cmds.txt" ;;
-        2) echo "Find admin commands (section 8) related to 'user', save to /tmp/exam/user_admin.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Find all commands related to 'password', save to /tmp/exam/password_cmds.txt"
+TASK_1_HINT="apropos searches all man pages containing the keyword"
+TASK_1_COMMAND_1="apropos password > /tmp/exam/password_cmds.txt"
+
+# Task 2
+TASK_2_QUESTION="Find all commands related to 'partition', save to /tmp/exam/partition_cmds.txt"
+TASK_2_HINT="man -k is the same as apropos"
+TASK_2_COMMAND_1="man -k partition > /tmp/exam/partition_cmds.txt"
+
+# Task 3
+TASK_3_QUESTION="Find admin commands (section 8) related to 'user', save to /tmp/exam/user_admin.txt"
+TASK_3_HINT="Use apropos -s 8 to search only section 8 (admin commands)"
+TASK_3_COMMAND_1="apropos -s 8 user > /tmp/exam/user_admin.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 prepare_lab() {
     echo "  • Creating apropos lab environment..."

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Find Non-HTTPS URLs (Security Audit)
 
@@ -6,21 +6,23 @@
 IS_LAB=true
 LAB_ID="grep_security_audit"
 
-QUESTION="[LAB] Find HTTP links that are NOT using HTTPS (security audit)"
-HINT="Task 1: grep 'http[^s]' /tmp/config-files/*.conf > /tmp/insecure-urls.txt\n([^s] matches 'http:' but not 'https:')"
+QUESTION="Find HTTP links that are NOT using HTTPS (security audit)"
 
 # Lab configuration
-LAB_TITLE="Find Non-HTTPS URLs (Security Audit)"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find all HTTP URLs (not HTTPS) from files in /tmp/config-files/, save to /tmp/insecure-urls.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Find all HTTP URLs (not HTTPS) from files in /tmp/config-files/, save to /tmp/insecure-urls.txt"
+TASK_1_HINT="[^s] matches 'http:' but not 'https:'"
+TASK_1_COMMAND_1="grep 'http[^s]' /tmp/config-files/*.conf > /tmp/insecure-urls.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: List all systemd targets
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="list_targets"
 
-QUESTION="[LAB] Write a list of all systemd targets to a file"
-HINT="Task 1: systemctl list-units --type=target > /tmp/all-targets.txt
-(or use -t target)"
+QUESTION="Write a list of all systemd targets to a file"
 
 # Lab configuration
-LAB_TITLE="List Systemd Targets"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Write the list of all available targets on this host to /tmp/all-targets.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Write the list of all available targets on this host to /tmp/all-targets.txt"
+TASK_1_HINT="Use systemctl list-units with --type=target (or -t target)"
+TASK_1_COMMAND_1="systemctl list-units --type=target > /tmp/all-targets.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing target list file...${RESET}"

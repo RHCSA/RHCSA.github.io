@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep with Line Anchors
 
@@ -6,25 +6,33 @@
 IS_LAB=true
 LAB_ID="grep_anchors"
 
-QUESTION="[LAB] Use grep anchors (^ and $) to match line patterns"
-HINT="Task 1: grep '^root' /etc/passwd > /tmp/root-lines.txt
-Task 2: grep 'bash$' /etc/passwd > /tmp/bash-shell.txt
-Task 3: grep -c '^$' /tmp/testfile.txt > /tmp/empty-count.txt"
+QUESTION="Use grep anchors (^ and $) to match line patterns"
 
 # Lab configuration
-LAB_TITLE="Grep with Line Anchors"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Extract lines starting with 'root' from /etc/passwd to /tmp/root-lines.txt" ;;
-        1) echo "Extract lines ending with 'bash' from /etc/passwd to /tmp/bash-shell.txt" ;;
-        2) echo "Count empty lines in /tmp/testfile.txt and save count to /tmp/empty-count.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Extract lines starting with 'root' from /etc/passwd to /tmp/root-lines.txt"
+TASK_1_HINT="Use ^ to anchor pattern to start of line"
+TASK_1_COMMAND_1="grep '^root' /etc/passwd > /tmp/root-lines.txt"
+
+# Task 2
+TASK_2_QUESTION="Extract lines ending with 'bash' from /etc/passwd to /tmp/bash-shell.txt"
+TASK_2_HINT="Use $ to anchor pattern to end of line"
+TASK_2_COMMAND_1="grep 'bash$' /etc/passwd > /tmp/bash-shell.txt"
+
+# Task 3
+TASK_3_QUESTION="Count empty lines in /tmp/testfile.txt and save count to /tmp/empty-count.txt"
+TASK_3_HINT="Use ^$ to match empty lines and -c to count"
+TASK_3_COMMAND_1="grep -c '^$' /tmp/testfile.txt > /tmp/empty-count.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

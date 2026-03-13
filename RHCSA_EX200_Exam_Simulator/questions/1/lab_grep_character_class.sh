@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep Character Classes
 
@@ -6,25 +6,33 @@
 IS_LAB=true
 LAB_ID="grep_character_class"
 
-QUESTION="[LAB] Use grep with character classes and POSIX classes"
-HINT="Task 1: grep '[0-9]' /tmp/mixed.txt > /tmp/has-digits.txt
-Task 2: grep '^[A-Z]' /tmp/mixed.txt > /tmp/uppercase-start.txt
-Task 3: grep -E '^[0-9]+$' /tmp/numbers.txt > /tmp/digits-only.txt"
+QUESTION="Use grep with character classes and POSIX classes"
 
 # Lab configuration
-LAB_TITLE="Grep Character Classes"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Extract lines containing any digit from /tmp/mixed.txt, save to /tmp/has-digits.txt" ;;
-        1) echo "Extract lines starting with an uppercase letter from /tmp/mixed.txt, save to /tmp/uppercase-start.txt" ;;
-        2) echo "Extract lines that contain ONLY digits (no letters or spaces) from /tmp/numbers.txt, save to /tmp/digits-only.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Extract lines containing any digit from /tmp/mixed.txt, save to /tmp/has-digits.txt"
+TASK_1_HINT="Use [0-9] character class to match digits"
+TASK_1_COMMAND_1="grep '[0-9]' /tmp/mixed.txt > /tmp/has-digits.txt"
+
+# Task 2
+TASK_2_QUESTION="Extract lines starting with an uppercase letter from /tmp/mixed.txt, save to /tmp/uppercase-start.txt"
+TASK_2_HINT="Use ^[A-Z] to match lines starting with uppercase"
+TASK_2_COMMAND_1="grep '^[A-Z]' /tmp/mixed.txt > /tmp/uppercase-start.txt"
+
+# Task 3
+TASK_3_QUESTION="Extract lines that contain ONLY digits (no letters or spaces) from /tmp/numbers.txt, save to /tmp/digits-only.txt"
+TASK_3_HINT="Use -E with ^[0-9]+$ to match lines with only digits"
+TASK_3_COMMAND_1="grep -E '^[0-9]+$' /tmp/numbers.txt > /tmp/digits-only.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

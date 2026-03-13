@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Generate SSH Key Pairs
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="ssh_keygen"
 
-QUESTION="[LAB] Generate SSH key pairs using ssh-keygen"
-HINT="Task 1: ssh-keygen -t ed25519 -f ~/.ssh/exam_key -C 'RHCSA Exam Key'
-Task 2: ssh-keygen -t rsa -b 4096 -f ~/.ssh/backup_key"
+QUESTION="Generate SSH key pairs using ssh-keygen"
 
 # Lab configuration
-LAB_TITLE="Generate SSH Key Pairs"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Generate an Ed25519 key pair saved as ~/.ssh/exam_key with comment 'RHCSA Exam Key'" ;;
-        1) echo "Generate a 4096-bit RSA key pair saved as ~/.ssh/backup_key" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Generate an Ed25519 key pair saved as ~/.ssh/exam_key with comment 'RHCSA Exam Key'"
+TASK_1_HINT="Use ssh-keygen -t for key type, -f for filename, -C for comment"
+TASK_1_COMMAND_1="ssh-keygen -t ed25519 -f ~/.ssh/exam_key -C 'RHCSA Exam Key'"
+
+# Task 2
+TASK_2_QUESTION="Generate a 4096-bit RSA key pair saved as ~/.ssh/backup_key"
+TASK_2_HINT="Use -b to specify key bit length for RSA keys"
+TASK_2_COMMAND_1="ssh-keygen -t rsa -b 4096 -f ~/.ssh/backup_key"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

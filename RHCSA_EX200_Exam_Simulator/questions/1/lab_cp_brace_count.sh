@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Copy Files with Brace Expansion and Count Files
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="cp_brace_count"
 
-QUESTION="[LAB] Copy files using brace expansion and count files"
-HINT="Task 1: cp -arp /tmp/source/dir1/dir2/files{20..25} /tmp/destination/
-Task 2: ls /tmp/destination/ | wc -l > /tmp/file_count.txt"
+QUESTION="Copy files using brace expansion and count files"
 
 # Lab configuration
-LAB_TITLE="Copy with Brace Expansion & Count Files"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Copy files20 through files25 from /tmp/source/dir1/dir2/ to /tmp/destination/ preserving attributes and permissions" ;;
-        1) echo "Count files in /tmp/destination/ and save the count to /tmp/file_count.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Copy files20 through files25 from /tmp/source/dir1/dir2/ to /tmp/destination/ preserving attributes and permissions"
+TASK_1_HINT="Use brace expansion {20..25} to specify file range"
+TASK_1_COMMAND_1="cp -arp /tmp/source/dir1/dir2/files{20..25} /tmp/destination/"
+
+# Task 2
+TASK_2_QUESTION="Count files in /tmp/destination/ and save the count to /tmp/file_count.txt"
+TASK_2_HINT="Use wc -l to count lines from ls output"
+TASK_2_COMMAND_1="ls /tmp/destination/ | wc -l > /tmp/file_count.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating source directory structure...${RESET}"

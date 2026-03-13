@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep Extended Regex (ERE)
 
@@ -6,25 +6,33 @@
 IS_LAB=true
 LAB_ID="grep_extended"
 
-QUESTION="[LAB] Use grep -E (extended regex) for advanced pattern matching"
-HINT="Task 1: grep -iE 'error|warning|critical' /tmp/app.log > /tmp/issues.txt
-Task 2: grep -E 'o{2,}' /tmp/words.txt > /tmp/double-o.txt (or grep 'oo')
-Task 3: grep -Ev '^#|^$' /tmp/server.conf > /tmp/clean-config.txt"
+QUESTION="Use grep -E (extended regex) for advanced pattern matching"
 
 # Lab configuration
-LAB_TITLE="Grep Extended Regex (ERE)"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find lines containing 'error', 'warning', or 'critical' (case-insensitive) from /tmp/app.log, save to /tmp/issues.txt" ;;
-        1) echo "Find lines with 2 or more consecutive 'o' characters from /tmp/words.txt and save to /tmp/double-o.txt" ;;
-        2) echo "From /tmp/server.conf, extract lines that are NOT comments and NOT empty, save to /tmp/clean-config.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Find lines containing 'error', 'warning', or 'critical' (case-insensitive) from /tmp/app.log, save to /tmp/issues.txt"
+TASK_1_HINT="Use -E with alternation (|) and -i for case-insensitive"
+TASK_1_COMMAND_1="grep -iE 'error|warning|critical' /tmp/app.log > /tmp/issues.txt"
+
+# Task 2
+TASK_2_QUESTION="Find lines with 2 or more consecutive 'o' characters from /tmp/words.txt and save to /tmp/double-o.txt"
+TASK_2_HINT="Use -E with quantifier {2,} or simply search for 'oo'"
+TASK_2_COMMAND_1="grep -E 'o{2,}' /tmp/words.txt > /tmp/double-o.txt"
+
+# Task 3
+TASK_3_QUESTION="From /tmp/server.conf, extract lines that are NOT comments and NOT empty, save to /tmp/clean-config.txt"
+TASK_3_HINT="Use -v to invert match and -E with alternation for multiple patterns"
+TASK_3_COMMAND_1="grep -Ev '^#|^$' /tmp/server.conf > /tmp/clean-config.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

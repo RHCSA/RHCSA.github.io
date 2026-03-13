@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create gzip Compressed Archive
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="tar_gzip"
 
-QUESTION="[LAB] Create a gzip compressed tar archive"
-HINT="Task 1: tar -cvzf /tmp/logs.tar.gz '/var/log/*.log'
-(-z = gzip compression)"
+QUESTION="Create a gzip compressed tar archive"
 
 # Lab configuration
-LAB_TITLE="Create gzip Compressed Archive"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create a gzip compressed tar archive named /tmp/logs.tar.gz containing all .log files in /var/log/" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Create a gzip compressed tar archive named /tmp/logs.tar.gz containing all .log files in /var/log/"
+TASK_1_HINT="-z = gzip compression"
+TASK_1_COMMAND_1="tar -cvzf /tmp/logs.tar.gz /var/log/*.log"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing any existing logs.tar.gz...${RESET}"

@@ -1,37 +1,47 @@
-#!/bin/bash
-
+﻿#!/bin/bash
+# Objective 1: Understand and use essential tools
 # LAB: Directory Permissions - Understanding r, w, x on directories
 
+# This is a LAB exercise
 IS_LAB=true
 LAB_ID="directory_permissions"
 
-QUESTION="[LAB] Set directory permissions to control access (r=list, w=create/delete, x=enter)"
+QUESTION="Set directory permissions to control access (r=list, w=create/delete, x=enter)"
 
-HINT="Task 1: chmod 755 /tmp/exam/public
-       (Owner: full access, Others: can list and enter, but not create files)
-
-Task 2: chmod 700 /tmp/exam/private
-       (Only owner can list, enter, or modify - others blocked completely)
-
-Task 3: chmod 733 /tmp/exam/dropbox
-       (Owner: full access, Others: can enter and create files, but cannot list contents)
-
-Task 4: chmod 711 /tmp/exam/gateway
-       (Owner: full access, Others: can enter only if they know exact filename)"
-
-LAB_TITLE="Directory Permissions (r/w/x behavior)"
+# Lab configuration
 LAB_TASK_COUNT=4
 
-# Task descriptions
-get_task_description() {
-    local task_num=$1
-    case $task_num in
-        0) echo "Set the permission of  /tmp/exam/public, so owner has full access, others can list and enter but not create files" ;;
-        1) echo "Set the permission of /tmp/exam/private, so only owner can access - completely private from others" ;;
-        2) echo "Set the permission of /tmp/exam/dropbox, so others can enter and create files but cannot list contents" ;;
-        3) echo "Set the permission of /tmp/exam/gateway, so others can only enter - cannot list (must know exact filename)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Set the permission of /tmp/exam/public, so owner has full access, others can list and enter but not create files"
+TASK_1_HINT="Use chmod 755 (rwxr-xr-x) - owner: full, others: read+execute"
+TASK_1_COMMAND_1="chmod 755 /tmp/exam/public"
+
+# Task 2
+TASK_2_QUESTION="Set the permission of /tmp/exam/private, so only owner can access - completely private from others"
+TASK_2_HINT="Use chmod 700 (rwx------) - only owner has any access"
+TASK_2_COMMAND_1="chmod 700 /tmp/exam/private"
+
+# Task 3
+TASK_3_QUESTION="Set the permission of /tmp/exam/dropbox, so others can enter and create files but cannot list contents"
+TASK_3_HINT="Use chmod 733 (rwx-wx-wx) - owner: full, others: write+execute"
+TASK_3_COMMAND_1="chmod 733 /tmp/exam/dropbox"
+
+# Task 4
+TASK_4_QUESTION="Set the permission of /tmp/exam/gateway, so others can only enter - cannot list (must know exact filename)"
+TASK_4_HINT="Use chmod 711 (rwx--x--x) - owner: full, others: execute only"
+TASK_4_COMMAND_1="chmod 711 /tmp/exam/gateway"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare lab environment
 prepare_lab() {

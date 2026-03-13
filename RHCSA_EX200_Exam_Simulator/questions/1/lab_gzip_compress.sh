@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Compress File with gzip
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="gzip_compress"
 
-QUESTION="[LAB] Compress a file using gzip while keeping the original"
-HINT="Task 1: gzip -k /tmp/testfile.txt
-(Alternative: gzip -c /tmp/testfile.txt > /tmp/testfile.txt.gz)"
+QUESTION="Compress a file using gzip while keeping the original"
 
 # Lab configuration
-LAB_TITLE="gzip Compression"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Compress /tmp/testfile.txt using gzip, keeping the original file (both files should exist)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Compress /tmp/testfile.txt using gzip, keeping the original file (both files should exist)"
+TASK_1_HINT="Alternative: gzip -c /tmp/testfile.txt > /tmp/testfile.txt.gz"
+TASK_1_COMMAND_1="gzip -k /tmp/testfile.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test file for compression...${RESET}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Configure Passwordless sudo for User
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="sudo_nopasswd"
 
-QUESTION="[LAB] Configure passwordless sudo for a user"
-HINT="Task 1: Add to /etc/sudoers.d/automation:
-automation ALL=(ALL) NOPASSWD: ALL"
+QUESTION="Configure passwordless sudo for a user"
 
 # Lab configuration
-LAB_TITLE="Configure Passwordless sudo"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Configure user 'automation' to run all sudo commands without password" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Configure user 'automation' to run all sudo commands without password"
+TASK_1_HINT="Create a drop-in file in /etc/sudoers.d/ with NOPASSWD: ALL"
+TASK_1_COMMAND_1="echo 'automation ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/automation"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing configuration...${RESET}"

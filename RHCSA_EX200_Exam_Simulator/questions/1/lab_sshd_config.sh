@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Configure SSH Daemon (sshd) Settings
 
@@ -6,30 +6,43 @@
 IS_LAB=true
 LAB_ID="sshd_config"
 
-QUESTION="[LAB] Modify SSH daemon configuration with security settings"
-HINT="Task 1: PermitRootLogin yes (in /etc/ssh/sshd_config)
-Task 2: AllowUsers root admin developer
-Task 3: MaxAuthTries 3
-Task 4: X11Forwarding no
-Task 5: PermitEmptyPasswords no
-After editing: systemctl reload sshd"
+QUESTION="Modify SSH daemon configuration with security settings"
 
 # Lab configuration
-LAB_TITLE="SSH Daemon Configuration"
 LAB_TASK_COUNT=5
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Set PermitRootLogin to 'yes' in /etc/ssh/sshd_config" ;;
-        1) echo "Configure AllowUsers to permit only: root, admin, developer" ;;
-        2) echo "Set MaxAuthTries to 3" ;;
-        3) echo "Disable X11 forwarding (X11Forwarding no)" ;;
-        4) echo "Disable empty passwords (PermitEmptyPasswords no)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Set PermitRootLogin to 'yes' in /etc/ssh/sshd_config"
+TASK_1_HINT="Edit /etc/ssh/sshd_config and add/modify PermitRootLogin directive"
+TASK_1_COMMAND_1="vim /etc/ssh/sshd_config"
+
+# Task 2
+TASK_2_QUESTION="Configure AllowUsers to permit only: root, admin, developer"
+TASK_2_HINT="AllowUsers directive accepts space-separated list of usernames"
+TASK_2_COMMAND_1="AllowUsers root admin developer"
+
+# Task 3
+TASK_3_QUESTION="Set MaxAuthTries to 3"
+TASK_3_HINT="MaxAuthTries limits authentication attempts per connection"
+TASK_3_COMMAND_1="MaxAuthTries 3"
+
+# Task 4
+TASK_4_QUESTION="Disable X11 forwarding (X11Forwarding no)"
+TASK_4_HINT="X11Forwarding controls graphical application forwarding over SSH"
+TASK_4_COMMAND_1="X11Forwarding no"
+
+# Task 5
+TASK_5_QUESTION="Disable empty passwords (PermitEmptyPasswords no)"
+TASK_5_HINT="PermitEmptyPasswords controls login for accounts without passwords"
+TASK_5_COMMAND_1="PermitEmptyPasswords no"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Backing up original sshd_config...${RESET}"

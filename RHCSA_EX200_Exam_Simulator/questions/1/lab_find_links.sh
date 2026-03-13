@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Find Symbolic Links and Hard Links
 
@@ -6,22 +6,32 @@
 IS_LAB=true
 LAB_ID="find_links"
 
-QUESTION="[LAB] Use find command to locate symbolic and hard links"
-HINT="Task 1: find /tmp/linktest -type l > /tmp/symlinks.txt
-Task 2: find /tmp/linktest -xtype l > /tmp/broken_links.txt"
+QUESTION="Use find command to locate symbolic and hard links"
 
 # Lab configuration
-LAB_TITLE="Find Links"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find all symlinks in /tmp/linktest and save to /tmp/symlinks.txt" ;;
-        1) echo "Find broken symlinks in /tmp/linktest and save to /tmp/broken_links.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Find all symlinks in /tmp/linktest and save to /tmp/symlinks.txt"
+TASK_1_HINT="Use find with -type l to find symbolic links"
+TASK_1_COMMAND_1="find /tmp/linktest -type l > /tmp/symlinks.txt"
+
+# Task 2
+TASK_2_QUESTION="Find broken symlinks in /tmp/linktest and save to /tmp/broken_links.txt"
+TASK_2_HINT="Use find with -xtype l to find broken symbolic links"
+TASK_2_COMMAND_1="find /tmp/linktest -xtype l > /tmp/broken_links.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

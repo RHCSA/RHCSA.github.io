@@ -1,32 +1,40 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: whatis and man -f for Brief Descriptions
 
 IS_LAB=true
 LAB_ID="whatis_command"
 
-QUESTION="[LAB] Use whatis and man -f to get one-line command descriptions"
+QUESTION="Use whatis and man -f to get one-line command descriptions"
 
-HINT="Task 1: whatis tar > /tmp/exam/tar_desc.txt
-       (Get brief description of tar command)
-
-Task 2: man -f passwd > /tmp/exam/passwd_sections.txt
-       (Shows which sections have passwd pages)
-
-Task 3: whatis ls cp mv > /tmp/exam/multi_desc.txt
-       (Get descriptions for multiple commands at once)"
-
-LAB_TITLE="Brief Descriptions (whatis)"
 LAB_TASK_COUNT=3
 
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Get one-line description of 'tar', save to /tmp/exam/tar_desc.txt" ;;
-        1) echo "Show all sections for 'passwd', save to /tmp/exam/passwd_sections.txt" ;;
-        2) echo "Get descriptions for ls, cp, mv in one command, save to /tmp/exam/multi_desc.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Get one-line description of 'tar', save to /tmp/exam/tar_desc.txt"
+TASK_1_HINT="whatis gives brief description of a command"
+TASK_1_COMMAND_1="whatis tar > /tmp/exam/tar_desc.txt"
+
+# Task 2
+TASK_2_QUESTION="Show all sections for 'passwd', save to /tmp/exam/passwd_sections.txt"
+TASK_2_HINT="man -f shows which sections have pages for a command"
+TASK_2_COMMAND_1="man -f passwd > /tmp/exam/passwd_sections.txt"
+
+# Task 3
+TASK_3_QUESTION="Get descriptions for ls, cp, mv in one command, save to /tmp/exam/multi_desc.txt"
+TASK_3_HINT="whatis accepts multiple commands as arguments"
+TASK_3_COMMAND_1="whatis ls cp mv > /tmp/exam/multi_desc.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 prepare_lab() {
     echo "  • Creating whatis lab environment..."

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep Word Boundaries
 
@@ -6,21 +6,23 @@
 IS_LAB=true
 LAB_ID="grep_word_match"
 
-QUESTION="[LAB] Use grep -w to match whole words only"
-HINT="Task 1: grep -w 'log' /tmp/services.txt > /tmp/log-only.txt (-w matches whole words)"
+QUESTION="Use grep -w to match whole words only"
 
 # Lab configuration
-LAB_TITLE="Grep Word Boundaries"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find lines containing the exact word 'log' (not 'login' or 'syslog') from /tmp/services.txt, save to /tmp/log-only.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Find lines containing the exact word 'log' (not 'login' or 'syslog') from /tmp/services.txt, save to /tmp/log-only.txt"
+TASK_1_HINT="-w matches whole words only"
+TASK_1_COMMAND_1="grep -w 'log' /tmp/services.txt > /tmp/log-only.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Error Redirection
 
@@ -6,24 +6,37 @@
 IS_LAB=true
 LAB_ID="error_redirection"
 
-QUESTION="[LAB] Run /tmp/testscript.sh and redirect stdout to one file and stderr to another"
-HINT="Task 1: /tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt
-Task 2: stdout (SUCCESS) goes to output.txt
-Task 3: stderr (ERROR) goes to errors.txt"
+QUESTION="Run /tmp/testscript.sh and redirect stdout to one file and stderr to another"
 
 # Lab configuration
-LAB_TITLE="Error Redirection (2>)"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Run /tmp/testscript.sh with output redirection" ;;
-        1) echo "Redirect stdout to /tmp/output.txt (contains SUCCESS)" ;;
-        2) echo "Redirect stderr to /tmp/errors.txt (contains ERROR)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Run /tmp/testscript.sh with output redirection"
+TASK_1_HINT="Run script with > for stdout and 2> for stderr"
+TASK_1_COMMAND_1="/tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt"
+
+# Task 2
+TASK_2_QUESTION="Redirect stdout to /tmp/output.txt (contains SUCCESS)"
+TASK_2_HINT="Use > to redirect stdout (file descriptor 1)"
+TASK_2_COMMAND_1="/tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt"
+
+# Task 3
+TASK_3_QUESTION="Redirect stderr to /tmp/errors.txt (contains ERROR)"
+TASK_3_HINT="Use 2> to redirect stderr (file descriptor 2)"
+TASK_3_COMMAND_1="/tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

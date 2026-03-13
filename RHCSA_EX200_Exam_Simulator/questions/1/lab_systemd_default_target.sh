@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Set Default Systemd Target
 
@@ -6,21 +6,23 @@
 IS_LAB=true
 LAB_ID="systemd_default_target"
 
-QUESTION="[LAB] Set the default systemd boot target"
-HINT="Task 1: systemctl set-default multi-user.target (text mode = runlevel 3)"
+QUESTION="Set the default systemd boot target"
 
 # Lab configuration
-LAB_TITLE="Set Default Systemd Target"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Set the default boot target to multi-user.target (text mode)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Set the default boot target to multi-user.target (text mode)"
+TASK_1_HINT="Use systemctl set-default to change the default target"
+TASK_1_COMMAND_1="systemctl set-default multi-user.target"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Saving current default target...${RESET}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 7: Networking
 # LAB: Hostname Configuration
 
@@ -6,24 +6,28 @@
 IS_LAB=true
 LAB_ID="hostname"
 
-QUESTION="[LAB] Set the system hostname to server1.rhcsa.github.io"
-ANSWER="Use: hostnamectl set-hostname server1.rhcsa.github.io"
-HINT="Task 1: hostnamectl set-hostname server1.rhcsa.github.io
-Task 2: Add '127.0.0.1   server1.rhcsa.github.io server1' to /etc/hosts"
+QUESTION="Set the system hostname to server1.rhcsa.github.io"
 
 # Lab configuration
-LAB_TITLE="Hostname Configuration"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Set the system hostname to server1.rhcsa.github.io" ;;
-        1) echo "Add server1.rhcsa.github.io to /etc/hosts" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Set the system hostname to server1.rhcsa.github.io"
+TASK_1_HINT="Use hostnamectl to set the hostname persistently"
+TASK_1_COMMAND_1="hostnamectl set-hostname server1.rhcsa.github.io"
+
+# Task 2
+TASK_2_QUESTION="Add server1.rhcsa.github.io to /etc/hosts"
+TASK_2_HINT="Add an entry mapping 127.0.0.1 to the hostname in /etc/hosts"
+TASK_2_COMMAND_1="echo '127.0.0.1   server1.rhcsa.github.io server1' >> /etc/hosts"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     local target_hostname="server1.rhcsa.github.io"

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create tar Archive
 
@@ -6,21 +6,27 @@
 IS_LAB=true
 LAB_ID="tar_create"
 
-QUESTION="[LAB] Create an uncompressed tar archive"
-HINT="Task 1: tar -cvf /tmp/backup.tar /etc/sysconfig/
-(-c = create, -v = verbose, -f = file)"
+QUESTION="Create an uncompressed tar archive"
 
 # Lab configuration
-LAB_TITLE="Create tar Archive"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create an uncompressed tar archive named /tmp/backup.tar containing all files in /etc/sysconfig/" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create an uncompressed tar archive named /tmp/backup.tar containing all files in /etc/sysconfig/"
+TASK_1_HINT="Use tar -cvf to create archive: -c=create, -v=verbose, -f=file"
+TASK_1_COMMAND_1="tar -cvf /tmp/backup.tar /etc/sysconfig/"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

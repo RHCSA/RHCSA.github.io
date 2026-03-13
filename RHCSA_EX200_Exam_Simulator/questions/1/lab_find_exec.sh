@@ -1,41 +1,52 @@
-#!/bin/bash
-
+﻿#!/bin/bash
+# Objective 1: Understand and use essential tools
 # LAB: Find with -exec Actions
 
+# This is a LAB exercise
 IS_LAB=true
 LAB_ID="find_exec"
 
-QUESTION="[LAB] Use find -exec to perform actions on found files (chmod, cp, delete)"
+QUESTION="Use find -exec to perform actions on found files (chmod, cp, delete)"
 
-HINT="Task 1: find /tmp/exam/web -type f -exec chmod 644 {} \\;
-       (Set all files to 644)
-
-Task 2: find /tmp/exam/web -type d -exec chmod 755 {} \\;
-       (Set all directories to 755)
-
-Task 3: find /tmp/exam/config -name '*.conf' -exec cp {} /tmp/exam/backup/ \\;
-       (Copy all .conf files to backup)
-
-Task 4: find /tmp/exam/temp -type f -empty -delete
-       (Delete empty files)
-
-Task 5: find /tmp/exam/cleanup -type d -empty -delete
-       (Delete empty directories)"
-
-LAB_TITLE="Find with -exec Actions"
+# Lab configuration
 LAB_TASK_COUNT=5
 
-# Task descriptions
-get_task_description() {
-    local task_num=$1
-    case $task_num in
-        0) echo "Set all FILES in /tmp/exam/web to 644" ;;
-        1) echo "Set all DIRECTORIES in /tmp/exam/web to 755" ;;
-        2) echo "Copy all .conf files from /tmp/exam/config to /tmp/exam/backup/" ;;
-        3) echo "Delete all empty files in /tmp/exam/temp" ;;
-        4) echo "Delete all empty directories in /tmp/exam/cleanup" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Set all FILES in /tmp/exam/web to 644"
+TASK_1_HINT="Use find with -type f and -exec chmod 644 {} \\;"
+TASK_1_COMMAND_1="find /tmp/exam/web -type f -exec chmod 644 {} \\;"
+
+# Task 2
+TASK_2_QUESTION="Set all DIRECTORIES in /tmp/exam/web to 755"
+TASK_2_HINT="Use find with -type d and -exec chmod 755 {} \\;"
+TASK_2_COMMAND_1="find /tmp/exam/web -type d -exec chmod 755 {} \\;"
+
+# Task 3
+TASK_3_QUESTION="Copy all .conf files from /tmp/exam/config to /tmp/exam/backup/"
+TASK_3_HINT="Use find with -name '*.conf' and -exec cp {} destination \\;"
+TASK_3_COMMAND_1="find /tmp/exam/config -name '*.conf' -exec cp {} /tmp/exam/backup/ \\;"
+
+# Task 4
+TASK_4_QUESTION="Delete all empty files in /tmp/exam/temp"
+TASK_4_HINT="Use find with -type f -empty -delete"
+TASK_4_COMMAND_1="find /tmp/exam/temp -type f -empty -delete"
+
+# Task 5
+TASK_5_QUESTION="Delete all empty directories in /tmp/exam/cleanup"
+TASK_5_HINT="Use find with -type d -empty -delete"
+TASK_5_COMMAND_1="find /tmp/exam/cleanup -type d -empty -delete"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare lab environment
 prepare_lab() {

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Awk Command - Extract Columns
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="awk_command"
 
-QUESTION="[LAB] Use awk to extract specific columns from command output"
-HINT="Task 1: ps aux | awk '{print \$1, \$2}' > /tmp/ps-users.txt
-(\$1 = USER, \$2 = PID)"
+QUESTION="Use awk to extract specific columns from command output"
 
 # Lab configuration
-LAB_TITLE="Awk Command - Extract Columns"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Extract only USER and PID columns from 'ps aux' and save to /tmp/ps-users.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Extract only USER and PID columns from 'ps aux' and save to /tmp/ps-users.txt"
+TASK_1_HINT="\$1 = USER, \$2 = PID in ps aux output"
+TASK_1_COMMAND_1="ps aux | awk '{print \$1, \$2}' > /tmp/ps-users.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing file...${RESET}"

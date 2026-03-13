@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create authorized_keys File
 
@@ -6,21 +6,23 @@
 IS_LAB=true
 LAB_ID="ssh_authorized_keys"
 
-QUESTION="[LAB] Set up authorized_keys for SSH key authentication"
-HINT="Task 1: cat /tmp/remote_user.pub >> ~/.ssh/authorized_keys"
+QUESTION="Set up authorized_keys for SSH key authentication"
 
 # Lab configuration
-LAB_TITLE="Create authorized_keys File"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Add the public key from /tmp/remote_user.pub to ~/.ssh/authorized_keys" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Add the public key from /tmp/remote_user.pub to ~/.ssh/authorized_keys"
+TASK_1_HINT="Use >> to append to existing file without overwriting"
+TASK_1_COMMAND_1="cat /tmp/remote_user.pub >> ~/.ssh/authorized_keys"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

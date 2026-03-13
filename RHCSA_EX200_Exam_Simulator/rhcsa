@@ -457,6 +457,59 @@ declare -a TASK_STATUS
 # Current lab file path (set when loading a lab)
 CURRENT_LAB_FILE=""
 
+# =============================================================================
+# TASK HELPER FUNCTIONS - Used by all lab files
+# =============================================================================
+
+# Get task description by index (0-based)
+get_task_description() {
+    local task_idx=$1
+    local task_num=$((task_idx + 1))
+    local var_name="TASK_${task_num}_QUESTION"
+    echo "${!var_name}"
+}
+
+# Get commands for a task (returns newline-separated commands)
+get_task_commands() {
+    local task_idx=$1
+    local task_num=$((task_idx + 1))
+    local result=""
+    
+    for i in 1 2 3 4 5; do
+        local var_name="TASK_${task_num}_COMMAND_${i}"
+        local cmd="${!var_name}"
+        if [[ -n "$cmd" ]]; then
+            if [[ -n "$result" ]]; then
+                result+=$'\n'
+            fi
+            result+="$cmd"
+        fi
+    done
+    echo "$result"
+}
+
+# Build HINT from all task commands (called automatically by lab files)
+_build_hint() {
+    local result=""
+    for ((i=0; i<LAB_TASK_COUNT; i++)); do
+        local task_num=$((i+1))
+        local cmds=$(get_task_commands $i)
+        if [[ -n "$cmds" ]]; then
+            while IFS= read -r cmd; do
+                if [[ -n "$cmd" ]]; then
+                    if [[ -n "$result" ]]; then
+                        result+=$'\n'
+                    fi
+                    result+="Task ${task_num}: ${cmd}"
+                fi
+            done <<< "$cmds"
+        fi
+    done
+    echo "$result"
+}
+
+# =============================================================================
+
 # Load lab file and its functions
 # Usage: load_lab_file <obj_idx> <q_idx>
 load_lab_file() {
@@ -480,9 +533,9 @@ load_lab_file() {
     return 0
 }
 
-# Get lab title (from sourced lab file)
+# Get lab title (from sourced lab file - uses QUESTION)
 get_lab_title() {
-    echo "${LAB_TITLE:-Lab Exercise}"
+    echo "${QUESTION:-Lab Exercise}"
 }
 
 # Get number of tasks for a lab (from sourced lab file)
@@ -1021,7 +1074,7 @@ display_question() {
     local question="${LOADED_QUESTIONS[$q_idx]}"
     
     # Check if this is an interactive lab exercise
-    if [[ "$question" == "[LAB]"* ]] || [[ "${LOADED_IS_LAB[$q_idx]}" == "true" ]]; then
+    if [[ "${LOADED_IS_LAB[$q_idx]}" == "true" ]]; then
         display_lab_exercise $obj_idx $q_idx
         return
     fi

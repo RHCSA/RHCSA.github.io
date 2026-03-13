@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Cut Command - Extract Fields
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="cut_command"
 
-QUESTION="[LAB] Use cut to extract specific fields from text"
-HINT="Task 1: cat /etc/passwd | cut -d':' -f 6 > /tmp/home.txt
-(-d = delimiter, -f = field number, field 6 = home directory)"
+QUESTION="Use cut to extract specific fields from text"
 
 # Lab configuration
-LAB_TITLE="Cut Command - Extract Fields"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Extract the home directory of all users from /etc/passwd and save to /tmp/home.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Extract the home directory of all users from /etc/passwd and save to /tmp/home.txt"
+TASK_1_HINT="-d = delimiter, -f = field number, field 6 = home directory"
+TASK_1_COMMAND_1="cat /etc/passwd | cut -d':' -f 6 > /tmp/home.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing file...${RESET}"

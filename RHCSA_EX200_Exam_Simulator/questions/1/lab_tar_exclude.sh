@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create tar Archive Excluding Files
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="tar_exclude"
 
-QUESTION="[LAB] Create a tar archive excluding certain file types"
-HINT="Task 1: tar -cvzf /tmp/var_backup.tar.gz --exclude='*.log' /var/log
-(--exclude='pattern' to exclude files)"
+QUESTION="Create a tar archive excluding certain file types"
 
 # Lab configuration
-LAB_TITLE="tar with Exclusions"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create /tmp/var_backup.tar.gz of /var/log excluding all .log files" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Create /tmp/var_backup.tar.gz of /var/log excluding all .log files"
+TASK_1_HINT="--exclude='pattern' to exclude files"
+TASK_1_COMMAND_1="tar -cvzf /tmp/var_backup.tar.gz --exclude='*.log' /var/log"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing any existing var_backup.tar.gz...${RESET}"

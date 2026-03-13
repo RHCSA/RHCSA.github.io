@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Execute Command as Another User with su
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="su_execute_command"
 
-QUESTION="[LAB] Execute a command as another user using su -c"
-HINT="Task 1: su - operator -c 'whoami' > ~/i_am
-(-c allows running single command as user)"
+QUESTION="Execute a command as another user using su -c"
 
 # Lab configuration
-LAB_TITLE="Execute Command as Another User"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Run 'whoami' command as 'operator' user and save output to ~/i_am" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Run 'whoami' command as 'operator' user and save output to ~/i_am"
+TASK_1_HINT="-c option allows running single command as specified user"
+TASK_1_COMMAND_1="su - operator -c 'whoami' > ~/i_am"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test user operator...${RESET}"

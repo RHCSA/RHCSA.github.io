@@ -1,37 +1,47 @@
-#!/bin/bash
-
+﻿#!/bin/bash
+# Objective 1: Understand and use essential tools
 # LAB: Find Permission Search Modes (exact, minimum, any)
 
+# This is a LAB exercise
 IS_LAB=true
 LAB_ID="find_perm_modes"
 
-QUESTION="[LAB] Practice find -perm with exact, minimum (-), and any (/) permission modes"
+QUESTION="Practice find -perm with exact, minimum (-), and any (/) permission modes"
 
-HINT="Task 1: find /tmp/exam -perm 644 > /tmp/exam/exact_644.txt
-       (Files with EXACTLY 644 permissions)
-
-Task 2: find /tmp/exam -perm -644 > /tmp/exam/minimum_644.txt
-       (Files with AT LEAST 644 - same or more permissive)
-
-Task 3: find /tmp/exam -perm /222 -type f > /tmp/exam/any_write.txt
-       (Files where ANY write bit is set - user OR group OR other)
-
-Task 4: find /tmp/exam -perm -111 -type f > /tmp/exam/all_exec.txt
-       (Files where ALL execute bits are set - user AND group AND other)"
-
-LAB_TITLE="Find Permission Modes (exact/-/+)"
+# Lab configuration
 LAB_TASK_COUNT=4
 
-# Task descriptions
-get_task_description() {
-    local task_num=$1
-    case $task_num in
-        0) echo "Find files with EXACTLY 644, save to /tmp/exam/exact_644.txt (use -perm 644)" ;;
-        1) echo "Find files with AT LEAST 644, save to /tmp/exam/minimum_644.txt (use -perm -644)" ;;
-        2) echo "Find files where ANY write bit is set, save to /tmp/exam/any_write.txt (use -perm /222)" ;;
-        3) echo "Find files where ALL have execute, save to /tmp/exam/all_exec.txt (use -perm -111)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Find files with EXACTLY 644, save to /tmp/exam/exact_644.txt (use -perm 644)"
+TASK_1_HINT="Use find with -perm 644 for exact match"
+TASK_1_COMMAND_1="find /tmp/exam -perm 644 > /tmp/exam/exact_644.txt"
+
+# Task 2
+TASK_2_QUESTION="Find files with AT LEAST 644, save to /tmp/exam/minimum_644.txt (use -perm -644)"
+TASK_2_HINT="Use find with -perm -644 (minus prefix means all bits must be set)"
+TASK_2_COMMAND_1="find /tmp/exam -perm -644 > /tmp/exam/minimum_644.txt"
+
+# Task 3
+TASK_3_QUESTION="Find files where ANY write bit is set, save to /tmp/exam/any_write.txt (use -perm /222)"
+TASK_3_HINT="Use find with -perm /222 (slash prefix means any bit can match)"
+TASK_3_COMMAND_1="find /tmp/exam -perm /222 -type f > /tmp/exam/any_write.txt"
+
+# Task 4
+TASK_4_QUESTION="Find files where ALL have execute, save to /tmp/exam/all_exec.txt (use -perm -111)"
+TASK_4_HINT="Use find with -perm -111 (all execute bits must be set)"
+TASK_4_COMMAND_1="find /tmp/exam -perm -111 -type f > /tmp/exam/all_exec.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare lab environment
 prepare_lab() {

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Extract tar Archive to Specific Directory
 
@@ -6,22 +6,32 @@
 IS_LAB=true
 LAB_ID="tar_extract"
 
-QUESTION="[LAB] Extract a tar archive to a specific directory"
-HINT="Task 1: mkdir -p /tmp/restore
-Task 2: tar -xvzf /tmp/test_archive.tar.gz -C /tmp/restore"
+QUESTION="Extract a tar archive to a specific directory"
 
 # Lab configuration
-LAB_TITLE="Extract tar Archive"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create the directory /tmp/restore" ;;
-        1) echo "Extract /tmp/test_archive.tar.gz to /tmp/restore" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create the directory /tmp/restore"
+TASK_1_HINT="Use mkdir -p to create the directory (and parent directories if needed)"
+TASK_1_COMMAND_1="mkdir -p /tmp/restore"
+
+# Task 2
+TASK_2_QUESTION="Extract /tmp/test_archive.tar.gz to /tmp/restore"
+TASK_2_HINT="Use tar -xvzf with -C option to extract to specific directory"
+TASK_2_COMMAND_1="tar -xvzf /tmp/test_archive.tar.gz -C /tmp/restore"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

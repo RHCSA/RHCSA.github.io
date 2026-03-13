@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Run Command in Background
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="background_process"
 
-QUESTION="[LAB] Start a long-running process in the background that continues running after logout"
-HINT="Task 1: nohup sleep 300 & (or sleep 300 &)
-Task 2: nohup ensures process survives logout (or use disown)"
+QUESTION="Start a long-running process in the background that continues running after logout"
 
 # Lab configuration
-LAB_TITLE="Run Command in Background"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Start 'sleep 300' as a background process" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Start 'sleep 300' as a background process"
+TASK_1_HINT="Use & to run in background, nohup to survive logout"
+TASK_1_COMMAND_1="nohup sleep 300 &"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Killing any existing sleep processes...${RESET}"

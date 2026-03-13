@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Add User to wheel Group for sudo Access
 
@@ -6,21 +6,23 @@
 IS_LAB=true
 LAB_ID="sudo_wheel_group"
 
-QUESTION="[LAB] Add user to wheel group for sudo access"
-HINT="Task 1: usermod -aG wheel labuser (-a append, -G supplementary group)"
+QUESTION="Add user to wheel group for sudo access"
 
 # Lab configuration
-LAB_TITLE="Add User to wheel Group"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Add user 'labuser' to the wheel group to grant sudo access" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Add user 'labuser' to the wheel group to grant sudo access"
+TASK_1_HINT="Use -a to append and -G to specify supplementary group"
+TASK_1_COMMAND_1="usermod -aG wheel labuser"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test user labuser...${RESET}"

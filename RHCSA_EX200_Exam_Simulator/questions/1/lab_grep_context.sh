@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep Context Lines
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="grep_context"
 
-QUESTION="[LAB] Use grep -A, -B, -C to show context around matches"
-HINT="Task 1: grep -A 2 'ERROR' /tmp/application.log > /tmp/error-context.txt
-Task 2: grep -C 1 'WARNING' /tmp/application.log > /tmp/warning-context.txt"
+QUESTION="Use grep -A, -B, -C to show context around matches"
 
 # Lab configuration
-LAB_TITLE="Grep Context Lines"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find 'ERROR' in /tmp/application.log and show 2 lines AFTER each match, save to /tmp/error-context.txt" ;;
-        1) echo "Find 'WARNING' in /tmp/application.log and show 1 line BEFORE and 1 line AFTER, save to /tmp/warning-context.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Find 'ERROR' in /tmp/application.log and show 2 lines AFTER each match, save to /tmp/error-context.txt"
+TASK_1_HINT="Use -A N to show N lines after each match"
+TASK_1_COMMAND_1="grep -A 2 'ERROR' /tmp/application.log > /tmp/error-context.txt"
+
+# Task 2
+TASK_2_QUESTION="Find 'WARNING' in /tmp/application.log and show 1 line BEFORE and 1 line AFTER, save to /tmp/warning-context.txt"
+TASK_2_HINT="Use -C N for context (N lines before AND after)"
+TASK_2_COMMAND_1="grep -C 1 'WARNING' /tmp/application.log > /tmp/warning-context.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

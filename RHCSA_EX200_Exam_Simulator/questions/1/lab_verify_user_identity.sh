@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Verify User Identity and Groups
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="verify_user_identity"
 
-QUESTION="[LAB] Verify user identity and group memberships"
-HINT="Task 1: id sysadmin > /tmp/sysadmin_id.txt
-Task 2: groups sysadmin > /tmp/sysadmin_groups.txt"
+QUESTION="Verify user identity and group memberships"
 
 # Lab configuration
-LAB_TITLE="Verify User Identity and Groups"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Run 'id sysadmin' and save output to /tmp/sysadmin_id.txt" ;;
-        1) echo "Run 'groups sysadmin' and save output to /tmp/sysadmin_groups.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Run 'id sysadmin' and save output to /tmp/sysadmin_id.txt"
+TASK_1_HINT="id command shows UID, GID, and all group memberships"
+TASK_1_COMMAND_1="id sysadmin > /tmp/sysadmin_id.txt"
+
+# Task 2
+TASK_2_QUESTION="Run 'groups sysadmin' and save output to /tmp/sysadmin_groups.txt"
+TASK_2_HINT="groups command shows all groups a user belongs to"
+TASK_2_COMMAND_1="groups sysadmin > /tmp/sysadmin_groups.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test user sysadmin...${RESET}"

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grant Limited sudo Access
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="sudo_limited"
 
-QUESTION="[LAB] Grant limited sudo access to a user"
-HINT="Task 1: Add to /etc/sudoers.d/webdev:
-webdev ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart httpd, PASSWD: /bin/kill"
+QUESTION="Grant limited sudo access to a user"
 
 # Lab configuration
-LAB_TITLE="Grant Limited sudo Access"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Allow 'webdev' to run 'systemctl restart httpd' without password and 'kill' with password via sudo" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Allow 'webdev' to run 'systemctl restart httpd' without password and 'kill' with password via sudo"
+TASK_1_HINT="Use NOPASSWD: for specific commands and PASSWD: for others"
+TASK_1_COMMAND_1="echo 'webdev ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart httpd, PASSWD: /bin/kill' > /etc/sudoers.d/webdev"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing configuration...${RESET}"

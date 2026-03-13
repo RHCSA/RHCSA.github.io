@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Set Permissions Using Symbolic Mode
 
@@ -6,26 +6,42 @@
 IS_LAB=true
 LAB_ID="chmod_symbolic"
 
-QUESTION="[LAB] Set file permissions using symbolic notation (ugo+rwx)"
-HINT="Task 1: chmod u+x /tmp/app.sh
-Task 2: chmod go-w /tmp/config.txt
-Task 3: chmod u=rw,g=r,o= /tmp/data.txt
-Task 4: chmod a+r /tmp/readme.txt"
+QUESTION="Set file permissions using symbolic notation (ugo+rwx)"
 
 # Lab configuration
-LAB_TITLE="chmod Symbolic Mode"
 LAB_TASK_COUNT=4
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Add execute for user on /tmp/app.sh (rw-rw-r-- --> rwxrw-r--) - user gains execute" ;;
-        1) echo "Remove write for group/others on /tmp/config.txt (rw-rw-rw- --> rw-r--r--) - only user can write" ;;
-        2) echo "Set /tmp/data.txt to 640 (rw-r-----) - user: read/write; group: read only; others: no access" ;;
-        3) echo "Add read for all on /tmp/readme.txt (--------- --> r--r--r--) - everyone can read" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Add execute for user on /tmp/app.sh (rw-rw-r-- --> rwxrw-r--) - user gains execute"
+TASK_1_HINT="Use chmod u+x to add execute permission for the user"
+TASK_1_COMMAND_1="chmod u+x /tmp/app.sh"
+
+# Task 2
+TASK_2_QUESTION="Remove write for group/others on /tmp/config.txt (rw-rw-rw- --> rw-r--r--) - only user can write"
+TASK_2_HINT="Use chmod go-w to remove write permission from group and others"
+TASK_2_COMMAND_1="chmod go-w /tmp/config.txt"
+
+# Task 3
+TASK_3_QUESTION="Set /tmp/data.txt to 640 (rw-r-----) - user: read/write; group: read only; others: no access"
+TASK_3_HINT="Use chmod with symbolic notation u=rw,g=r,o= to set exact permissions"
+TASK_3_COMMAND_1="chmod u=rw,g=r,o= /tmp/data.txt"
+
+# Task 4
+TASK_4_QUESTION="Add read for all on /tmp/readme.txt (--------- --> r--r--r--) - everyone can read"
+TASK_4_HINT="Use chmod a+r to add read permission for all users"
+TASK_4_COMMAND_1="chmod a+r /tmp/readme.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

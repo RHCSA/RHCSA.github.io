@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Grep Extract Matched Part
 
@@ -6,21 +6,23 @@
 IS_LAB=true
 LAB_ID="grep_extract"
 
-QUESTION="[LAB] Use grep -o to extract only the matched portion of lines"
-HINT="Task 1: grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' /tmp/access.log > /tmp/ips.txt (-o shows only match)"
+QUESTION="Use grep -o to extract only the matched portion of lines"
 
 # Lab configuration
-LAB_TITLE="Grep Extract Matched Part"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Extract only the IP addresses from /tmp/access.log (not full lines), save to /tmp/ips.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Extract only the IP addresses from /tmp/access.log (not full lines), save to /tmp/ips.txt"
+TASK_1_HINT="-o shows only the matched portion, not the entire line"
+TASK_1_COMMAND_1="grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+' /tmp/access.log > /tmp/ips.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

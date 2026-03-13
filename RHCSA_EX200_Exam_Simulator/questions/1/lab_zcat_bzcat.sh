@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: View Compressed File Without Decompressing
 
@@ -6,23 +6,28 @@
 IS_LAB=true
 LAB_ID="zcat_bzcat"
 
-QUESTION="[LAB] View compressed file contents without decompressing"
-HINT="Task 1: zcat /tmp/readme.gz > /tmp/readme_content.txt
-Task 2: bzcat /tmp/notes.bz2 > /tmp/notes_content.txt"
+QUESTION="View compressed file contents without decompressing"
 
 # Lab configuration
-LAB_TITLE="View Compressed Files"
 LAB_TASK_COUNT=2
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "View /tmp/readme.gz contents and save to /tmp/readme_content.txt (don't decompress original)" ;;
-        1) echo "View /tmp/notes.bz2 contents and save to /tmp/notes_content.txt (don't decompress original)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="View /tmp/readme.gz contents and save to /tmp/readme_content.txt (don't decompress original)"
+TASK_1_HINT="zcat streams gzip content to stdout without decompressing the file"
+TASK_1_COMMAND_1="zcat /tmp/readme.gz > /tmp/readme_content.txt"
+
+# Task 2
+TASK_2_QUESTION="View /tmp/notes.bz2 contents and save to /tmp/notes_content.txt (don't decompress original)"
+TASK_2_HINT="bzcat streams bzip2 content to stdout without decompressing the file"
+TASK_2_COMMAND_1="bzcat /tmp/notes.bz2 > /tmp/notes_content.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating compressed test files...${RESET}"

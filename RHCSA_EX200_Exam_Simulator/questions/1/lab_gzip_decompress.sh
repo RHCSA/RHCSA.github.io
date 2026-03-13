@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Decompress gzip File
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="gzip_decompress"
 
-QUESTION="[LAB] Decompress a gzip file"
-HINT="Task 1: gunzip /tmp/data.gz
-(or gzip -d /tmp/data.gz)"
+QUESTION="Decompress a gzip file"
 
 # Lab configuration
-LAB_TITLE="gzip Decompression"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Decompress /tmp/data.gz to its original form (/tmp/data)" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Decompress /tmp/data.gz to its original form (/tmp/data)"
+TASK_1_HINT="Alternative: gzip -d /tmp/data.gz"
+TASK_1_COMMAND_1="gunzip /tmp/data.gz"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating compressed test file...${RESET}"

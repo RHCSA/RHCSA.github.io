@@ -1,32 +1,40 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Explore /usr/share/doc Package Documentation
 
 IS_LAB=true
 LAB_ID="usr_share_doc"
 
-QUESTION="[LAB] Find and explore package documentation in /usr/share/doc"
+QUESTION="Find and explore package documentation in /usr/share/doc"
 
-HINT="Task 1: ls /usr/share/doc/ | grep -i bash > /tmp/exam/bash_doc_dir.txt
-       (Find bash documentation directory)
-
-Task 2: ls /usr/share/doc/sudo*/ > /tmp/exam/sudo_files.txt
-       (List files in sudo documentation)
-
-Task 3: rpm -qd bash > /tmp/exam/bash_rpm_docs.txt
-       (List all documentation files for bash package)"
-
-LAB_TITLE="Package Docs (/usr/share/doc)"
 LAB_TASK_COUNT=3
 
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Find bash documentation directory name, save to /tmp/exam/bash_doc_dir.txt" ;;
-        1) echo "List files in sudo documentation, save to /tmp/exam/sudo_files.txt" ;;
-        2) echo "List all doc files for bash using rpm, save to /tmp/exam/bash_rpm_docs.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Find bash documentation directory name, save to /tmp/exam/bash_doc_dir.txt"
+TASK_1_HINT="Use ls with grep to find specific package docs"
+TASK_1_COMMAND_1="ls /usr/share/doc/ | grep -i bash > /tmp/exam/bash_doc_dir.txt"
+
+# Task 2
+TASK_2_QUESTION="List files in sudo documentation, save to /tmp/exam/sudo_files.txt"
+TASK_2_HINT="Use wildcard to match sudo package name with version"
+TASK_2_COMMAND_1="ls /usr/share/doc/sudo*/ > /tmp/exam/sudo_files.txt"
+
+# Task 3
+TASK_3_QUESTION="List all doc files for bash using rpm, save to /tmp/exam/bash_rpm_docs.txt"
+TASK_3_HINT="rpm -qd lists documentation files for a package"
+TASK_3_COMMAND_1="rpm -qd bash > /tmp/exam/bash_rpm_docs.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 prepare_lab() {
     echo "  • Creating /usr/share/doc lab environment..."

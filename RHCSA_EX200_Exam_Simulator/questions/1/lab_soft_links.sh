@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Create and Work with Symbolic Links
 
@@ -6,24 +6,37 @@
 IS_LAB=true
 LAB_ID="soft_links"
 
-QUESTION="[LAB] Create symbolic links to files and directories"
-HINT="Task 1: ln -s /etc/passwd /tmp/passwd_link
-Task 2: ln -s /var/log /tmp/logs
-Task 3: readlink /tmp/passwd_link > /tmp/link_target.txt"
+QUESTION="Create symbolic links to files and directories"
 
 # Lab configuration
-LAB_TITLE="Symbolic Links"
 LAB_TASK_COUNT=3
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create symlink for /tmp/passwd_link file pointing to /etc/passwd" ;;
-        1) echo "Create symlink for /tmp/logs directory pointing to /var/log directory" ;;
-        2) echo "Save the target of /tmp/passwd_link to /tmp/link_target.txt using readlink command" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create symlink for /tmp/passwd_link file pointing to /etc/passwd"
+TASK_1_HINT="Use ln -s to create a symbolic link to a file"
+TASK_1_COMMAND_1="ln -s /etc/passwd /tmp/passwd_link"
+
+# Task 2
+TASK_2_QUESTION="Create symlink for /tmp/logs directory pointing to /var/log directory"
+TASK_2_HINT="Use ln -s to create a symbolic link to a directory"
+TASK_2_COMMAND_1="ln -s /var/log /tmp/logs"
+
+# Task 3
+TASK_3_QUESTION="Save the target of /tmp/passwd_link to /tmp/link_target.txt using readlink command"
+TASK_3_HINT="Use readlink to get the target path and redirect to file"
+TASK_3_COMMAND_1="readlink /tmp/passwd_link > /tmp/link_target.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

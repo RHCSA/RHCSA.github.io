@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Comprehensive Permissions Lab
 
@@ -6,28 +6,47 @@
 IS_LAB=true
 LAB_ID="permissions_comprehensive"
 
-QUESTION="[LAB] Comprehensive permissions lab combining multiple skills"
-HINT="Task 1: touch /tmp/exam/report.txt && chmod 640 /tmp/exam/report.txt
-Task 2: mkdir /tmp/exam/data && chmod 750 /tmp/exam/data
-Task 3: chown nobody:nobody /tmp/exam/report.txt
-Task 4: chmod g+s /tmp/exam/data (or chmod 2750)
-Task 5: stat -c %a /tmp/exam/report.txt > /tmp/exam/perms.txt"
+QUESTION="Comprehensive permissions lab combining multiple skills"
 
 # Lab configuration
-LAB_TITLE="Comprehensive Permissions"
 LAB_TASK_COUNT=5
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Create /tmp/exam/report.txt with 640 (user:rw, group:r, others:none)" ;;
-        1) echo "Create directory /tmp/exam/data with 750 (user:rwx, group:rx, others:none)" ;;
-        2) echo "Change ownership of /tmp/exam/report.txt to nobody:nobody" ;;
-        3) echo "Make new files in /tmp/exam/data inherit directory group (SGID)" ;;
-        4) echo "Save octal permissions of /tmp/exam/report.txt to /tmp/exam/perms.txt" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
+
+# Task 1
+TASK_1_QUESTION="Create /tmp/exam/report.txt with 640 (user:rw, group:r, others:none)"
+TASK_1_HINT="Use touch to create the file, chmod to set permissions"
+TASK_1_COMMAND_1="touch /tmp/exam/report.txt && chmod 640 /tmp/exam/report.txt"
+
+# Task 2
+TASK_2_QUESTION="Create directory /tmp/exam/data with 750 (user:rwx, group:rx, others:none)"
+TASK_2_HINT="Use mkdir to create directory, chmod for permissions"
+TASK_2_COMMAND_1="mkdir /tmp/exam/data && chmod 750 /tmp/exam/data"
+
+# Task 3
+TASK_3_QUESTION="Change ownership of /tmp/exam/report.txt to nobody:nobody"
+TASK_3_HINT="Use chown user:group to change ownership"
+TASK_3_COMMAND_1="chown nobody:nobody /tmp/exam/report.txt"
+
+# Task 4
+TASK_4_QUESTION="Make new files in /tmp/exam/data inherit directory group (SGID)"
+TASK_4_HINT="SGID on directory is set with g+s or 2xxx octal"
+TASK_4_COMMAND_1="chmod g+s /tmp/exam/data"
+
+# Task 5
+TASK_5_QUESTION="Save octal permissions of /tmp/exam/report.txt to /tmp/exam/perms.txt"
+TASK_5_HINT="Use stat -c %a to get octal permissions"
+TASK_5_COMMAND_1="stat -c %a /tmp/exam/report.txt > /tmp/exam/perms.txt"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
+
+# =============================================================================
+# LAB IMPLEMENTATION
+# =============================================================================
 
 # Prepare the lab environment
 prepare_lab() {

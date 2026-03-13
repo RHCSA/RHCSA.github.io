@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Objective 1: Understand and use essential tools
 # LAB: Configure sudo with Command Exclusion
 
@@ -6,22 +6,23 @@
 IS_LAB=true
 LAB_ID="sudo_exclude_command"
 
-QUESTION="[LAB] Configure sudo to allow all commands except specific ones"
-HINT="Task 1: Add to /etc/sudoers.d/restricteduser:
-restricteduser ALL=(ALL) ALL, !/usr/bin/su"
+QUESTION="Configure sudo to allow all commands except specific ones"
 
 # Lab configuration
-LAB_TITLE="sudo with Command Exclusion"
 LAB_TASK_COUNT=1
 
-# Task descriptions (indexed from 0)
-get_task_description() {
-    local task_idx=$1
-    case "$task_idx" in
-        0) echo "Allow 'restricteduser' to run all sudo commands EXCEPT /usr/bin/su" ;;
-    esac
-}
+# =============================================================================
+# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# =============================================================================
 
+# Task 1
+TASK_1_QUESTION="Allow 'restricteduser' to run all sudo commands EXCEPT /usr/bin/su"
+TASK_1_HINT="Use ! before command path to exclude it"
+TASK_1_COMMAND_1="echo 'restricteduser ALL=(ALL) ALL, !/usr/bin/su' > /etc/sudoers.d/restricteduser"
+
+
+# Auto-generate HINT from commands
+HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing configuration...${RESET}"
