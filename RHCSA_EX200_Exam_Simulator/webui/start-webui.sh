@@ -29,7 +29,7 @@ port_in_use() {
     ss -tuln | grep -q ":${port} "
 }
 
-# Function to start ttyd
+# Function to start ttyd (background)
 start_ttyd() {
     if port_in_use $TERMINAL_PORT; then
         echo -e "${YELLOW}ttyd already running on port ${TERMINAL_PORT}${NC}"
@@ -43,18 +43,19 @@ start_ttyd() {
     
     echo -e "${GREEN}Starting ttyd on port ${TERMINAL_PORT}...${NC}"
     ttyd -p $TERMINAL_PORT -W /bin/bash -l >> "$LOG_DIR/ttyd.log" 2>&1 &
-    echo $! >> "$PID_FILE"
+    local ttyd_pid=$!
+    echo $ttyd_pid >> "$PID_FILE"
     sleep 1
     
     if port_in_use $TERMINAL_PORT; then
-        echo -e "${GREEN}ttyd started successfully${NC}"
+        echo -e "${GREEN}ttyd started successfully (PID: $ttyd_pid)${NC}"
     else
         echo -e "${RED}Failed to start ttyd${NC}"
         return 1
     fi
 }
 
-# Function to start web server
+# Function to start web server (foreground for systemd)
 start_webserver() {
     if port_in_use $WEBUI_PORT; then
         echo -e "${YELLOW}Web server already running on port ${WEBUI_PORT}${NC}"
@@ -63,15 +64,24 @@ start_webserver() {
     
     echo -e "${GREEN}Starting web server on port ${WEBUI_PORT}...${NC}"
     cd "$WEBUI_DIR"
-    python3 server.py >> "$LOG_DIR/webui.log" 2>&1 &
-    echo $! >> "$PID_FILE"
-    sleep 1
     
-    if port_in_use $WEBUI_PORT; then
-        echo -e "${GREEN}Web server started successfully${NC}"
+    # Check if running under systemd (foreground mode)
+    if [[ "${SYSTEMD_EXEC:-}" == "1" ]] || [[ -n "${INVOCATION_ID:-}" ]]; then
+        # Run in foreground for systemd
+        exec python3 server.py
     else
-        echo -e "${RED}Failed to start web server${NC}"
-        return 1
+        # Run in background for interactive use
+        python3 server.py >> "$LOG_DIR/webui.log" 2>&1 &
+        local web_pid=$!
+        echo $web_pid >> "$PID_FILE"
+        sleep 1
+        
+        if port_in_use $WEBUI_PORT; then
+            echo -e "${GREEN}Web server started successfully (PID: $web_pid)${NC}"
+        else
+            echo -e "${RED}Failed to start web server${NC}"
+            return 1
+        fi
     fi
 }
 
@@ -150,8 +160,9 @@ case "${1:-start}" in
         configure_firewall
         configure_selinux
         start_ttyd
-        start_webserver
+        start_webserver  # Note: if SYSTEMD_EXEC=1, this will exec and not return
         
+        # Only reached in interactive mode
         echo ""
         show_status
         ;;

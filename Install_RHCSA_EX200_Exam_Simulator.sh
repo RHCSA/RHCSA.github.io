@@ -233,8 +233,17 @@ if [[ -f "$INSTALL_DIR/webui/rhcsa-webui.service" ]]; then
     cp "$INSTALL_DIR/webui/rhcsa-webui.service" /etc/systemd/system/
     systemctl daemon-reload
     systemctl enable rhcsa-webui &>/dev/null || true
-    systemctl start rhcsa-webui &>/dev/null || true
-    echo -e "        ${GREEN}✓${NC} Web Interface service installed and started"
+    
+    # Start the service and verify it's running
+    systemctl start rhcsa-webui
+    sleep 2
+    
+    if systemctl is-active rhcsa-webui &>/dev/null; then
+        echo -e "        ${GREEN}✓${NC} Web Interface service installed and running"
+    else
+        echo -e "        ${YELLOW}ℹ${NC} Web Interface service installed (may need manual start)"
+        echo -e "        ${YELLOW}ℹ${NC} Run: systemctl start rhcsa-webui"
+    fi
 else
     echo -e "        ${YELLOW}ℹ${NC} Web Interface service file not found, skipping"
 fi

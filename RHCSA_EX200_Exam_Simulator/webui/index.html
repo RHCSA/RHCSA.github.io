@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHCSA EX200 Exam Simulator - Web Interface</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css">
+    <title>RHCSA EX200 Exam Simulator</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +12,7 @@
         }
 
         body {
-            font-family: "Helvetica Neue", Arial, sans-serif;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             background-color: #121212;
             color: #eaeaea;
             height: 100vh;
@@ -22,39 +21,39 @@
 
         /* Header */
         .header {
-            background-color: #cc0000;
-            color: #fff;
-            padding: 10px 20px;
+            background: linear-gradient(135deg, #cc0000 0%, #8b0000 100%);
+            padding: 10px 25px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            height: 60px;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            height: 50px;
         }
 
         .header h1 {
-            font-size: 1.5em;
-            font-weight: bold;
+            font-size: 1.3em;
+            color: white;
         }
 
         .header-subtitle {
-            font-size: 0.9em;
-            margin-left: 20px;
-            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85em;
         }
 
-        /* Main container */
+        /* Main Container */
         .main-container {
             display: flex;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 50px);
         }
 
-        /* Left Panel - Objectives/Questions */
+        /* Left Panel */
         .left-panel {
-            width: 33.33%;
-            min-width: 300px;
-            background-color: #1a1a1a;
+            width: 35%;
+            min-width: 350px;
+            max-width: 500px;
+            background-color: #1e1e1e;
             overflow-y: auto;
-            border-right: 3px solid #333;
+            border-right: 2px solid #333;
             display: flex;
             flex-direction: column;
         }
@@ -71,19 +70,26 @@
             background-color: #cc0000;
         }
 
-        /* Right Panel - Terminal/Lab Interface */
+        /* Right Panel */
         .right-panel {
             flex: 1;
-            background-color: #121212;
+            background-color: #000;
             display: flex;
             flex-direction: column;
         }
 
-        /* Objectives List */
-        .objectives-list {
+        /* ==================== MENU VIEW ==================== */
+        .menu-view {
+            flex: 1;
+            overflow-y: auto;
             padding: 10px;
         }
 
+        .menu-view.hidden {
+            display: none;
+        }
+
+        /* Objectives List */
         .objective-item {
             background-color: #282424;
             border-radius: 8px;
@@ -92,7 +98,7 @@
         }
 
         .objective-header {
-            padding: 15px;
+            padding: 12px 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -111,13 +117,14 @@
         .objective-number {
             background-color: #cc0000;
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 0.9em;
             margin-right: 12px;
             flex-shrink: 0;
         }
@@ -125,6 +132,7 @@
         .objective-title {
             flex: 1;
             font-weight: 500;
+            font-size: 0.95em;
         }
 
         .objective-arrow {
@@ -136,7 +144,6 @@
             transform: rotate(90deg);
         }
 
-        /* Questions List */
         .questions-list {
             display: none;
             background-color: #1a1a1a;
@@ -148,14 +155,14 @@
         }
 
         .question-item {
-            padding: 12px 15px;
-            margin: 5px 0;
+            padding: 10px 12px;
+            margin: 4px 0;
             background-color: #2a2a2a;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            transition: all 0.3s;
+            transition: all 0.2s;
             border-left: 3px solid transparent;
         }
 
@@ -164,14 +171,9 @@
             border-left-color: #cc0000;
         }
 
-        .question-item.active {
-            background-color: #383434;
-            border-left-color: #cc0000;
-        }
-
         .terminal-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             margin-right: 10px;
             fill: #888;
             flex-shrink: 0;
@@ -179,46 +181,266 @@
 
         .question-text {
             flex: 1;
-            font-size: 0.9em;
+            font-size: 0.85em;
             line-height: 1.4;
         }
 
         .status-icon {
-            width: 20px;
-            height: 20px;
-            margin-left: 10px;
+            width: 18px;
+            height: 18px;
+            margin-left: 8px;
             flex-shrink: 0;
         }
 
-        .status-incomplete {
-            fill: #666;
+        .status-incomplete { fill: #555; }
+        .status-complete { fill: #28a745; }
+
+        /* ==================== LAB VIEW ==================== */
+        .lab-view {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
-        .status-complete {
-            fill: #28a745;
+        .lab-view.active {
+            display: flex;
         }
 
-        /* Right Panel Content */
-        .welcome-message {
+        /* Lab Header */
+        .lab-header {
+            background-color: #282424;
+            padding: 15px;
+            border-bottom: 2px solid #cc0000;
+        }
+
+        .lab-question {
+            color: #ffc107;
+            font-size: 1.1em;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* Tasks Section */
+        .lab-tasks {
+            padding: 15px;
+            background-color: #1a1a1a;
+        }
+
+        .tasks-title {
+            color: #888;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #252525;
+            border-radius: 6px;
+        }
+
+        .task-status-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .task-status-icon.pending { fill: #555; }
+        .task-status-icon.complete { fill: #28a745; }
+        .task-status-icon.failed { fill: #dc3545; }
+
+        .task-text {
+            flex: 1;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        /* Control Buttons */
+        .lab-controls {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background-color: #282424;
+            flex-wrap: wrap;
+        }
+
+        .lab-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lab-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-check {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-check:hover { background-color: #0b5ed7; }
+
+        .btn-hint {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .btn-hint:hover { background-color: #e0a800; }
+        .btn-hint.active { background-color: #e0a800; }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-back:hover { background-color: #5c636a; }
+
+        .btn-back.success {
+            background-color: #28a745;
+        }
+        .btn-back.success:hover { background-color: #218838; }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* ==================== HINT SECTION ==================== */
+        .hint-section {
+            display: none;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border-top: 1px solid #333;
+        }
+
+        .hint-section.show {
+            display: block;
+        }
+
+        .hint-title {
+            color: #ffc107;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hint-title svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffc107;
+        }
+
+        /* Command Box */
+        .command-box {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .command-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .command-label {
+            color: #8b949e;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .command-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .cmd-action-btn {
+            background-color: transparent;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75em;
+            color: #8b949e;
+            transition: all 0.2s;
+        }
+
+        .cmd-action-btn:hover {
+            background-color: #30363d;
+            color: #fff;
+        }
+
+        .cmd-action-btn.copied {
+            background-color: #238636;
+            color: white;
+            border-color: #238636;
+        }
+
+        .cmd-action-btn svg {
+            width: 12px;
+            height: 12px;
+            fill: currentColor;
+        }
+
+        .command-text {
+            padding: 10px 12px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #58a6ff;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        /* ==================== WELCOME VIEW ==================== */
+        .welcome-view {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #888;
+            color: #666;
             text-align: center;
             padding: 40px;
+            background-color: #121212;
         }
 
-        .welcome-message h2 {
-            color: #ffc107;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-
-        .welcome-message p {
-            font-size: 1.1em;
-            margin-bottom: 10px;
+        .welcome-view.hidden {
+            display: none;
         }
 
         .welcome-icon {
@@ -228,224 +450,35 @@
             margin-bottom: 20px;
         }
 
-        /* Lab Interface */
-        .lab-interface {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-        }
-
-        .lab-interface.active {
-            display: flex;
-        }
-
-        .lab-header {
-            background-color: #282424;
-            padding: 15px 20px;
-            border-bottom: 2px solid #cc0000;
-        }
-
-        .lab-title {
+        .welcome-view h2 {
             color: #ffc107;
-            font-size: 1.2em;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.6em;
         }
 
-        .lab-tasks {
-            background-color: #1a1a1a;
-            padding: 15px;
-            max-height: 200px;
-            overflow-y: auto;
+        .welcome-view p {
+            font-size: 1em;
+            margin-bottom: 8px;
         }
 
-        .task-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 10px;
-            margin: 5px 0;
-            background-color: #2a2a2a;
-            border-radius: 6px;
-        }
-
-        .task-status {
-            width: 24px;
-            height: 24px;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .task-status.pending {
-            fill: #666;
-        }
-
-        .task-status.complete {
-            fill: #28a745;
-        }
-
-        .task-status.failed {
-            fill: #dc3545;
-        }
-
-        .task-text {
+        /* ==================== TERMINAL VIEW ==================== */
+        .terminal-view {
             flex: 1;
-            line-height: 1.5;
-        }
-
-        .lab-controls {
-            display: flex;
-            gap: 10px;
-            padding: 15px;
-            background-color: #282424;
-            border-bottom: 1px solid #333;
-        }
-
-        .lab-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .lab-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
-        .btn-check {
-            background-color: #0d6efd;
-            color: white;
-        }
-
-        .btn-check:hover {
-            background-color: #0b5ed7;
-        }
-
-        .btn-hint {
-            background-color: #ffc107;
-            color: #000;
-        }
-
-        .btn-hint:hover {
-            background-color: #e0a800;
-        }
-
-        .btn-exit {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .btn-exit:hover {
-            background-color: #5c636a;
-        }
-
-        .btn-exit.success {
-            background-color: #28a745;
-        }
-
-        .btn-exit.success:hover {
-            background-color: #218838;
-        }
-
-        /* Terminal Container */
-        .terminal-container {
-            flex: 1;
+            display: none;
             background-color: #000;
-            position: relative;
         }
 
-        .terminal-container iframe {
+        .terminal-view.active {
+            display: flex;
+        }
+
+        .terminal-view iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        /* Success Message */
-        .success-message {
-            display: none;
-            background-color: #28a745;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        /* Hint Modal */
-        .hint-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hint-modal.show {
-            display: flex;
-        }
-
-        .hint-content {
-            background-color: #282424;
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .hint-header {
-            color: #ffc107;
-            font-size: 1.3em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .hint-text {
-            background-color: #1a1a1a;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            color: #00ff7f;
-        }
-
-        .hint-close {
-            margin-top: 20px;
-            padding: 10px 30px;
-            background-color: #cc0000;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .hint-close:hover {
-            background-color: #aa0000;
-        }
-
-        /* Loading Spinner */
+        /* ==================== LOADING ==================== */
         .loading {
             display: none;
             position: fixed;
@@ -476,7 +509,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Scrollbar Styling */
+        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -506,8 +539,56 @@
     <div class="main-container">
         <!-- Left Panel -->
         <div class="left-panel" id="leftPanel">
-            <div class="objectives-list" id="objectivesList">
+            <!-- Menu View (Objectives/Questions List) -->
+            <div class="menu-view" id="menuView">
                 <!-- Objectives will be loaded here -->
+            </div>
+
+            <!-- Lab View (Question, Tasks, Controls, Hints) -->
+            <div class="lab-view" id="labView">
+                <div class="lab-header">
+                    <div class="lab-question" id="labQuestion">Question</div>
+                </div>
+                <div class="lab-tasks">
+                    <div class="tasks-title">Tasks</div>
+                    <div id="labTasks">
+                        <!-- Tasks will be loaded here -->
+                    </div>
+                </div>
+                <div class="lab-controls">
+                    <button class="lab-btn btn-check" onclick="checkTasks()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                        Check
+                    </button>
+                    <button class="lab-btn btn-hint" id="hintBtn" onclick="toggleHint()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
+                        </svg>
+                        Hint
+                    </button>
+                    <button class="lab-btn btn-back" id="backBtn" onclick="exitLab()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                        Back
+                    </button>
+                </div>
+                <div class="success-message" id="successMessage">
+                    Congratulations! All tasks completed successfully!
+                </div>
+                <div class="hint-section" id="hintSection">
+                    <div class="hint-title">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
+                        </svg>
+                        Solution Commands
+                    </div>
+                    <div id="hintCommands">
+                        <!-- Command boxes will be loaded here -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -516,66 +597,21 @@
 
         <!-- Right Panel -->
         <div class="right-panel" id="rightPanel">
-            <!-- Welcome Message -->
-            <div class="welcome-message" id="welcomeMessage">
+            <!-- Welcome View -->
+            <div class="welcome-view" id="welcomeView">
                 <svg class="welcome-icon" viewBox="0 0 24 24">
                     <path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z"/>
                     <path d="m9.293 9.293-3 3a.999.999 0 0 0 0 1.414l3 3 1.414-1.414L8.414 13l2.293-2.293-1.414-1.414zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414 3-3a.999.999 0 0 0 0-1.414l-3-3z"/>
                 </svg>
                 <h2>Welcome to RHCSA Exam Simulator</h2>
-                <p>Select a question from the left panel to start a lab exercise.</p>
-                <p style="color: #666; font-size: 0.9em;">Complete all tasks to master RHCSA exam objectives!</p>
+                <p>Select a question from the left panel to start a lab.</p>
+                <p style="color: #555; font-size: 0.9em;">Complete all tasks to master RHCSA objectives!</p>
             </div>
 
-            <!-- Lab Interface -->
-            <div class="lab-interface" id="labInterface">
-                <div class="lab-header">
-                    <div class="lab-title" id="labTitle">Lab Title</div>
-                </div>
-                <div class="lab-tasks" id="labTasks">
-                    <!-- Tasks will be loaded here -->
-                </div>
-                <div class="lab-controls">
-                    <button class="lab-btn btn-check" onclick="checkTasks()">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                        </svg>
-                        Check Tasks
-                    </button>
-                    <button class="lab-btn btn-hint" onclick="showHint()">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
-                        </svg>
-                        Hint
-                    </button>
-                    <button class="lab-btn btn-exit" id="exitBtn" onclick="exitLab()">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                        </svg>
-                        Exit Lab
-                    </button>
-                </div>
-                <div class="success-message" id="successMessage">
-                    🎉 Congratulations! You've successfully completed all tasks of this lab!
-                </div>
-                <div class="terminal-container" id="terminalContainer">
-                    <iframe id="terminalFrame" src=""></iframe>
-                </div>
+            <!-- Terminal View (Full Panel when Lab Active) -->
+            <div class="terminal-view" id="terminalView">
+                <iframe id="terminalFrame" src=""></iframe>
             </div>
-        </div>
-    </div>
-
-    <!-- Hint Modal -->
-    <div class="hint-modal" id="hintModal">
-        <div class="hint-content">
-            <div class="hint-header">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-                    <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
-                </svg>
-                Hint - Solution Commands
-            </div>
-            <div class="hint-text" id="hintText"></div>
-            <button class="hint-close" onclick="closeHint()">Close</button>
         </div>
     </div>
 
@@ -591,18 +627,21 @@
 
         // State
         let currentLab = null;
-        let objectives = [];
         let completedLabs = new Set();
+        let hintVisible = false;
+        let hintCommands = [];
 
         // SVG Icons
         const icons = {
             terminal: `<svg class="terminal-icon" viewBox="0 0 24 24"><path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z"/><path d="m9.293 9.293-3 3a.999.999 0 0 0 0 1.414l3 3 1.414-1.414L8.414 13l2.293-2.293-1.414-1.414zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414 3-3a.999.999 0 0 0 0-1.414l-3-3z"/></svg>`,
             incomplete: `<svg class="status-icon status-incomplete" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
             complete: `<svg class="status-icon status-complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
-            taskPending: `<svg class="task-status pending" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
-            taskComplete: `<svg class="task-status complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
-            taskFailed: `<svg class="task-status failed" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>`,
-            arrow: `<span class="objective-arrow">▶</span>`
+            taskPending: `<svg class="task-status-icon pending" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+            taskComplete: `<svg class="task-status-icon complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
+            taskFailed: `<svg class="task-status-icon failed" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>`,
+            arrow: `<span class="objective-arrow">▶</span>`,
+            copy: `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`,
+            send: `<svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`
         };
 
         // Objectives data
@@ -628,7 +667,7 @@
 
         // Load objectives and questions
         async function loadObjectives() {
-            const container = document.getElementById('objectivesList');
+            const container = document.getElementById('menuView');
             container.innerHTML = '';
 
             for (const obj of objectivesData) {
@@ -713,12 +752,6 @@
         async function selectQuestion(objId, idx, file) {
             showLoading();
             
-            // Remove active class from all questions
-            document.querySelectorAll('.question-item').forEach(el => el.classList.remove('active'));
-            
-            // Add active class to selected question
-            document.querySelector(`.question-item[data-file="${file}"]`).classList.add('active');
-            
             try {
                 // Start the lab
                 const response = await fetch(`${API_BASE}/lab/start`, {
@@ -744,23 +777,33 @@
 
         // Show lab interface
         function showLabInterface(labData) {
-            document.getElementById('welcomeMessage').style.display = 'none';
-            document.getElementById('labInterface').classList.add('active');
+            // Switch left panel from menu to lab view
+            document.getElementById('menuView').classList.add('hidden');
+            document.getElementById('labView').classList.add('active');
             
-            document.getElementById('labTitle').textContent = labData.question;
+            // Switch right panel from welcome to terminal
+            document.getElementById('welcomeView').classList.add('hidden');
+            document.getElementById('terminalView').classList.add('active');
+            
+            // Populate lab content
+            document.getElementById('labQuestion').textContent = labData.question;
             
             // Build tasks list
             const tasksContainer = document.getElementById('labTasks');
             tasksContainer.innerHTML = labData.tasks.map((task, idx) => `
                 <div class="task-item" id="task-${idx}">
-                    <span class="task-status-icon">${icons.taskPending}</span>
+                    <span class="task-icon">${icons.taskPending}</span>
                     <span class="task-text">${task}</span>
                 </div>
             `).join('');
             
-            // Reset success message and exit button
+            // Reset state
             document.getElementById('successMessage').classList.remove('show');
-            document.getElementById('exitBtn').classList.remove('success');
+            document.getElementById('backBtn').classList.remove('success');
+            document.getElementById('hintSection').classList.remove('show');
+            document.getElementById('hintBtn').classList.remove('active');
+            hintVisible = false;
+            hintCommands = [];
             
             // Load terminal
             const terminalFrame = document.getElementById('terminalFrame');
@@ -790,7 +833,7 @@
                     
                     if (result.allComplete) {
                         document.getElementById('successMessage').classList.add('show');
-                        document.getElementById('exitBtn').classList.add('success');
+                        document.getElementById('backBtn').classList.add('success');
                         completedLabs.add(currentLab.file);
                         updateCompletionStatus();
                     }
@@ -805,15 +848,35 @@
         // Update task status display
         function updateTaskStatus(status) {
             status.forEach((complete, idx) => {
-                const taskEl = document.querySelector(`#task-${idx} .task-status-icon`);
+                const taskEl = document.querySelector(`#task-${idx} .task-icon`);
                 if (taskEl) {
                     taskEl.innerHTML = complete ? icons.taskComplete : icons.taskFailed;
                 }
             });
         }
 
-        // Show hint
-        async function showHint() {
+        // Toggle hint visibility
+        async function toggleHint() {
+            const hintSection = document.getElementById('hintSection');
+            const hintBtn = document.getElementById('hintBtn');
+            
+            if (hintVisible) {
+                hintSection.classList.remove('show');
+                hintBtn.classList.remove('active');
+                hintVisible = false;
+            } else {
+                // Fetch hint if not already loaded
+                if (hintCommands.length === 0) {
+                    await loadHint();
+                }
+                hintSection.classList.add('show');
+                hintBtn.classList.add('active');
+                hintVisible = true;
+            }
+        }
+
+        // Load hint commands
+        async function loadHint() {
             if (!currentLab) return;
             
             try {
@@ -829,17 +892,95 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('hintText').textContent = data.hint;
-                    document.getElementById('hintModal').classList.add('show');
+                    hintCommands = data.commands || [];
+                    renderHintCommands();
                 }
             } catch (e) {
                 console.error('Error getting hint:', e);
             }
         }
 
-        // Close hint
-        function closeHint() {
-            document.getElementById('hintModal').classList.remove('show');
+        // Render hint command boxes
+        function renderHintCommands() {
+            const container = document.getElementById('hintCommands');
+            
+            if (hintCommands.length === 0) {
+                container.innerHTML = '<p style="color: #888; font-size: 0.9em;">No hints available for this lab.</p>';
+                return;
+            }
+            
+            container.innerHTML = hintCommands.map((cmd, idx) => `
+                <div class="command-box">
+                    <div class="command-header">
+                        <span class="command-label">${cmd.label || 'Task ' + (cmd.task || idx + 1)}</span>
+                        <div class="command-actions">
+                            <button class="cmd-action-btn" onclick="copyCommand(${idx})" title="Copy to clipboard" id="copyBtn-${idx}">
+                                ${icons.copy}
+                                <span>Copy</span>
+                            </button>
+                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx})" title="Send to terminal">
+                                ${icons.send}
+                                <span>Send</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="command-text" id="cmdText-${idx}">${escapeHtml(cmd.command)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Copy command to clipboard
+        async function copyCommand(idx) {
+            const cmd = hintCommands[idx];
+            if (!cmd) return;
+            
+            try {
+                await navigator.clipboard.writeText(cmd.command);
+                const btn = document.getElementById(`copyBtn-${idx}`);
+                btn.classList.add('copied');
+                btn.innerHTML = `${icons.copy}<span>Copied!</span>`;
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = `${icons.copy}<span>Copy</span>`;
+                }, 2000);
+            } catch (e) {
+                console.error('Failed to copy:', e);
+            }
+        }
+
+        // Send command to terminal (without Enter)
+        function sendToTerminal(idx) {
+            const cmd = hintCommands[idx];
+            if (!cmd) return;
+            
+            const terminalFrame = document.getElementById('terminalFrame');
+            if (!terminalFrame || !terminalFrame.contentWindow) {
+                alert('Terminal is not ready');
+                return;
+            }
+            
+            // Try to access ttyd terminal and send input
+            try {
+                // ttyd uses a specific way to send input
+                // We'll post a message to the iframe
+                terminalFrame.contentWindow.postMessage({
+                    type: 'input',
+                    data: cmd.command
+                }, '*');
+            } catch (e) {
+                console.error('Failed to send to terminal:', e);
+                // Fallback: copy to clipboard
+                copyCommand(idx);
+                alert('Command copied to clipboard. Paste it in the terminal.');
+            }
         }
 
         // Exit lab
@@ -863,14 +1004,19 @@
             }
             
             currentLab = null;
+            hintCommands = [];
+            hintVisible = false;
             
-            // Hide lab interface, show welcome
-            document.getElementById('labInterface').classList.remove('active');
-            document.getElementById('welcomeMessage').style.display = 'flex';
+            // Switch back to menu view
+            document.getElementById('labView').classList.remove('active');
+            document.getElementById('menuView').classList.remove('hidden');
+            
+            // Switch back to welcome view
+            document.getElementById('terminalView').classList.remove('active');
+            document.getElementById('welcomeView').classList.remove('hidden');
+            
+            // Clear terminal
             document.getElementById('terminalFrame').src = '';
-            
-            // Remove active class from questions
-            document.querySelectorAll('.question-item').forEach(el => el.classList.remove('active'));
             
             hideLoading();
         }
@@ -879,7 +1025,6 @@
         function initResizer() {
             const resizer = document.getElementById('resizer');
             const leftPanel = document.getElementById('leftPanel');
-            const rightPanel = document.getElementById('rightPanel');
             
             let isResizing = false;
             
@@ -893,10 +1038,12 @@
                 if (!isResizing) return;
                 
                 const containerWidth = document.querySelector('.main-container').offsetWidth;
-                const newWidth = (e.clientX / containerWidth) * 100;
+                const newWidth = e.clientX;
                 
-                if (newWidth > 20 && newWidth < 60) {
-                    leftPanel.style.width = `${newWidth}%`;
+                if (newWidth > 300 && newWidth < containerWidth * 0.5) {
+                    leftPanel.style.width = `${newWidth}px`;
+                    leftPanel.style.minWidth = `${newWidth}px`;
+                    leftPanel.style.maxWidth = `${newWidth}px`;
                 }
             });
             
@@ -915,20 +1062,6 @@
         function hideLoading() {
             document.getElementById('loading').classList.remove('show');
         }
-
-        // Close hint on escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeHint();
-            }
-        });
-
-        // Close hint on overlay click
-        document.getElementById('hintModal').addEventListener('click', (e) => {
-            if (e.target.id === 'hintModal') {
-                closeHint();
-            }
-        });
     </script>
 </body>
 </html>

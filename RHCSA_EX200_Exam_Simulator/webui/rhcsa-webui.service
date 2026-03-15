@@ -1,14 +1,17 @@
 [Unit]
 Description=RHCSA Exam Simulator Web Interface
-After=network.target
+After=network.target network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
+Environment=SYSTEMD_EXEC=1
 ExecStart=/usr/local/share/rhcsa/webui/start-webui.sh start
 ExecStop=/usr/local/share/rhcsa/webui/start-webui.sh stop
 Restart=on-failure
 RestartSec=5
 User=root
+WorkingDirectory=/usr/local/share/rhcsa/webui
 
 [Install]
 WantedBy=multi-user.target

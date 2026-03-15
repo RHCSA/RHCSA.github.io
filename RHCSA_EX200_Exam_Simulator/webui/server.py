@@ -240,21 +240,23 @@ def parse_lab_file(filepath):
             if task_match:
                 tasks.append(task_match.group(1))
         
-        # Extract HINT (we'll build it from commands)
-        hint_lines = []
+        # Extract commands as structured array
+        commands = []
         for i in range(1, task_count + 1):
-            for j in range(1, 6):
+            for j in range(1, 10):  # Support up to 9 commands per task
                 cmd_match = re.search(rf'TASK_{i}_COMMAND_{j}="([^"]*)"', content)
                 if cmd_match:
-                    hint_lines.append(f"Task {i}: {cmd_match.group(1)}")
-        
-        hint = '\n'.join(hint_lines)
+                    commands.append({
+                        'task': i,
+                        'label': f'Task {i} - Command {j}',
+                        'command': cmd_match.group(1)
+                    })
         
         return {
             'question': question,
             'tasks': tasks,
             'task_count': task_count,
-            'hint': hint
+            'commands': commands
         }
     except Exception as e:
         print(f"Error parsing lab file {filepath}: {e}")
@@ -369,16 +371,16 @@ def get_hint(data):
     filename = data.get('file')
     
     if not obj_id or not filename:
-        return {'error': 'Missing parameters'}
+        return {'error': 'Missing parameters', 'commands': []}
     
     filepath = os.path.join(QUESTIONS_DIR, str(obj_id), filename)
     
     if not os.path.exists(filepath):
-        return {'error': 'Lab file not found'}
+        return {'error': 'Lab file not found', 'commands': []}
     
     lab_data = parse_lab_file(filepath)
     
-    return {'hint': lab_data.get('hint', 'No hint available') if lab_data else 'No hint available'}
+    return {'commands': lab_data.get('commands', []) if lab_data else []}
 
 
 def exit_lab(data):
