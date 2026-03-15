@@ -146,6 +146,56 @@ declare -a OBJECTIVES=(
 )
 
 # ============================================================================
+# WEB INTERFACE SUPPORT
+# ============================================================================
+
+WEBUI_PORT=8080
+TERMINAL_PORT=7682
+
+# Get server IP addresses (excluding localhost)
+get_server_ips() {
+    ip -4 addr show 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1'
+}
+
+# Check if web server is running
+is_webui_running() {
+    ss -tuln 2>/dev/null | grep -q ":${WEBUI_PORT} "
+}
+
+# Start web interface services
+start_webui_services() {
+    local webui_script="${SCRIPT_DIR}/webui/start-webui.sh"
+    if [[ -x "$webui_script" ]]; then
+        "$webui_script" start >/dev/null 2>&1 &
+        sleep 2
+    fi
+}
+
+# Get web interface URLs
+get_webui_urls() {
+    local ips=$(get_server_ips)
+    local urls=""
+    for ip in $ips; do
+        if [[ -n "$urls" ]]; then
+            urls+=" or "
+        fi
+        urls+="http://${ip}:${WEBUI_PORT}"
+    done
+    echo "$urls"
+}
+
+# Display blinking web interface URL
+print_webui_url() {
+    local urls=$(get_webui_urls)
+    if [[ -n "$urls" ]]; then
+        # Blinking text using ANSI escape codes
+        local BLINK=$'\e[5m'
+        echo ""
+        echo -e "  ${BLINK}${GREEN}🌐 Web Interface: ${urls}${RESET}"
+    fi
+}
+
+# ============================================================================
 # QUESTION LOADING SYSTEM - Load questions dynamically from files
 # ============================================================================
 
@@ -407,6 +457,11 @@ display_menu() {
     echo ""
     echo -e "  ${DIM}────────────────────────────────────────${RESET}"
     echo -e "  ${DIM}↑/↓: Navigate  Enter: Select  Esc/Backspace: Back  Q: Quit${RESET}"
+    
+    # Show web interface URL only on main objectives menu
+    if [[ "$SHOW_WEBUI_URL" == "true" ]] && is_webui_running; then
+        print_webui_url
+    fi
 }
 
 # Word wrap function for task descriptions
@@ -1260,6 +1315,14 @@ navigate_objectives() {
     local max_visible=$(( (term_height - 18) / 2 ))
     if [[ $max_visible -lt 3 ]]; then max_visible=3; fi
     
+    # Start web UI services if not running
+    if ! is_webui_running; then
+        start_webui_services
+    fi
+    
+    # Enable web UI URL display on main menu
+    SHOW_WEBUI_URL=true
+    
     while true; do
         # Clear completion status (not used for objectives menu)
         LOADED_COMPLETION_STATUS=()
@@ -1291,7 +1354,9 @@ navigate_objectives() {
                 fi
                 ;;
             "ENTER")
+                SHOW_WEBUI_URL=false
                 navigate_questions $selected
+                SHOW_WEBUI_URL=true
                 ;;
             "ESC"|"BACKSPACE"|"QUIT")
                 show_cursor

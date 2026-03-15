@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHCSA EX200 Exam Simulator - Web Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #121212;
+            color: #eaeaea;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background-color: #cc0000;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .header-subtitle {
+            font-size: 0.9em;
+            margin-left: 20px;
+            opacity: 0.9;
+        }
+
+        /* Main container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        /* Left Panel - Objectives/Questions */
+        .left-panel {
+            width: 33.33%;
+            min-width: 300px;
+            background-color: #1a1a1a;
+            overflow-y: auto;
+            border-right: 3px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Resizer */
+        .resizer {
+            width: 5px;
+            background-color: #333;
+            cursor: col-resize;
+            transition: background-color 0.2s;
+        }
+
+        .resizer:hover {
+            background-color: #cc0000;
+        }
+
+        /* Right Panel - Terminal/Lab Interface */
+        .right-panel {
+            flex: 1;
+            background-color: #121212;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Objectives List */
+        .objectives-list {
+            padding: 10px;
+        }
+
+        .objective-item {
+            background-color: #282424;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .objective-header {
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+            border-left: 4px solid #cc0000;
+        }
+
+        .objective-header:hover {
+            background-color: #383434;
+        }
+
+        .objective-header.expanded {
+            background-color: #383434;
+        }
+
+        .objective-number {
+            background-color: #cc0000;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .objective-title {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .objective-arrow {
+            transition: transform 0.3s;
+            color: #888;
+        }
+
+        .objective-header.expanded .objective-arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Questions List */
+        .questions-list {
+            display: none;
+            background-color: #1a1a1a;
+            padding: 5px 10px 10px 10px;
+        }
+
+        .questions-list.expanded {
+            display: block;
+        }
+
+        .question-item {
+            padding: 12px 15px;
+            margin: 5px 0;
+            background-color: #2a2a2a;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .question-item:hover {
+            background-color: #383434;
+            border-left-color: #cc0000;
+        }
+
+        .question-item.active {
+            background-color: #383434;
+            border-left-color: #cc0000;
+        }
+
+        .terminal-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            fill: #888;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            flex: 1;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .status-icon {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .status-incomplete {
+            fill: #666;
+        }
+
+        .status-complete {
+            fill: #28a745;
+        }
+
+        /* Right Panel Content */
+        .welcome-message {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-message h2 {
+            color: #ffc107;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .welcome-message p {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .welcome-icon {
+            width: 80px;
+            height: 80px;
+            fill: #cc0000;
+            margin-bottom: 20px;
+        }
+
+        /* Lab Interface */
+        .lab-interface {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .lab-interface.active {
+            display: flex;
+        }
+
+        .lab-header {
+            background-color: #282424;
+            padding: 15px 20px;
+            border-bottom: 2px solid #cc0000;
+        }
+
+        .lab-title {
+            color: #ffc107;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .lab-tasks {
+            background-color: #1a1a1a;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #2a2a2a;
+            border-radius: 6px;
+        }
+
+        .task-status {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .task-status.pending {
+            fill: #666;
+        }
+
+        .task-status.complete {
+            fill: #28a745;
+        }
+
+        .task-status.failed {
+            fill: #dc3545;
+        }
+
+        .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .lab-controls {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background-color: #282424;
+            border-bottom: 1px solid #333;
+        }
+
+        .lab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lab-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-check {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .btn-check:hover {
+            background-color: #0b5ed7;
+        }
+
+        .btn-hint {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-hint:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-exit {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-exit:hover {
+            background-color: #5c636a;
+        }
+
+        .btn-exit.success {
+            background-color: #28a745;
+        }
+
+        .btn-exit.success:hover {
+            background-color: #218838;
+        }
+
+        /* Terminal Container */
+        .terminal-container {
+            flex: 1;
+            background-color: #000;
+            position: relative;
+        }
+
+        .terminal-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Hint Modal */
+        .hint-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hint-modal.show {
+            display: flex;
+        }
+
+        .hint-content {
+            background-color: #282424;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .hint-header {
+            color: #ffc107;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hint-text {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            color: #00ff7f;
+        }
+
+        .hint-close {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background-color: #cc0000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .hint-close:hover {
+            background-color: #aa0000;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #333;
+            border-top-color: #cc0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>RHCSA EX200 Exam Simulator</h1>
+        <span class="header-subtitle">Red Hat Certified System Administrator</span>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Panel -->
+        <div class="left-panel" id="leftPanel">
+            <div class="objectives-list" id="objectivesList">
+                <!-- Objectives will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Resizer -->
+        <div class="resizer" id="resizer"></div>
+
+        <!-- Right Panel -->
+        <div class="right-panel" id="rightPanel">
+            <!-- Welcome Message -->
+            <div class="welcome-message" id="welcomeMessage">
+                <svg class="welcome-icon" viewBox="0 0 24 24">
+                    <path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z"/>
+                    <path d="m9.293 9.293-3 3a.999.999 0 0 0 0 1.414l3 3 1.414-1.414L8.414 13l2.293-2.293-1.414-1.414zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414 3-3a.999.999 0 0 0 0-1.414l-3-3z"/>
+                </svg>
+                <h2>Welcome to RHCSA Exam Simulator</h2>
+                <p>Select a question from the left panel to start a lab exercise.</p>
+                <p style="color: #666; font-size: 0.9em;">Complete all tasks to master RHCSA exam objectives!</p>
+            </div>
+
+            <!-- Lab Interface -->
+            <div class="lab-interface" id="labInterface">
+                <div class="lab-header">
+                    <div class="lab-title" id="labTitle">Lab Title</div>
+                </div>
+                <div class="lab-tasks" id="labTasks">
+                    <!-- Tasks will be loaded here -->
+                </div>
+                <div class="lab-controls">
+                    <button class="lab-btn btn-check" onclick="checkTasks()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                        Check Tasks
+                    </button>
+                    <button class="lab-btn btn-hint" onclick="showHint()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
+                        </svg>
+                        Hint
+                    </button>
+                    <button class="lab-btn btn-exit" id="exitBtn" onclick="exitLab()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                        Exit Lab
+                    </button>
+                </div>
+                <div class="success-message" id="successMessage">
+                    🎉 Congratulations! You've successfully completed all tasks of this lab!
+                </div>
+                <div class="terminal-container" id="terminalContainer">
+                    <iframe id="terminalFrame" src=""></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hint Modal -->
+    <div class="hint-modal" id="hintModal">
+        <div class="hint-content">
+            <div class="hint-header">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                    <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
+                </svg>
+                Hint - Solution Commands
+            </div>
+            <div class="hint-text" id="hintText"></div>
+            <button class="hint-close" onclick="closeHint()">Close</button>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = '/api';
+        const TERMINAL_PORT = 7682;
+
+        // State
+        let currentLab = null;
+        let objectives = [];
+        let completedLabs = new Set();
+
+        // SVG Icons
+        const icons = {
+            terminal: `<svg class="terminal-icon" viewBox="0 0 24 24"><path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z"/><path d="m9.293 9.293-3 3a.999.999 0 0 0 0 1.414l3 3 1.414-1.414L8.414 13l2.293-2.293-1.414-1.414zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414 3-3a.999.999 0 0 0 0-1.414l-3-3z"/></svg>`,
+            incomplete: `<svg class="status-icon status-incomplete" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+            complete: `<svg class="status-icon status-complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
+            taskPending: `<svg class="task-status pending" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+            taskComplete: `<svg class="task-status complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
+            taskFailed: `<svg class="task-status failed" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>`,
+            arrow: `<span class="objective-arrow">▶</span>`
+        };
+
+        // Objectives data
+        const objectivesData = [
+            { id: 1, title: "Understand and use essential tools" },
+            { id: 2, title: "Manage software" },
+            { id: 3, title: "Create simple shell scripts" },
+            { id: 4, title: "Operate running systems" },
+            { id: 5, title: "Configure local storage" },
+            { id: 6, title: "Create and configure file systems" },
+            { id: 7, title: "Deploy, configure, and maintain systems" },
+            { id: 8, title: "Manage basic networking" },
+            { id: 9, title: "Manage users and groups" },
+            { id: 10, title: "Manage security" }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadObjectives();
+            loadCompletedLabs();
+            initResizer();
+        });
+
+        // Load objectives and questions
+        async function loadObjectives() {
+            const container = document.getElementById('objectivesList');
+            container.innerHTML = '';
+
+            for (const obj of objectivesData) {
+                const questions = await fetchQuestions(obj.id);
+                const objElement = createObjectiveElement(obj, questions);
+                container.appendChild(objElement);
+            }
+        }
+
+        // Fetch questions for an objective
+        async function fetchQuestions(objId) {
+            try {
+                const response = await fetch(`${API_BASE}/questions/${objId}`);
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (e) {
+                console.error('Error fetching questions:', e);
+            }
+            return [];
+        }
+
+        // Load completed labs from server
+        async function loadCompletedLabs() {
+            try {
+                const response = await fetch(`${API_BASE}/progress`);
+                if (response.ok) {
+                    const data = await response.json();
+                    completedLabs = new Set(data.completed || []);
+                    updateCompletionStatus();
+                }
+            } catch (e) {
+                console.error('Error loading progress:', e);
+            }
+        }
+
+        // Create objective element
+        function createObjectiveElement(obj, questions) {
+            const div = document.createElement('div');
+            div.className = 'objective-item';
+            div.innerHTML = `
+                <div class="objective-header" onclick="toggleObjective(${obj.id})">
+                    <div class="objective-number">${obj.id}</div>
+                    <div class="objective-title">${obj.title}</div>
+                    ${icons.arrow}
+                </div>
+                <div class="questions-list" id="questions-${obj.id}">
+                    ${questions.map((q, idx) => `
+                        <div class="question-item" data-obj="${obj.id}" data-idx="${idx}" data-file="${q.file}" onclick="selectQuestion(${obj.id}, ${idx}, '${q.file}')">
+                            ${icons.terminal}
+                            <span class="question-text">${q.question}</span>
+                            <span class="completion-status" data-file="${q.file}">${icons.incomplete}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            return div;
+        }
+
+        // Toggle objective expansion
+        function toggleObjective(objId) {
+            const header = document.querySelector(`#questions-${objId}`).previousElementSibling;
+            const questionsList = document.getElementById(`questions-${objId}`);
+            
+            header.classList.toggle('expanded');
+            questionsList.classList.toggle('expanded');
+        }
+
+        // Update completion status icons
+        function updateCompletionStatus() {
+            document.querySelectorAll('.completion-status').forEach(el => {
+                const file = el.dataset.file;
+                if (file && completedLabs.has(file)) {
+                    el.innerHTML = icons.complete;
+                } else {
+                    el.innerHTML = icons.incomplete;
+                }
+            });
+        }
+
+        // Select a question/lab
+        async function selectQuestion(objId, idx, file) {
+            showLoading();
+            
+            // Remove active class from all questions
+            document.querySelectorAll('.question-item').forEach(el => el.classList.remove('active'));
+            
+            // Add active class to selected question
+            document.querySelector(`.question-item[data-file="${file}"]`).classList.add('active');
+            
+            try {
+                // Start the lab
+                const response = await fetch(`${API_BASE}/lab/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ objective: objId, index: idx, file: file })
+                });
+                
+                if (response.ok) {
+                    const labData = await response.json();
+                    currentLab = { objId, idx, file, ...labData };
+                    showLabInterface(labData);
+                } else {
+                    alert('Failed to start lab');
+                }
+            } catch (e) {
+                console.error('Error starting lab:', e);
+                alert('Error starting lab: ' + e.message);
+            }
+            
+            hideLoading();
+        }
+
+        // Show lab interface
+        function showLabInterface(labData) {
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('labInterface').classList.add('active');
+            
+            document.getElementById('labTitle').textContent = labData.question;
+            
+            // Build tasks list
+            const tasksContainer = document.getElementById('labTasks');
+            tasksContainer.innerHTML = labData.tasks.map((task, idx) => `
+                <div class="task-item" id="task-${idx}">
+                    <span class="task-status-icon">${icons.taskPending}</span>
+                    <span class="task-text">${task}</span>
+                </div>
+            `).join('');
+            
+            // Reset success message and exit button
+            document.getElementById('successMessage').classList.remove('show');
+            document.getElementById('exitBtn').classList.remove('success');
+            
+            // Load terminal
+            const terminalFrame = document.getElementById('terminalFrame');
+            terminalFrame.src = `http://${window.location.hostname}:${TERMINAL_PORT}`;
+        }
+
+        // Check tasks
+        async function checkTasks() {
+            if (!currentLab) return;
+            
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_BASE}/lab/check`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        objective: currentLab.objId, 
+                        index: currentLab.idx,
+                        file: currentLab.file 
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    updateTaskStatus(result.status);
+                    
+                    if (result.allComplete) {
+                        document.getElementById('successMessage').classList.add('show');
+                        document.getElementById('exitBtn').classList.add('success');
+                        completedLabs.add(currentLab.file);
+                        updateCompletionStatus();
+                    }
+                }
+            } catch (e) {
+                console.error('Error checking tasks:', e);
+            }
+            
+            hideLoading();
+        }
+
+        // Update task status display
+        function updateTaskStatus(status) {
+            status.forEach((complete, idx) => {
+                const taskEl = document.querySelector(`#task-${idx} .task-status-icon`);
+                if (taskEl) {
+                    taskEl.innerHTML = complete ? icons.taskComplete : icons.taskFailed;
+                }
+            });
+        }
+
+        // Show hint
+        async function showHint() {
+            if (!currentLab) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/lab/hint`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        objective: currentLab.objId, 
+                        index: currentLab.idx,
+                        file: currentLab.file 
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('hintText').textContent = data.hint;
+                    document.getElementById('hintModal').classList.add('show');
+                }
+            } catch (e) {
+                console.error('Error getting hint:', e);
+            }
+        }
+
+        // Close hint
+        function closeHint() {
+            document.getElementById('hintModal').classList.remove('show');
+        }
+
+        // Exit lab
+        async function exitLab() {
+            if (!currentLab) return;
+            
+            showLoading();
+            
+            try {
+                await fetch(`${API_BASE}/lab/exit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        objective: currentLab.objId, 
+                        index: currentLab.idx,
+                        file: currentLab.file 
+                    })
+                });
+            } catch (e) {
+                console.error('Error exiting lab:', e);
+            }
+            
+            currentLab = null;
+            
+            // Hide lab interface, show welcome
+            document.getElementById('labInterface').classList.remove('active');
+            document.getElementById('welcomeMessage').style.display = 'flex';
+            document.getElementById('terminalFrame').src = '';
+            
+            // Remove active class from questions
+            document.querySelectorAll('.question-item').forEach(el => el.classList.remove('active'));
+            
+            hideLoading();
+        }
+
+        // Resizer functionality
+        function initResizer() {
+            const resizer = document.getElementById('resizer');
+            const leftPanel = document.getElementById('leftPanel');
+            const rightPanel = document.getElementById('rightPanel');
+            
+            let isResizing = false;
+            
+            resizer.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+                
+                const containerWidth = document.querySelector('.main-container').offsetWidth;
+                const newWidth = (e.clientX / containerWidth) * 100;
+                
+                if (newWidth > 20 && newWidth < 60) {
+                    leftPanel.style.width = `${newWidth}%`;
+                }
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isResizing = false;
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            });
+        }
+
+        // Loading helpers
+        function showLoading() {
+            document.getElementById('loading').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('show');
+        }
+
+        // Close hint on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeHint();
+            }
+        });
+
+        // Close hint on overlay click
+        document.getElementById('hintModal').addEventListener('click', (e) => {
+            if (e.target.id === 'hintModal') {
+                closeHint();
+            }
+        });
+    </script>
+</body>
+</html>
