@@ -784,6 +784,23 @@
             showLoading();
             
             try {
+                // If there's a current lab, clean it up first
+                if (currentLab) {
+                    try {
+                        await fetch(`${API_BASE}/lab/exit`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ 
+                                objective: currentLab.objId, 
+                                index: currentLab.idx,
+                                file: currentLab.file 
+                            })
+                        });
+                    } catch (e) {
+                        console.warn('Failed to cleanup previous lab:', e);
+                    }
+                }
+                
                 // Start the lab
                 const response = await fetch(`${API_BASE}/lab/start`, {
                     method: 'POST',

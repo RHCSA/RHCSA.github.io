@@ -17,6 +17,7 @@ import signal
 # Configuration
 WEBUI_PORT = 8080
 TERMINAL_PORT = 7682
+TMUX_SESSION = 'rhcsa-terminal'
 QUESTIONS_DIR = "/usr/local/share/rhcsa/questions"
 PROGRESS_FILE = "/usr/local/share/rhcsa/.progress"
 WEBUI_DIR = "/usr/local/share/rhcsa/webui"
@@ -197,6 +198,22 @@ def get_progress():
     return {'completed': completed}
 
 
+def reset_terminal():
+    """Reset the terminal - clear screen and cd to /tmp"""
+    try:
+        # Send Ctrl+C to cancel any running command, then clear and cd to /tmp
+        subprocess.run(
+            ['tmux', 'send-keys', '-t', TMUX_SESSION, 'C-c'],
+            capture_output=True
+        )
+        subprocess.run(
+            ['tmux', 'send-keys', '-t', TMUX_SESSION, 'clear; cd /tmp', 'Enter'],
+            capture_output=True
+        )
+    except Exception as e:
+        print(f"Error resetting terminal: {e}")
+
+
 def start_lab(data):
     """Start a lab exercise"""
     obj_id = data.get('objective')
@@ -216,6 +233,9 @@ def start_lab(data):
     
     if not lab_data:
         return {'error': 'Failed to parse lab file'}
+    
+    # Reset terminal before starting new lab
+    reset_terminal()
     
     # Run prepare_lab
     run_lab_function(filepath, 'prepare_lab')
@@ -411,8 +431,6 @@ def exit_lab(data):
     
     return {'success': True}
 
-
-TMUX_SESSION = 'rhcsa-terminal'
 
 def send_to_terminal(data):
     """Send a command to the terminal via tmux"""
