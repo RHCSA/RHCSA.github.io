@@ -42,8 +42,8 @@ start_ttyd() {
     fi
     
     echo -e "${GREEN}Starting ttyd on port ${TERMINAL_PORT}...${NC}"
-    # Start ttyd with working directory /tmp using bash -c
-    ttyd -p $TERMINAL_PORT -W /bin/bash -c 'cd /tmp && exec bash -l' >> "$LOG_DIR/ttyd.log" 2>&1 &
+    # Start ttyd with working directory /tmp and larger font
+    ttyd -p $TERMINAL_PORT -W -t fontSize=16 -t fontFamily="monospace" /bin/bash -c 'cd /tmp && exec bash -l' >> "$LOG_DIR/ttyd.log" 2>&1 &
     local ttyd_pid=$!
     echo $ttyd_pid >> "$PID_FILE"
     sleep 1

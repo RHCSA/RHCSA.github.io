@@ -240,15 +240,24 @@ def parse_lab_file(filepath):
             if task_match:
                 tasks.append(task_match.group(1))
         
-        # Extract commands as structured array
+        # Extract hints for each task
+        task_hints = {}
+        for i in range(1, task_count + 1):
+            hint_match = re.search(rf'TASK_{i}_HINT="([^"]*)"', content)
+            if hint_match:
+                task_hints[i] = hint_match.group(1)
+        
+        # Extract commands as structured array with hints
         commands = []
         for i in range(1, task_count + 1):
+            task_hint = task_hints.get(i, '')
             for j in range(1, 10):  # Support up to 9 commands per task
                 cmd_match = re.search(rf'TASK_{i}_COMMAND_{j}="([^"]*)"', content)
                 if cmd_match:
                     commands.append({
                         'task': i,
-                        'label': f'Task {i} - Command {j}',
+                        'label': f'Task {i}' + (f' - Command {j}' if j > 1 else ''),
+                        'hint': task_hint if j == 1 else '',  # Show hint only for first command of each task
                         'command': cmd_match.group(1)
                     })
         
@@ -408,11 +417,13 @@ def start_ttyd():
             print(f"ttyd already running on port {TERMINAL_PORT}")
             return
         
-        # Start ttyd with working directory /tmp
+        # Start ttyd with working directory /tmp and larger font
         subprocess.Popen([
             'ttyd',
             '-p', str(TERMINAL_PORT),
             '-W',  # Writable
+            '-t', 'fontSize=16',
+            '-t', 'fontFamily=monospace',
             '/bin/bash', '-c', 'cd /tmp && exec bash -l'
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print(f"Started ttyd on port {TERMINAL_PORT}")

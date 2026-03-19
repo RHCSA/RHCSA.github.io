@@ -383,6 +383,16 @@
             overflow: hidden;
         }
 
+        .command-hint {
+            padding: 10px 12px;
+            background-color: #1c2128;
+            border-bottom: 1px solid #30363d;
+            color: #ffc107;
+            font-size: 0.85em;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
         .command-header {
             display: flex;
             align-items: center;
@@ -933,6 +943,7 @@
             
             container.innerHTML = hintCommands.map((cmd, idx) => `
                 <div class="command-box">
+                    ${cmd.hint ? `<div class="command-hint">${escapeHtml(cmd.hint)}</div>` : ''}
                     <div class="command-header">
                         <span class="command-label">${cmd.label || 'Task ' + (cmd.task || idx + 1)}</span>
                         <div class="command-actions">
@@ -940,7 +951,7 @@
                                 ${icons.copy}
                                 <span>Copy</span>
                             </button>
-                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx})" title="Send to terminal">
+                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx})" title="Send to terminal" id="sendBtn-${idx}">
                                 ${icons.send}
                                 <span>Send</span>
                             </button>
@@ -994,38 +1005,57 @@
             }
         }
 
-        // Send command to terminal (without Enter)
-        // Note: ttyd doesn't support direct input injection for security reasons
-        // Best approach is to copy to clipboard and let user paste
+        // Send command to terminal via WebSocket
         function sendToTerminal(idx) {
             const cmd = hintCommands[idx];
             if (!cmd) return;
             
-            const btn = document.querySelector(`#copyBtn-${idx}`)?.nextElementSibling;
+            const btn = document.getElementById(`sendBtn-${idx}`);
             
-            // Copy to clipboard first
-            copyCommand(idx);
+            // Connect to ttyd WebSocket and send command
+            const wsUrl = `ws://${window.location.hostname}:${TERMINAL_PORT}/ws`;
             
-            // Update send button to show feedback
-            if (btn) {
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = `${icons.send}<span>Copied! Paste in terminal</span>`;
-                btn.style.backgroundColor = '#238636';
-                btn.style.color = 'white';
-                btn.style.borderColor = '#238636';
+            try {
+                const ws = new WebSocket(wsUrl);
                 
-                setTimeout(() => {
-                    btn.innerHTML = originalHtml;
-                    btn.style.backgroundColor = '';
-                    btn.style.color = '';
-                    btn.style.borderColor = '';
-                }, 3000);
-            }
-            
-            // Focus the terminal iframe
-            const terminalFrame = document.getElementById('terminalFrame');
-            if (terminalFrame) {
-                terminalFrame.focus();
+                ws.onopen = function() {
+                    // ttyd protocol: send '0' + input for stdin
+                    // Send the command without Enter so user can review it
+                    ws.send('0' + cmd.command);
+                    ws.close();
+                    
+                    // Show success feedback
+                    if (btn) {
+                        const originalHtml = btn.innerHTML;
+                        btn.innerHTML = `${icons.send}<span>Sent!</span>`;
+                        btn.style.backgroundColor = '#238636';
+                        btn.style.color = 'white';
+                        btn.style.borderColor = '#238636';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalHtml;
+                            btn.style.backgroundColor = '';
+                            btn.style.color = '';
+                            btn.style.borderColor = '';
+                        }, 2000);
+                    }
+                };
+                
+                ws.onerror = function(e) {
+                    console.error('WebSocket error:', e);
+                    // Fallback to copy
+                    copyCommand(idx);
+                    if (btn) {
+                        btn.innerHTML = `${icons.send}<span>Copied instead</span>`;
+                        setTimeout(() => {
+                            btn.innerHTML = `${icons.send}<span>Send</span>`;
+                        }, 2000);
+                    }
+                };
+            } catch (e) {
+                console.error('Failed to send to terminal:', e);
+                // Fallback to copy
+                copyCommand(idx);
             }
         }
 
@@ -1033,9 +1063,24 @@
         async function exitLab() {
             if (!currentLab) return;
             
-            // Clear terminal FIRST to prevent "Leave site?" prompt
+            // Prevent any "Leave site?" prompts
+            window.onbeforeunload = null;
+            
             const terminalFrame = document.getElementById('terminalFrame');
-            terminalFrame.src = 'about:blank';
+            
+            // More aggressive iframe cleanup to prevent "Leave site?" prompt
+            try {
+                // Try to clear iframe's onbeforeunload
+                if (terminalFrame.contentWindow) {
+                    terminalFrame.contentWindow.onbeforeunload = null;
+                }
+            } catch (e) { /* ignore cross-origin errors */ }
+            
+            // Remove iframe completely and recreate it
+            const newIframe = document.createElement('iframe');
+            newIframe.id = 'terminalFrame';
+            newIframe.src = '';
+            terminalFrame.parentNode.replaceChild(newIframe, terminalFrame);
             
             showLoading();
             
