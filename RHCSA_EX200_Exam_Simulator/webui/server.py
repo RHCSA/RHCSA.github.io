@@ -95,6 +95,10 @@ class RHCSAAPIHandler(SimpleHTTPRequestHandler):
             result = exit_lab(data)
             self.send_json(result)
         
+        elif path == '/api/terminal/send':
+            result = send_to_terminal(data)
+            self.send_json(result)
+        
         else:
             self.send_error(404)
     
@@ -408,8 +412,43 @@ def exit_lab(data):
     return {'success': True}
 
 
+TMUX_SESSION = 'rhcsa-terminal'
+
+def send_to_terminal(data):
+    """Send a command to the terminal via tmux"""
+    command = data.get('command', '')
+    
+    if not command:
+        return {'error': 'No command provided', 'success': False}
+    
+    try:
+        # Check if tmux session exists
+        result = subprocess.run(
+            ['tmux', 'has-session', '-t', TMUX_SESSION],
+            capture_output=True
+        )
+        
+        if result.returncode != 0:
+            return {'error': 'Terminal session not found', 'success': False}
+        
+        # Send keys to tmux (without pressing Enter - user does that)
+        subprocess.run(
+            ['tmux', 'send-keys', '-t', TMUX_SESSION, command],
+            capture_output=True,
+            check=True
+        )
+        
+        return {'success': True}
+    except subprocess.CalledProcessError as e:
+        return {'error': f'Failed to send command: {e}', 'success': False}
+    except FileNotFoundError:
+        return {'error': 'tmux not installed', 'success': False}
+    except Exception as e:
+        return {'error': str(e), 'success': False}
+
+
 def start_ttyd():
-    """Start ttyd terminal server"""
+    """Start ttyd terminal server with tmux session"""
     try:
         # Check if ttyd is running
         result = subprocess.run(['pgrep', '-f', f'ttyd.*{TERMINAL_PORT}'], capture_output=True)
@@ -417,18 +456,30 @@ def start_ttyd():
             print(f"ttyd already running on port {TERMINAL_PORT}")
             return
         
-        # Start ttyd with working directory /tmp and larger font
+        # Kill any existing tmux session
+        subprocess.run(['tmux', 'kill-session', '-t', TMUX_SESSION], 
+                      capture_output=True, stderr=subprocess.DEVNULL)
+        
+        # Create new tmux session in detached mode
+        subprocess.run([
+            'tmux', 'new-session', '-d', '-s', TMUX_SESSION, '-c', '/tmp'
+        ], check=True)
+        
+        print(f"Created tmux session: {TMUX_SESSION}")
+        
+        # Start ttyd attached to the tmux session
         subprocess.Popen([
             'ttyd',
             '-p', str(TERMINAL_PORT),
             '-W',  # Writable
             '-t', 'fontSize=16',
             '-t', 'fontFamily=monospace',
-            '/bin/bash', '-c', 'cd /tmp && exec bash -l'
+            'tmux', 'attach-session', '-t', TMUX_SESSION
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print(f"Started ttyd on port {TERMINAL_PORT}")
-    except FileNotFoundError:
-        print("Warning: ttyd not found. Please install it: dnf install -y ttyd")
+        
+        print(f"Started ttyd on port {TERMINAL_PORT} with tmux session")
+    except FileNotFoundError as e:
+        print(f"Warning: Required program not found: {e}. Please install ttyd and tmux.")
     except Exception as e:
         print(f"Error starting ttyd: {e}")
 

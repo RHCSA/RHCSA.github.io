@@ -41,9 +41,21 @@ start_ttyd() {
         return 1
     fi
     
+    if ! command -v tmux &>/dev/null; then
+        echo -e "${RED}Error: tmux not found. Please install it.${NC}"
+        return 1
+    fi
+    
+    # Kill any existing tmux session
+    tmux kill-session -t rhcsa-terminal 2>/dev/null || true
+    
+    # Create new tmux session 
+    echo -e "${GREEN}Creating tmux session: rhcsa-terminal${NC}"
+    tmux new-session -d -s rhcsa-terminal -c /tmp
+    
     echo -e "${GREEN}Starting ttyd on port ${TERMINAL_PORT}...${NC}"
-    # Start ttyd with working directory /tmp and larger font
-    ttyd -p $TERMINAL_PORT -W -t fontSize=16 -t fontFamily="monospace" /bin/bash -c 'cd /tmp && exec bash -l' >> "$LOG_DIR/ttyd.log" 2>&1 &
+    # Start ttyd attached to the tmux session
+    ttyd -p $TERMINAL_PORT -W -t fontSize=16 -t fontFamily="monospace" tmux attach-session -t rhcsa-terminal >> "$LOG_DIR/ttyd.log" 2>&1 &
     local ttyd_pid=$!
     echo $ttyd_pid >> "$PID_FILE"
     sleep 1
