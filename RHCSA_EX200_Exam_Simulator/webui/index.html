@@ -219,6 +219,8 @@
             flex: 1;
             display: none;
             flex-direction: column;
+            overflow: hidden;
+            height: 100%;
         }
 
         .lab-view.active {
@@ -231,6 +233,7 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
 
         /* Lab Header */
@@ -1009,63 +1012,85 @@
             }
         }
 
-        // Send command to terminal using binary WebSocket
-        function sendToTerminal(taskIdx, hintIdx) {
+        // Send command to terminal by pasting into iframe
+        async function sendToTerminal(taskIdx, hintIdx) {
             const hint = getHintCommand(taskIdx, hintIdx);
             if (!hint) return;
             
             const btn = document.getElementById(`sendBtn-${taskIdx}-${hintIdx}`);
             const command = hint.command;
             
-            // Connect to ttyd WebSocket
-            const wsUrl = `ws://${window.location.hostname}:${TERMINAL_PORT}/ws`;
-            
             try {
-                const ws = new WebSocket(wsUrl);
-                ws.binaryType = 'arraybuffer';
+                // Step 1: Copy command to clipboard
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(command);
+                } else {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = command;
+                    textarea.style.position = 'fixed';
+                    textarea.style.left = '-9999px';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                }
                 
-                ws.onopen = function() {
-                    // ttyd protocol: first byte is message type (0 = input)
-                    // Followed by the actual input data
-                    const encoder = new TextEncoder();
-                    const commandBytes = encoder.encode(command);
-                    const message = new Uint8Array(1 + commandBytes.length);
-                    message[0] = 0;  // Input type
-                    message.set(commandBytes, 1);
+                // Step 2: Focus the terminal iframe and try to paste
+                const terminalFrame = document.getElementById('terminalFrame');
+                if (terminalFrame && terminalFrame.contentWindow) {
+                    // Focus iframe first
+                    terminalFrame.contentWindow.focus();
                     
-                    ws.send(message);
+                    // Wait a bit for focus to settle
+                    await new Promise(resolve => setTimeout(resolve, 100));
                     
-                    // Small delay then close
-                    setTimeout(() => {
-                        ws.close();
-                    }, 100);
-                    
-                    // Show success feedback
-                    if (btn) {
-                        btn.classList.add('success');
-                        btn.innerHTML = `${icons.send}<span>Sent!</span>`;
+                    try {
+                        const iframeDoc = terminalFrame.contentDocument || terminalFrame.contentWindow.document;
                         
-                        setTimeout(() => {
-                            btn.classList.remove('success');
-                            btn.innerHTML = `${icons.send}<span>Send</span>`;
-                        }, 2000);
+                        // Find the xterm textarea (used for input in xterm.js)
+                        const terminalInput = iframeDoc.querySelector('.xterm-helper-textarea') || 
+                                             iframeDoc.querySelector('textarea');
+                        
+                        if (terminalInput) {
+                            terminalInput.focus();
+                            
+                            // Method 1: Try execCommand paste (may work in some browsers)
+                            const pasted = document.execCommand('paste');
+                            
+                            // Method 2: Simulate Ctrl+V keypress
+                            if (!pasted) {
+                                const ctrlVEvent = new KeyboardEvent('keydown', {
+                                    key: 'v',
+                                    code: 'KeyV',
+                                    keyCode: 86,
+                                    which: 86,
+                                    ctrlKey: true,
+                                    bubbles: true,
+                                    cancelable: true
+                                });
+                                terminalInput.dispatchEvent(ctrlVEvent);
+                            }
+                        } else {
+                            // Fallback: try to focus any focusable element
+                            iframeDoc.body.focus();
+                        }
+                    } catch (e) {
+                        console.log('Could not access iframe for paste:', e);
                     }
-                };
+                }
                 
-                ws.onerror = function(e) {
-                    console.error('WebSocket error:', e);
-                    // Fallback: copy to clipboard
-                    copyCommand(taskIdx, hintIdx);
-                    if (btn) {
-                        btn.innerHTML = `${icons.send}<span>Copied!</span>`;
-                        setTimeout(() => {
-                            btn.innerHTML = `${icons.send}<span>Send</span>`;
-                        }, 2000);
-                    }
-                };
+                // Show success feedback - command is in clipboard, user can Ctrl+V if auto-paste failed
+                if (btn) {
+                    btn.classList.add('success');
+                    btn.innerHTML = `${icons.send}<span>Copied! Click terminal & Ctrl+V</span>`;
+                    
+                    setTimeout(() => {
+                        btn.classList.remove('success');
+                        btn.innerHTML = `${icons.send}<span>Send</span>`;
+                    }, 3000);
+                }
             } catch (e) {
                 console.error('Failed to send to terminal:', e);
-                copyCommand(taskIdx, hintIdx);
             }
         }
 
