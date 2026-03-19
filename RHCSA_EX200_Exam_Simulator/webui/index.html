@@ -53,6 +53,7 @@
             text-decoration: none;
             font-weight: bold;
             transition: color 0.2s;
+            letter-spacing: 0.5px;
         }
 
         .header-link:hover {
@@ -71,7 +72,6 @@
             min-width: 350px;
             max-width: 500px;
             background-color: #1e1e1e;
-            overflow-y: auto;
             border-right: 2px solid #333;
             display: flex;
             flex-direction: column;
@@ -219,11 +219,18 @@
             flex: 1;
             display: none;
             flex-direction: column;
-            overflow-y: auto;
         }
 
         .lab-view.active {
             display: flex;
+        }
+
+        /* Scrollable content area */
+        .lab-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Lab Header */
@@ -244,6 +251,7 @@
         .lab-tasks {
             padding: 15px;
             background-color: #1a1a1a;
+            flex: 1;
         }
 
         .tasks-title {
@@ -255,12 +263,16 @@
         }
 
         .task-item {
+            background-color: #252525;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .task-main {
             display: flex;
             align-items: flex-start;
             padding: 10px;
-            margin: 5px 0;
-            background-color: #252525;
-            border-radius: 6px;
         }
 
         .task-status-icon {
@@ -280,117 +292,31 @@
             line-height: 1.5;
         }
 
-        /* Control Buttons */
-        .lab-controls {
-            display: flex;
-            gap: 10px;
-            padding: 15px;
-            background-color: #282424;
-            flex-wrap: wrap;
-        }
-
-        .lab-btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .lab-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .btn-check {
-            background-color: #0d6efd;
-            color: white;
-        }
-        .btn-check:hover { background-color: #0b5ed7; }
-
-        .btn-hint {
-            background-color: #ffc107;
-            color: #000;
-        }
-        .btn-hint:hover { background-color: #e0a800; }
-        .btn-hint.active { background-color: #e0a800; }
-
-        .btn-back {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn-back:hover { background-color: #5c636a; }
-
-        .btn-back.success {
-            background-color: #28a745;
-        }
-        .btn-back.success:hover { background-color: #218838; }
-
-        /* Success Message */
-        .success-message {
+        /* Task Hint (inline under task) */
+        .task-hint {
             display: none;
-            background-color: #28a745;
-            color: white;
-            padding: 12px 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.95em;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        /* ==================== HINT SECTION ==================== */
-        .hint-section {
-            display: none;
-            padding: 15px;
-            background-color: #1a1a1a;
+            padding: 10px;
+            background-color: #1c2128;
             border-top: 1px solid #333;
         }
 
-        .hint-section.show {
+        .task-hint.show {
             display: block;
         }
 
-        .hint-title {
+        .hint-text {
             color: #ffc107;
-            font-size: 0.9em;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 0.85em;
+            font-style: italic;
+            margin-bottom: 8px;
         }
 
-        .hint-title svg {
-            width: 18px;
-            height: 18px;
-            fill: #ffc107;
-        }
-
-        /* Command Box */
         .command-box {
             background-color: #0d1117;
             border: 1px solid #30363d;
             border-radius: 6px;
-            margin-bottom: 10px;
             overflow: hidden;
-        }
-
-        .command-hint {
-            padding: 10px 12px;
-            background-color: #1c2128;
-            border-bottom: 1px solid #30363d;
-            color: #ffc107;
-            font-size: 0.85em;
-            font-style: italic;
-            line-height: 1.4;
+            margin-top: 8px;
         }
 
         .command-header {
@@ -433,7 +359,7 @@
             color: #fff;
         }
 
-        .cmd-action-btn.copied {
+        .cmd-action-btn.success {
             background-color: #238636;
             color: white;
             border-color: #238636;
@@ -448,12 +374,81 @@
         .command-text {
             padding: 10px 12px;
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.9em;
+            font-size: 0.85em;
             color: #58a6ff;
             white-space: pre-wrap;
             word-break: break-all;
-            line-height: 1.5;
+            line-height: 1.4;
         }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Fixed Control Buttons at bottom */
+        .lab-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #282424;
+            border-top: 2px solid #333;
+            flex-shrink: 0;
+        }
+
+        .lab-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 100px;
+            justify-content: center;
+        }
+
+        .lab-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-check {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .btn-check:hover { background-color: #0b5ed7; }
+
+        .btn-hint {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .btn-hint:hover { background-color: #e0a800; }
+        .btn-hint.active { background-color: #e0a800; }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-back:hover { background-color: #5c636a; }
+
+        .btn-back.success {
+            background-color: #28a745;
+        }
+        .btn-back.success:hover { background-color: #218838; }
 
         /* ==================== WELCOME VIEW ==================== */
         .welcome-view {
@@ -564,7 +559,7 @@
             <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/redhat.png?raw=true" alt="Red Hat Logo" class="header-logo">
             <h1>Red Hat Certified System Administrator (RHCSA) EX200 Exam Simulator</h1>
         </div>
-        <a href="https://github.com/RHCSA/RHCSA.github.io" target="_blank" class="header-link">www.RHCSA.GitHub.io</a>
+        <a href="#" onclick="openWebsites(); return false;" class="header-link">WWW.RHCSA.GITHUB.IO</a>
     </div>
 
     <!-- Main Container -->
@@ -576,23 +571,31 @@
                 <!-- Objectives will be loaded here -->
             </div>
 
-            <!-- Lab View (Question, Tasks, Controls, Hints) -->
+            <!-- Lab View (Question, Tasks with inline hints, Fixed Controls) -->
             <div class="lab-view" id="labView">
-                <div class="lab-header">
-                    <div class="lab-question" id="labQuestion">Question</div>
-                </div>
-                <div class="lab-tasks">
-                    <div class="tasks-title">Tasks</div>
-                    <div id="labTasks">
-                        <!-- Tasks will be loaded here -->
+                <!-- Scrollable content -->
+                <div class="lab-content">
+                    <div class="lab-header">
+                        <div class="lab-question" id="labQuestion">Question</div>
+                    </div>
+                    <div class="lab-tasks">
+                        <div class="tasks-title">Tasks</div>
+                        <div id="labTasks">
+                            <!-- Tasks will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="success-message" id="successMessage">
+                        Congratulations! All tasks completed successfully!
                     </div>
                 </div>
+                
+                <!-- Fixed Control Buttons -->
                 <div class="lab-controls">
-                    <button class="lab-btn btn-check" onclick="checkTasks()">
+                    <button class="lab-btn btn-back" id="backBtn" onclick="exitLab()">
                         <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                         </svg>
-                        Check
+                        <span id="backBtnText">Back</span>
                     </button>
                     <button class="lab-btn btn-hint" id="hintBtn" onclick="toggleHint()">
                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -600,26 +603,12 @@
                         </svg>
                         Hint
                     </button>
-                    <button class="lab-btn btn-back" id="backBtn" onclick="exitLab()">
+                    <button class="lab-btn btn-check" onclick="checkTasks()">
                         <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                         </svg>
-                        Back
+                        Check
                     </button>
-                </div>
-                <div class="success-message" id="successMessage">
-                    Congratulations! All tasks completed successfully!
-                </div>
-                <div class="hint-section" id="hintSection">
-                    <div class="hint-title">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
-                        </svg>
-                        Solution Commands
-                    </div>
-                    <div id="hintCommands">
-                        <!-- Command boxes will be loaded here -->
-                    </div>
                 </div>
             </div>
         </div>
@@ -661,7 +650,8 @@
         let currentLab = null;
         let completedLabs = new Set();
         let hintVisible = false;
-        let hintCommands = [];
+        let labHints = [];  // Stores hint data for each task
+        let allTasksComplete = false;
 
         // SVG Icons
         const icons = {
@@ -689,6 +679,12 @@
             { id: 9, title: "Manage users and groups" },
             { id: 10, title: "Manage security" }
         ];
+
+        // Open both websites
+        function openWebsites() {
+            window.open('https://github.com/RHCSA/RHCSA.github.io', '_blank');
+            window.open('https://RHCSA.github.io', '_blank');
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
@@ -795,6 +791,10 @@
                 if (response.ok) {
                     const labData = await response.json();
                     currentLab = { objId, idx, file, ...labData };
+                    
+                    // Also fetch hints
+                    await loadHints();
+                    
                     showLabInterface(labData);
                 } else {
                     alert('Failed to start lab');
@@ -805,6 +805,31 @@
             }
             
             hideLoading();
+        }
+
+        // Load hints for the current lab
+        async function loadHints() {
+            if (!currentLab) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/lab/hint`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        objective: currentLab.objId, 
+                        index: currentLab.idx,
+                        file: currentLab.file 
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    labHints = data.commands || [];
+                }
+            } catch (e) {
+                console.error('Error getting hints:', e);
+                labHints = [];
+            }
         }
 
         // Show lab interface
@@ -820,22 +845,50 @@
             // Populate lab content
             document.getElementById('labQuestion').textContent = labData.question;
             
-            // Build tasks list
+            // Build tasks list with inline hint areas
             const tasksContainer = document.getElementById('labTasks');
-            tasksContainer.innerHTML = labData.tasks.map((task, idx) => `
-                <div class="task-item" id="task-${idx}">
-                    <span class="task-icon">${icons.taskPending}</span>
-                    <span class="task-text">${task}</span>
-                </div>
-            `).join('');
+            tasksContainer.innerHTML = labData.tasks.map((task, idx) => {
+                // Find hints for this task
+                const taskHints = labHints.filter(h => h.task === idx + 1);
+                
+                return `
+                    <div class="task-item" id="task-${idx}">
+                        <div class="task-main">
+                            <span class="task-icon">${icons.taskPending}</span>
+                            <span class="task-text">${task}</span>
+                        </div>
+                        <div class="task-hint" id="task-hint-${idx}">
+                            ${taskHints.length > 0 ? taskHints.map((hint, hIdx) => `
+                                ${hint.hint ? `<div class="hint-text">${escapeHtml(hint.hint)}</div>` : ''}
+                                <div class="command-box">
+                                    <div class="command-header">
+                                        <span class="command-label">Command${taskHints.length > 1 ? ' ' + (hIdx + 1) : ''}</span>
+                                        <div class="command-actions">
+                                            <button class="cmd-action-btn" onclick="copyCommand(${idx}, ${hIdx})" id="copyBtn-${idx}-${hIdx}">
+                                                ${icons.copy}
+                                                <span>Copy</span>
+                                            </button>
+                                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx}, ${hIdx})" id="sendBtn-${idx}-${hIdx}">
+                                                ${icons.send}
+                                                <span>Send</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="command-text">${escapeHtml(hint.command)}</div>
+                                </div>
+                            `).join('') : '<div class="hint-text">No hint available for this task.</div>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
             
             // Reset state
             document.getElementById('successMessage').classList.remove('show');
             document.getElementById('backBtn').classList.remove('success');
-            document.getElementById('hintSection').classList.remove('show');
+            document.getElementById('backBtnText').textContent = 'Back';
             document.getElementById('hintBtn').classList.remove('active');
             hintVisible = false;
-            hintCommands = [];
+            allTasksComplete = false;
             
             // Load terminal
             const terminalFrame = document.getElementById('terminalFrame');
@@ -866,8 +919,10 @@
                     if (result.allComplete) {
                         document.getElementById('successMessage').classList.add('show');
                         document.getElementById('backBtn').classList.add('success');
+                        document.getElementById('backBtnText').textContent = 'Finish Lab';
                         completedLabs.add(currentLab.file);
                         updateCompletionStatus();
+                        allTasksComplete = true;
                     }
                 }
             } catch (e) {
@@ -887,79 +942,25 @@
             });
         }
 
-        // Toggle hint visibility
-        async function toggleHint() {
-            const hintSection = document.getElementById('hintSection');
+        // Toggle hint visibility for all tasks
+        function toggleHint() {
             const hintBtn = document.getElementById('hintBtn');
             
             if (hintVisible) {
-                hintSection.classList.remove('show');
+                // Hide all hints
+                document.querySelectorAll('.task-hint').forEach(el => {
+                    el.classList.remove('show');
+                });
                 hintBtn.classList.remove('active');
                 hintVisible = false;
             } else {
-                // Fetch hint if not already loaded
-                if (hintCommands.length === 0) {
-                    await loadHint();
-                }
-                hintSection.classList.add('show');
+                // Show all hints
+                document.querySelectorAll('.task-hint').forEach(el => {
+                    el.classList.add('show');
+                });
                 hintBtn.classList.add('active');
                 hintVisible = true;
             }
-        }
-
-        // Load hint commands
-        async function loadHint() {
-            if (!currentLab) return;
-            
-            try {
-                const response = await fetch(`${API_BASE}/lab/hint`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        objective: currentLab.objId, 
-                        index: currentLab.idx,
-                        file: currentLab.file 
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    hintCommands = data.commands || [];
-                    renderHintCommands();
-                }
-            } catch (e) {
-                console.error('Error getting hint:', e);
-            }
-        }
-
-        // Render hint command boxes
-        function renderHintCommands() {
-            const container = document.getElementById('hintCommands');
-            
-            if (hintCommands.length === 0) {
-                container.innerHTML = '<p style="color: #888; font-size: 0.9em;">No hints available for this lab.</p>';
-                return;
-            }
-            
-            container.innerHTML = hintCommands.map((cmd, idx) => `
-                <div class="command-box">
-                    ${cmd.hint ? `<div class="command-hint">${escapeHtml(cmd.hint)}</div>` : ''}
-                    <div class="command-header">
-                        <span class="command-label">${cmd.label || 'Task ' + (cmd.task || idx + 1)}</span>
-                        <div class="command-actions">
-                            <button class="cmd-action-btn" onclick="copyCommand(${idx})" title="Copy to clipboard" id="copyBtn-${idx}">
-                                ${icons.copy}
-                                <span>Copy</span>
-                            </button>
-                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx})" title="Send to terminal" id="sendBtn-${idx}">
-                                ${icons.send}
-                                <span>Send</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="command-text" id="cmdText-${idx}">${escapeHtml(cmd.command)}</div>
-                </div>
-            `).join('');
         }
 
         // Escape HTML
@@ -969,21 +970,25 @@
             return div.innerHTML;
         }
 
+        // Get hint command by task and hint index
+        function getHintCommand(taskIdx, hintIdx) {
+            const taskHints = labHints.filter(h => h.task === taskIdx + 1);
+            return taskHints[hintIdx];
+        }
+
         // Copy command to clipboard
-        async function copyCommand(idx) {
-            const cmd = hintCommands[idx];
-            if (!cmd) return;
+        async function copyCommand(taskIdx, hintIdx) {
+            const hint = getHintCommand(taskIdx, hintIdx);
+            if (!hint) return;
             
-            const btn = document.getElementById(`copyBtn-${idx}`);
+            const btn = document.getElementById(`copyBtn-${taskIdx}-${hintIdx}`);
             
             try {
-                // Try modern clipboard API first
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(cmd.command);
+                    await navigator.clipboard.writeText(hint.command);
                 } else {
-                    // Fallback for older browsers or non-HTTPS
                     const textarea = document.createElement('textarea');
-                    textarea.value = cmd.command;
+                    textarea.value = hint.command;
                     textarea.style.position = 'fixed';
                     textarea.style.left = '-9999px';
                     document.body.appendChild(textarea);
@@ -992,61 +997,67 @@
                     document.body.removeChild(textarea);
                 }
                 
-                btn.classList.add('copied');
+                btn.classList.add('success');
                 btn.innerHTML = `${icons.copy}<span>Copied!</span>`;
                 
                 setTimeout(() => {
-                    btn.classList.remove('copied');
+                    btn.classList.remove('success');
                     btn.innerHTML = `${icons.copy}<span>Copy</span>`;
                 }, 2000);
             } catch (e) {
                 console.error('Failed to copy:', e);
-                alert('Failed to copy. Please select and copy manually.');
             }
         }
 
-        // Send command to terminal via WebSocket
-        function sendToTerminal(idx) {
-            const cmd = hintCommands[idx];
-            if (!cmd) return;
+        // Send command to terminal using binary WebSocket
+        function sendToTerminal(taskIdx, hintIdx) {
+            const hint = getHintCommand(taskIdx, hintIdx);
+            if (!hint) return;
             
-            const btn = document.getElementById(`sendBtn-${idx}`);
+            const btn = document.getElementById(`sendBtn-${taskIdx}-${hintIdx}`);
+            const command = hint.command;
             
-            // Connect to ttyd WebSocket and send command
+            // Connect to ttyd WebSocket
             const wsUrl = `ws://${window.location.hostname}:${TERMINAL_PORT}/ws`;
             
             try {
                 const ws = new WebSocket(wsUrl);
+                ws.binaryType = 'arraybuffer';
                 
                 ws.onopen = function() {
-                    // ttyd protocol: send '0' + input for stdin
-                    // Send the command without Enter so user can review it
-                    ws.send('0' + cmd.command);
-                    ws.close();
+                    // ttyd protocol: first byte is message type (0 = input)
+                    // Followed by the actual input data
+                    const encoder = new TextEncoder();
+                    const commandBytes = encoder.encode(command);
+                    const message = new Uint8Array(1 + commandBytes.length);
+                    message[0] = 0;  // Input type
+                    message.set(commandBytes, 1);
+                    
+                    ws.send(message);
+                    
+                    // Small delay then close
+                    setTimeout(() => {
+                        ws.close();
+                    }, 100);
                     
                     // Show success feedback
                     if (btn) {
-                        const originalHtml = btn.innerHTML;
+                        btn.classList.add('success');
                         btn.innerHTML = `${icons.send}<span>Sent!</span>`;
-                        btn.style.backgroundColor = '#238636';
-                        btn.style.color = 'white';
-                        btn.style.borderColor = '#238636';
                         
                         setTimeout(() => {
-                            btn.innerHTML = originalHtml;
-                            btn.style.backgroundColor = '';
-                            btn.style.color = '';
-                            btn.style.borderColor = '';
+                            btn.classList.remove('success');
+                            btn.innerHTML = `${icons.send}<span>Send</span>`;
                         }, 2000);
                     }
                 };
                 
                 ws.onerror = function(e) {
                     console.error('WebSocket error:', e);
-                    // Fallback to copy
-                    copyCommand(idx);
+                    // Fallback: copy to clipboard
+                    copyCommand(taskIdx, hintIdx);
                     if (btn) {
-                        btn.innerHTML = `${icons.send}<span>Copied instead</span>`;
+                        btn.innerHTML = `${icons.send}<span>Copied!</span>`;
                         setTimeout(() => {
                             btn.innerHTML = `${icons.send}<span>Send</span>`;
                         }, 2000);
@@ -1054,8 +1065,7 @@
                 };
             } catch (e) {
                 console.error('Failed to send to terminal:', e);
-                // Fallback to copy
-                copyCommand(idx);
+                copyCommand(taskIdx, hintIdx);
             }
         }
 
@@ -1063,24 +1073,24 @@
         async function exitLab() {
             if (!currentLab) return;
             
-            // Prevent any "Leave site?" prompts
+            // Prevent "Leave site?" prompts
             window.onbeforeunload = null;
             
             const terminalFrame = document.getElementById('terminalFrame');
             
-            // More aggressive iframe cleanup to prevent "Leave site?" prompt
+            // Aggressive iframe cleanup
             try {
-                // Try to clear iframe's onbeforeunload
                 if (terminalFrame.contentWindow) {
                     terminalFrame.contentWindow.onbeforeunload = null;
                 }
-            } catch (e) { /* ignore cross-origin errors */ }
+            } catch (e) { /* ignore */ }
             
-            // Remove iframe completely and recreate it
+            // Remove and recreate iframe
+            const parent = terminalFrame.parentNode;
             const newIframe = document.createElement('iframe');
             newIframe.id = 'terminalFrame';
             newIframe.src = '';
-            terminalFrame.parentNode.replaceChild(newIframe, terminalFrame);
+            parent.replaceChild(newIframe, terminalFrame);
             
             showLoading();
             
@@ -1099,8 +1109,9 @@
             }
             
             currentLab = null;
-            hintCommands = [];
+            labHints = [];
             hintVisible = false;
+            allTasksComplete = false;
             
             // Switch back to menu view
             document.getElementById('labView').classList.remove('active');
