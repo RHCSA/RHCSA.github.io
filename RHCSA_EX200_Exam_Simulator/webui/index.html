@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHCSA EX200 Exam Simulator</title>
+    <title>RHCSA EX200 Exam Simulator - www.RHCSA.GitHub.io</title>
     <style>
         * {
             margin: 0;
@@ -27,23 +27,42 @@
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            height: 50px;
+            height: 60px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            height: 40px;
+            width: auto;
         }
 
         .header h1 {
-            font-size: 1.3em;
+            font-size: 1.1em;
             color: white;
+            margin: 0;
         }
 
-        .header-subtitle {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.85em;
+        .header-link {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9em;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .header-link:hover {
+            color: #ffc107;
         }
 
         /* Main Container */
         .main-container {
             display: flex;
-            height: calc(100vh - 50px);
+            height: calc(100vh - 60px);
         }
 
         /* Left Panel */
@@ -531,8 +550,11 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>RHCSA EX200 Exam Simulator</h1>
-        <span class="header-subtitle">Red Hat Certified System Administrator</span>
+        <div class="header-left">
+            <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/redhat.png?raw=true" alt="Red Hat Logo" class="header-logo">
+            <h1>Red Hat Certified System Administrator (RHCSA) EX200 Exam Simulator</h1>
+        </div>
+        <a href="https://github.com/RHCSA/RHCSA.github.io" target="_blank" class="header-link">www.RHCSA.GitHub.io</a>
     </div>
 
     <!-- Main Container -->
@@ -941,9 +963,24 @@
             const cmd = hintCommands[idx];
             if (!cmd) return;
             
+            const btn = document.getElementById(`copyBtn-${idx}`);
+            
             try {
-                await navigator.clipboard.writeText(cmd.command);
-                const btn = document.getElementById(`copyBtn-${idx}`);
+                // Try modern clipboard API first
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(cmd.command);
+                } else {
+                    // Fallback for older browsers or non-HTTPS
+                    const textarea = document.createElement('textarea');
+                    textarea.value = cmd.command;
+                    textarea.style.position = 'fixed';
+                    textarea.style.left = '-9999px';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                }
+                
                 btn.classList.add('copied');
                 btn.innerHTML = `${icons.copy}<span>Copied!</span>`;
                 
@@ -953,39 +990,52 @@
                 }, 2000);
             } catch (e) {
                 console.error('Failed to copy:', e);
+                alert('Failed to copy. Please select and copy manually.');
             }
         }
 
         // Send command to terminal (without Enter)
+        // Note: ttyd doesn't support direct input injection for security reasons
+        // Best approach is to copy to clipboard and let user paste
         function sendToTerminal(idx) {
             const cmd = hintCommands[idx];
             if (!cmd) return;
             
-            const terminalFrame = document.getElementById('terminalFrame');
-            if (!terminalFrame || !terminalFrame.contentWindow) {
-                alert('Terminal is not ready');
-                return;
+            const btn = document.querySelector(`#copyBtn-${idx}`)?.nextElementSibling;
+            
+            // Copy to clipboard first
+            copyCommand(idx);
+            
+            // Update send button to show feedback
+            if (btn) {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = `${icons.send}<span>Copied! Paste in terminal</span>`;
+                btn.style.backgroundColor = '#238636';
+                btn.style.color = 'white';
+                btn.style.borderColor = '#238636';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.style.backgroundColor = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 3000);
             }
             
-            // Try to access ttyd terminal and send input
-            try {
-                // ttyd uses a specific way to send input
-                // We'll post a message to the iframe
-                terminalFrame.contentWindow.postMessage({
-                    type: 'input',
-                    data: cmd.command
-                }, '*');
-            } catch (e) {
-                console.error('Failed to send to terminal:', e);
-                // Fallback: copy to clipboard
-                copyCommand(idx);
-                alert('Command copied to clipboard. Paste it in the terminal.');
+            // Focus the terminal iframe
+            const terminalFrame = document.getElementById('terminalFrame');
+            if (terminalFrame) {
+                terminalFrame.focus();
             }
         }
 
         // Exit lab
         async function exitLab() {
             if (!currentLab) return;
+            
+            // Clear terminal FIRST to prevent "Leave site?" prompt
+            const terminalFrame = document.getElementById('terminalFrame');
+            terminalFrame.src = 'about:blank';
             
             showLoading();
             
@@ -1014,9 +1064,6 @@
             // Switch back to welcome view
             document.getElementById('terminalView').classList.remove('active');
             document.getElementById('welcomeView').classList.remove('hidden');
-            
-            // Clear terminal
-            document.getElementById('terminalFrame').src = '';
             
             hideLoading();
         }

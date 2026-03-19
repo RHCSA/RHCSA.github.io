@@ -408,13 +408,12 @@ def start_ttyd():
             print(f"ttyd already running on port {TERMINAL_PORT}")
             return
         
-        # Start ttyd
+        # Start ttyd with working directory /tmp
         subprocess.Popen([
             'ttyd',
             '-p', str(TERMINAL_PORT),
             '-W',  # Writable
-            '--once',  # One connection at a time
-            '/bin/bash', '-l'
+            '/bin/bash', '-c', 'cd /tmp && exec bash -l'
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         print(f"Started ttyd on port {TERMINAL_PORT}")
     except FileNotFoundError:
