@@ -156,17 +156,16 @@
 
         /* Progress Circle */
         .progress-circle {
-            width: 36px;
-            height: 36px;
-            margin-right: 10px;
+            width: 32px;
+            height: 32px;
             flex-shrink: 0;
             position: relative;
         }
 
         .progress-circle svg {
             transform: rotate(-90deg);
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
         }
 
         .progress-circle .bg {
@@ -188,18 +187,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 0.65em;
+            font-size: 0.55em;
             font-weight: bold;
             color: #888;
         }
 
-        .objective-arrow {
-            transition: transform 0.3s;
-            color: #888;
-        }
-
-        .objective-header.expanded .objective-arrow {
-            transform: rotate(90deg);
+        .objective-progress {
+            flex-shrink: 0;
         }
 
         .questions-list {
@@ -753,8 +747,12 @@
 
         // Open both websites
         function openWebsites() {
+            // Open first window immediately
             window.open('https://github.com/RHCSA/RHCSA.github.io', '_blank');
-            window.open('https://RHCSA.github.io', '_blank');
+            // Open second window with small delay to avoid popup blocker
+            setTimeout(() => {
+                window.open('https://rhcsa.github.io', '_blank');
+            }, 100);
         }
 
         // Initialize
@@ -805,14 +803,14 @@
 
         // Create progress circle SVG
         function createProgressCircle(percent) {
-            const radius = 14;
+            const radius = 12;
             const circumference = 2 * Math.PI * radius;
             const offset = circumference - (percent / 100) * circumference;
             return `
                 <div class="progress-circle">
-                    <svg viewBox="0 0 36 36">
-                        <circle class="bg" cx="18" cy="18" r="${radius}"></circle>
-                        <circle class="progress" cx="18" cy="18" r="${radius}" 
+                    <svg viewBox="0 0 32 32">
+                        <circle class="bg" cx="16" cy="16" r="${radius}"></circle>
+                        <circle class="progress" cx="16" cy="16" r="${radius}" 
                                 stroke-dasharray="${circumference}" 
                                 stroke-dashoffset="${offset}"></circle>
                     </svg>
@@ -836,7 +834,6 @@
                     <div class="objective-number">${obj.id}</div>
                     <div class="objective-title">${obj.title}</div>
                     <div class="objective-progress" id="progress-${obj.id}">${createProgressCircle(percent)}</div>
-                    ${icons.arrow}
                 </div>
                 <div class="questions-list" id="questions-${obj.id}">
                     ${questions.map((q, idx) => `
