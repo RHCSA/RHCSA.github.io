@@ -154,6 +154,45 @@
             font-size: 0.95em;
         }
 
+        /* Progress Circle */
+        .progress-circle {
+            width: 36px;
+            height: 36px;
+            margin-right: 10px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .progress-circle svg {
+            transform: rotate(-90deg);
+            width: 36px;
+            height: 36px;
+        }
+
+        .progress-circle .bg {
+            fill: none;
+            stroke: #444;
+            stroke-width: 3;
+        }
+
+        .progress-circle .progress {
+            fill: none;
+            stroke: #28a745;
+            stroke-width: 3;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.3s;
+        }
+
+        .progress-circle .text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.65em;
+            font-weight: bold;
+            color: #888;
+        }
+
         .objective-arrow {
             transition: transform 0.3s;
             color: #888;
@@ -409,6 +448,29 @@
             flex-shrink: 0;
         }
 
+        .lab-controls.finish-mode {
+            justify-content: center;
+        }
+
+        .lab-controls.finish-mode .btn-back,
+        .lab-controls.finish-mode .btn-hint,
+        .lab-controls.finish-mode .btn-check {
+            display: none;
+        }
+
+        .btn-finish {
+            display: none;
+            background-color: #28a745;
+            color: white;
+            padding: 12px 40px;
+            font-size: 1em;
+        }
+        .btn-finish:hover { background-color: #218838; }
+
+        .lab-controls.finish-mode .btn-finish {
+            display: flex;
+        }
+
         .lab-btn {
             padding: 10px 20px;
             border: none;
@@ -593,7 +655,7 @@
                 </div>
                 
                 <!-- Fixed Control Buttons -->
-                <div class="lab-controls">
+                <div class="lab-controls" id="labControls">
                     <button class="lab-btn btn-back" id="backBtn" onclick="exitLab()">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -611,6 +673,12 @@
                             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                         </svg>
                         Check
+                    </button>
+                    <button class="lab-btn btn-finish" onclick="exitLab()">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                        Finish Lab
                     </button>
                 </div>
             </div>
@@ -735,14 +803,39 @@
             }
         }
 
+        // Create progress circle SVG
+        function createProgressCircle(percent) {
+            const radius = 14;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (percent / 100) * circumference;
+            return `
+                <div class="progress-circle">
+                    <svg viewBox="0 0 36 36">
+                        <circle class="bg" cx="18" cy="18" r="${radius}"></circle>
+                        <circle class="progress" cx="18" cy="18" r="${radius}" 
+                                stroke-dasharray="${circumference}" 
+                                stroke-dashoffset="${offset}"></circle>
+                    </svg>
+                    <span class="text">${percent}%</span>
+                </div>
+            `;
+        }
+
         // Create objective element
         function createObjectiveElement(obj, questions) {
+            // Calculate completion percentage
+            const completed = questions.filter(q => completedLabs.has(q.file)).length;
+            const total = questions.length;
+            const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
             const div = document.createElement('div');
             div.className = 'objective-item';
+            div.dataset.objId = obj.id;
             div.innerHTML = `
                 <div class="objective-header" onclick="toggleObjective(${obj.id})">
                     <div class="objective-number">${obj.id}</div>
                     <div class="objective-title">${obj.title}</div>
+                    <div class="objective-progress" id="progress-${obj.id}">${createProgressCircle(percent)}</div>
                     ${icons.arrow}
                 </div>
                 <div class="questions-list" id="questions-${obj.id}">
@@ -767,14 +860,36 @@
             questionsList.classList.toggle('expanded');
         }
 
-        // Update completion status icons
+        // Update completion status icons and progress circles
         function updateCompletionStatus() {
+            // Update individual question status icons
             document.querySelectorAll('.completion-status').forEach(el => {
                 const file = el.dataset.file;
                 if (file && completedLabs.has(file)) {
                     el.innerHTML = icons.complete;
                 } else {
                     el.innerHTML = icons.incomplete;
+                }
+            });
+            
+            // Update progress circles for each objective
+            document.querySelectorAll('.objective-item').forEach(objItem => {
+                const objId = objItem.dataset.objId;
+                const questions = objItem.querySelectorAll('.question-item');
+                const total = questions.length;
+                let completed = 0;
+                
+                questions.forEach(q => {
+                    const file = q.dataset.file;
+                    if (file && completedLabs.has(file)) {
+                        completed++;
+                    }
+                });
+                
+                const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+                const progressContainer = objItem.querySelector('.objective-progress');
+                if (progressContainer) {
+                    progressContainer.innerHTML = createProgressCircle(percent);
                 }
             });
         }
@@ -894,7 +1009,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="command-text">${escapeHtml(hint.command)}</div>
+                                    <div class="command-text">${escapeHtml(unescapeCommand(hint.command))}</div>
                                 </div>
                             `).join('') : '<div class="hint-text">No hint available for this task.</div>'}
                         </div>
@@ -904,8 +1019,7 @@
             
             // Reset state
             document.getElementById('successMessage').classList.remove('show');
-            document.getElementById('backBtn').classList.remove('success');
-            document.getElementById('backBtnText').textContent = 'Back';
+            document.getElementById('labControls').classList.remove('finish-mode');
             document.getElementById('hintBtn').classList.remove('active');
             hintVisible = false;
             allTasksComplete = false;
@@ -938,8 +1052,7 @@
                     
                     if (result.allComplete) {
                         document.getElementById('successMessage').classList.add('show');
-                        document.getElementById('backBtn').classList.add('success');
-                        document.getElementById('backBtnText').textContent = 'Finish Lab';
+                        document.getElementById('labControls').classList.add('finish-mode');
                         completedLabs.add(currentLab.file);
                         updateCompletionStatus();
                         allTasksComplete = true;
@@ -1002,13 +1115,15 @@
             if (!hint) return;
             
             const btn = document.getElementById(`copyBtn-${taskIdx}-${hintIdx}`);
+            // Unescape the command before copying
+            const command = unescapeCommand(hint.command);
             
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(hint.command);
+                    await navigator.clipboard.writeText(command);
                 } else {
                     const textarea = document.createElement('textarea');
-                    textarea.value = hint.command;
+                    textarea.value = command;
                     textarea.style.position = 'fixed';
                     textarea.style.left = '-9999px';
                     document.body.appendChild(textarea);
@@ -1029,20 +1144,27 @@
             }
         }
 
+        // Unescape double backslashes for actual command execution
+        function unescapeCommand(cmd) {
+            // Convert \\ to \ for proper shell execution
+            return cmd.replace(/\\\\/g, '\\');
+        }
+
         // Send command to terminal via server API (uses tmux send-keys)
         async function sendToTerminal(taskIdx, hintIdx) {
             const hint = getHintCommand(taskIdx, hintIdx);
             if (!hint) return;
             
             const btn = document.getElementById(`sendBtn-${taskIdx}-${hintIdx}`);
-            const command = hint.command;
+            // Unescape the command before sending
+            const command = unescapeCommand(hint.command);
             
             try {
-                // Call server API to send command via tmux
+                // Call server API to send command via tmux (with Enter key)
                 const response = await fetch(`${API_BASE}/terminal/send`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ command: command })
+                    body: JSON.stringify({ command: command, pressEnter: true })
                 });
                 
                 const result = await response.json();
@@ -1050,7 +1172,7 @@
                 if (btn) {
                     if (result.success) {
                         btn.classList.add('success');
-                        btn.innerHTML = `${icons.send}<span>Sent! Press Enter</span>`;
+                        btn.innerHTML = `${icons.send}<span>Sent!</span>`;
                     } else {
                         // Fallback: copy to clipboard
                         await navigator.clipboard.writeText(command);

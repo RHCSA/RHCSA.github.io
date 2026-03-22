@@ -435,6 +435,7 @@ def exit_lab(data):
 def send_to_terminal(data):
     """Send a command to the terminal via tmux"""
     command = data.get('command', '')
+    press_enter = data.get('pressEnter', False)
     
     if not command:
         return {'error': 'No command provided', 'success': False}
@@ -449,12 +450,20 @@ def send_to_terminal(data):
         if result.returncode != 0:
             return {'error': 'Terminal session not found', 'success': False}
         
-        # Send keys to tmux (without pressing Enter - user does that)
+        # Send keys to tmux
         subprocess.run(
             ['tmux', 'send-keys', '-t', TMUX_SESSION, command],
             capture_output=True,
             check=True
         )
+        
+        # Optionally press Enter to execute the command
+        if press_enter:
+            subprocess.run(
+                ['tmux', 'send-keys', '-t', TMUX_SESSION, 'Enter'],
+                capture_output=True,
+                check=True
+            )
         
         return {'success': True}
     except subprocess.CalledProcessError as e:
