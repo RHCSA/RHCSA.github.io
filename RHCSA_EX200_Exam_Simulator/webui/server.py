@@ -67,6 +67,10 @@ class RHCSAAPIHandler(SimpleHTTPRequestHandler):
             # Get all objectives
             self.send_json(get_objectives())
         
+        elif path == '/api/version/check':
+            # Check for updates
+            self.send_json(check_version())
+        
         else:
             self.send_error(404)
     
@@ -98,6 +102,10 @@ class RHCSAAPIHandler(SimpleHTTPRequestHandler):
         
         elif path == '/api/terminal/send':
             result = send_to_terminal(data)
+            self.send_json(result)
+        
+        elif path == '/api/update/run':
+            result = run_update()
             self.send_json(result)
         
         else:
@@ -472,6 +480,70 @@ def send_to_terminal(data):
         return {'error': 'tmux not installed', 'success': False}
     except Exception as e:
         return {'error': str(e), 'success': False}
+
+
+# Version check configuration
+VERSION_FILE = "/usr/local/share/rhcsa/.version"
+GITHUB_REPO_API = "https://api.github.com/repos/RHCSA/RHCSA.github.io/commits/main"
+INSTALLER_URL = "https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh"
+
+
+def check_version():
+    """Check if an update is available"""
+    try:
+        import urllib.request
+        
+        # Read installed version
+        installed = None
+        if os.path.exists(VERSION_FILE):
+            with open(VERSION_FILE, 'r') as f:
+                installed = f.read().strip()
+        
+        if not installed:
+            return {'updateAvailable': False, 'message': 'Version file not found'}
+        
+        # Fetch latest version from GitHub
+        req = urllib.request.Request(GITHUB_REPO_API, headers={'User-Agent': 'RHCSA-Simulator'})
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            latest = data.get('sha', '')
+        
+        if not latest:
+            return {'updateAvailable': False, 'message': 'Could not fetch latest version'}
+        
+        # Compare versions
+        update_available = installed != latest
+        
+        return {
+            'updateAvailable': update_available,
+            'installed': installed[:7] if installed else 'unknown',
+            'latest': latest[:7] if latest else 'unknown',
+            'installedFull': installed,
+            'latestFull': latest
+        }
+    except Exception as e:
+        return {'updateAvailable': False, 'error': str(e)}
+
+
+def run_update():
+    """Run the installer to update"""
+    try:
+        # Run installer script
+        result = subprocess.run(
+            ['bash', '-c', f'curl -sL {INSTALLER_URL} | bash'],
+            capture_output=True,
+            text=True,
+            timeout=300  # 5 minute timeout
+        )
+        
+        if result.returncode == 0:
+            return {'success': True, 'message': 'Update completed successfully'}
+        else:
+            return {'success': False, 'error': result.stderr or 'Update failed'}
+    except subprocess.TimeoutExpired:
+        return {'success': False, 'error': 'Update timed out'}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
 
 
 def start_ttyd():

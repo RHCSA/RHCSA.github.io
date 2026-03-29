@@ -1368,6 +1368,58 @@ navigate_objectives() {
     done
 }
 
+# Version check configuration
+VERSION_FILE="/usr/local/share/rhcsa/.version"
+GITHUB_REPO_API="https://api.github.com/repos/RHCSA/RHCSA.github.io/commits/main"
+INSTALLER_URL="https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh"
+
+# Check for updates on startup
+check_for_update() {
+    # Only check if version file exists (installed via installer)
+    if [[ ! -f "$VERSION_FILE" ]]; then
+        return 0
+    fi
+    
+    # Check if we have internet connectivity
+    if ! curl -sI https://github.com --connect-timeout 3 &>/dev/null; then
+        return 0  # Skip update check if offline
+    fi
+    
+    local installed_commit=$(cat "$VERSION_FILE" 2>/dev/null)
+    local latest_commit=$(curl -sL "$GITHUB_REPO_API" 2>/dev/null | grep '"sha"' | head -1 | sed 's/.*"sha": "\([^"]*\)".*/\1/')
+    
+    if [[ -n "$latest_commit" ]] && [[ "$installed_commit" != "$latest_commit" ]]; then
+        clear_screen
+        echo ""
+        echo -e "  ${CYAN}${BOLD}╔════════════════════════════════════════════════════════════╗${RESET}"
+        echo -e "  ${CYAN}${BOLD}║                  Update Available!                          ║${RESET}"
+        echo -e "  ${CYAN}${BOLD}╚════════════════════════════════════════════════════════════╝${RESET}"
+        echo ""
+        echo -e "  A new version of RHCSA Exam Simulator is available."
+        echo ""
+        echo -e "  Installed: ${YELLOW}${installed_commit:0:7}${RESET}"
+        echo -e "  Latest:    ${GREEN}${latest_commit:0:7}${RESET}"
+        echo ""
+        echo -ne "  Do you want to update now? (y/n): "
+        read -n 1 -r reply
+        echo ""
+        
+        if [[ $reply =~ ^[Yy]$ ]]; then
+            echo ""
+            echo -e "  ${CYAN}Downloading and running installer...${RESET}"
+            echo ""
+            # Download and run the installer
+            curl -sL "$INSTALLER_URL" | bash
+            exit 0
+        else
+            echo ""
+            echo -e "  ${YELLOW}Update skipped. Run 'rhcsa' again to update later.${RESET}"
+            echo ""
+            sleep 2
+        fi
+    fi
+}
+
 # Pre-script checks
 pre_script_checks() {
     local checks_passed=true
@@ -1502,6 +1554,9 @@ main() {
     
     # Initialize progress tracking file
     init_progress_file
+    
+    # Check for updates (only if not running in special modes)
+    check_for_update
     
     # Run pre-script checks first
     pre_script_checks

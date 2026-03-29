@@ -23,6 +23,8 @@ set -e
 # ============================================================================
 GITHUB_RAW_BASE="https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/RHCSA_EX200_Exam_Simulator"
 GITHUB_API_URL="https://api.github.com/repos/RHCSA/RHCSA.github.io/contents/RHCSA_EX200_Exam_Simulator"
+GITHUB_REPO_API="https://api.github.com/repos/RHCSA/RHCSA.github.io/commits/main"
+VERSION_FILE="/usr/local/share/rhcsa/.version"
 # ============================================================================
 
 # Colors
@@ -49,6 +51,54 @@ cleanup() {
     rm -rf "$TMP_DIR" 2>/dev/null || true
 }
 trap cleanup EXIT
+
+# Check for updates if already installed
+check_for_update() {
+    if [[ -f "$VERSION_FILE" ]]; then
+        INSTALLED_COMMIT=$(cat "$VERSION_FILE" 2>/dev/null)
+        LATEST_COMMIT=$(curl -sL "$GITHUB_REPO_API" 2>/dev/null | grep '"sha"' | head -1 | sed 's/.*"sha": "\([^"]*\)".*/\1/')
+        
+        if [[ -n "$LATEST_COMMIT" ]] && [[ "$INSTALLED_COMMIT" != "$LATEST_COMMIT" ]]; then
+            echo ""
+            echo -e "${CYAN}${BOLD}╔════════════════════════════════════════════════════════════╗${NC}"
+            echo -e "${CYAN}${BOLD}║              Update Available!                              ║${NC}"
+            echo -e "${CYAN}${BOLD}╚════════════════════════════════════════════════════════════╝${NC}"
+            echo ""
+            echo -e "  Installed: ${YELLOW}${INSTALLED_COMMIT:0:7}${NC}"
+            echo -e "  Latest:    ${GREEN}${LATEST_COMMIT:0:7}${NC}"
+            echo ""
+            read -p "  Do you want to update now? (y/n): " -n 1 -r
+            echo ""
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                echo ""
+                echo -e "${YELLOW}Update skipped. Run the installer again to update later.${NC}"
+                echo ""
+                exit 0
+            fi
+            echo ""
+            echo -e "${GREEN}Proceeding with update...${NC}"
+            echo ""
+        elif [[ -n "$LATEST_COMMIT" ]] && [[ "$INSTALLED_COMMIT" == "$LATEST_COMMIT" ]]; then
+            echo ""
+            echo -e "${GREEN}${BOLD}╔════════════════════════════════════════════════════════════╗${NC}"
+            echo -e "${GREEN}${BOLD}║              Already up to date!                           ║${NC}"
+            echo -e "${GREEN}${BOLD}╚════════════════════════════════════════════════════════════╝${NC}"
+            echo ""
+            echo -e "  Version: ${GREEN}${INSTALLED_COMMIT:0:7}${NC}"
+            echo ""
+            read -p "  Do you want to reinstall anyway? (y/n): " -n 1 -r
+            echo ""
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                echo ""
+                exit 0
+            fi
+            echo ""
+        fi
+    fi
+}
+
+# Check for updates before proceeding
+check_for_update
 
 # Step 1: Check internet connectivity
 echo -e "  ${YELLOW}[1/5]${NC} Checking internet connectivity..."
@@ -246,6 +296,16 @@ if [[ -f "$INSTALL_DIR/webui/rhcsa-webui.service" ]]; then
     fi
 else
     echo -e "        ${YELLOW}ℹ${NC} Web Interface service file not found, skipping"
+fi
+
+# Step 8: Save version (commit hash) for update checking
+echo -e "  ${YELLOW}[8/8]${NC} Saving version information..."
+LATEST_COMMIT=$(curl -sL "$GITHUB_REPO_API" 2>/dev/null | grep '"sha"' | head -1 | sed 's/.*"sha": "\([^"]*\)".*/\1/')
+if [[ -n "$LATEST_COMMIT" ]]; then
+    echo "$LATEST_COMMIT" > "$VERSION_FILE"
+    echo -e "        ${GREEN}✓${NC} Version saved (${LATEST_COMMIT:0:7})"
+else
+    echo -e "        ${YELLOW}ℹ${NC} Could not fetch version info"
 fi
 
 # Verify

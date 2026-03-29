@@ -417,7 +417,7 @@
             line-height: 1.4;
         }
 
-        /* Success Message */
+        /* Success Message (shows below Finish Lab button) */
         .success-message {
             display: none;
             background-color: #28a745;
@@ -426,6 +426,7 @@
             text-align: center;
             font-weight: bold;
             font-size: 0.95em;
+            flex-shrink: 0;
         }
 
         .success-message.show {
@@ -609,9 +610,150 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        /* Update Modal */
+        .update-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .update-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .update-modal {
+            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+            border: 2px solid #cc0000;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .update-modal-overlay.show .update-modal {
+            transform: scale(1);
+        }
+
+        .update-modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .update-modal h2 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .update-modal p {
+            color: #bbb;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .update-version-info {
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+
+        .update-version-info .version-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .update-version-info .label {
+            color: #888;
+        }
+
+        .update-version-info .installed {
+            color: #ffc107;
+        }
+
+        .update-version-info .latest {
+            color: #4caf50;
+        }
+
+        .update-modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .update-modal-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-update-now {
+            background: linear-gradient(135deg, #cc0000 0%, #8b0000 100%);
+            color: white;
+        }
+
+        .btn-update-now:hover {
+            background: linear-gradient(135deg, #e00000 0%, #a00000 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-update-later {
+            background: #333;
+            color: #bbb;
+        }
+
+        .btn-update-later:hover {
+            background: #444;
+        }
     </style>
 </head>
 <body>
+    <!-- Update Modal -->
+    <div id="updateModal" class="update-modal-overlay">
+        <div class="update-modal">
+            <div class="update-modal-icon">🔄</div>
+            <h2>Update Available!</h2>
+            <p>A new version of RHCSA Exam Simulator is available.</p>
+            <div class="update-version-info">
+                <div class="version-row">
+                    <span class="label">Installed:</span>
+                    <span class="installed" id="installedVersion">loading...</span>
+                </div>
+                <div class="version-row">
+                    <span class="label">Latest:</span>
+                    <span class="latest" id="latestVersion">loading...</span>
+                </div>
+            </div>
+            <p style="font-size: 0.85em; color: #888;">Update includes bug fixes and new features.</p>
+            <div class="update-modal-buttons">
+                <button class="btn-update-later" onclick="dismissUpdate()">Later</button>
+                <button class="btn-update-now" onclick="runUpdate()">Update Now</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <div class="header">
         <div class="header-left">
@@ -643,9 +785,6 @@
                             <!-- Tasks will be loaded here -->
                         </div>
                     </div>
-                    <div class="success-message" id="successMessage">
-                        Congratulations! All tasks completed successfully!
-                    </div>
                 </div>
                 
                 <!-- Fixed Control Buttons -->
@@ -674,6 +813,11 @@
                         </svg>
                         Finish Lab
                     </button>
+                </div>
+                
+                <!-- Success Message (below buttons when all tasks complete) -->
+                <div class="success-message" id="successMessage">
+                    Congratulations! All tasks completed successfully!
                 </div>
             </div>
         </div>
@@ -745,6 +889,86 @@
             { id: 10, title: "Manage security" }
         ];
 
+        // Version check variables
+        let updateAvailable = false;
+
+        // Check for updates on page load
+        async function checkForUpdate() {
+            try {
+                const response = await fetch(`${API_BASE}/version/check`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.updateAvailable) {
+                        updateAvailable = true;
+                        document.getElementById('installedVersion').textContent = data.installed || 'unknown';
+                        document.getElementById('latestVersion').textContent = data.latest || 'unknown';
+                        document.getElementById('updateModal').classList.add('show');
+                    }
+                }
+            } catch (e) {
+                console.log('Version check skipped:', e.message);
+            }
+        }
+
+        // Dismiss update modal
+        function dismissUpdate() {
+            document.getElementById('updateModal').classList.remove('show');
+        }
+
+        // Run the update
+        async function runUpdate() {
+            try {
+                document.getElementById('updateModal').innerHTML = `
+                    <div class="update-modal">
+                        <div class="update-modal-icon">⏳</div>
+                        <h2>Updating...</h2>
+                        <p>Downloading and installing the latest version.</p>
+                        <p style="color: #888;">This may take a moment...</p>
+                    </div>
+                `;
+                
+                const response = await fetch(`${API_BASE}/update/run`, { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('updateModal').innerHTML = `
+                        <div class="update-modal">
+                            <div class="update-modal-icon">✅</div>
+                            <h2>Update Complete!</h2>
+                            <p>The simulator has been updated successfully.</p>
+                            <p style="color: #4caf50;">Please refresh the page to use the new version.</p>
+                            <div class="update-modal-buttons">
+                                <button class="btn-update-now" onclick="location.reload()">Refresh Now</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('updateModal').innerHTML = `
+                        <div class="update-modal">
+                            <div class="update-modal-icon">❌</div>
+                            <h2>Update Failed</h2>
+                            <p>${data.error || 'Unknown error occurred'}</p>
+                            <div class="update-modal-buttons">
+                                <button class="btn-update-later" onclick="dismissUpdate()">Close</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error('Update failed:', e);
+                document.getElementById('updateModal').innerHTML = `
+                    <div class="update-modal">
+                        <div class="update-modal-icon">❌</div>
+                        <h2>Update Failed</h2>
+                        <p>Could not connect to update server.</p>
+                        <div class="update-modal-buttons">
+                            <button class="btn-update-later" onclick="dismissUpdate()">Close</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
         // Open both websites
         function openWebsites() {
             // Open first window immediately
@@ -760,6 +984,8 @@
             loadObjectives();
             loadCompletedLabs();
             initResizer();
+            // Check for updates (non-blocking)
+            checkForUpdate();
         });
 
         // Load objectives and questions
@@ -1129,13 +1355,15 @@
                     document.body.removeChild(textarea);
                 }
                 
-                btn.classList.add('success');
-                btn.innerHTML = `${icons.copy}<span>Copied!</span>`;
-                
-                setTimeout(() => {
-                    btn.classList.remove('success');
-                    btn.innerHTML = `${icons.copy}<span>Copy</span>`;
-                }, 2000);
+                if (btn) {
+                    btn.classList.add('success');
+                    btn.innerHTML = `${icons.copy}<span>Copied!</span>`;
+                    
+                    setTimeout(() => {
+                        btn.classList.remove('success');
+                        btn.innerHTML = `${icons.copy}<span>Copy</span>`;
+                    }, 2000);
+                }
             } catch (e) {
                 console.error('Failed to copy:', e);
             }
