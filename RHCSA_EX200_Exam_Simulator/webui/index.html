@@ -453,16 +453,17 @@
             display: none !important;
         }
 
-        .lab-btn.btn-finish {
+        /* Finish Lab button - hidden by default, shown only when all tasks complete */
+        button.lab-btn.btn-finish {
             display: none !important;
             background-color: #28a745;
             color: white;
             padding: 12px 40px;
             font-size: 1em;
         }
-        .lab-btn.btn-finish:hover { background-color: #218838; }
+        button.lab-btn.btn-finish:hover { background-color: #218838; }
 
-        .lab-controls.finish-mode .lab-btn.btn-finish {
+        .lab-controls.finish-mode button.lab-btn.btn-finish {
             display: flex !important;
         }
 

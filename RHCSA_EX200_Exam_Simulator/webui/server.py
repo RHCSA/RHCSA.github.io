@@ -528,13 +528,20 @@ def check_version():
 def run_update():
     """Run the installer to update"""
     try:
-        # Run installer script
+        # Download installer to temp file and run with --force flag
+        tmp_installer = '/tmp/rhcsa_webui_update.sh'
         result = subprocess.run(
-            ['bash', '-c', f'curl -sL {INSTALLER_URL} | bash'],
+            ['bash', '-c', f'curl -sL {INSTALLER_URL} -o {tmp_installer} && chmod +x {tmp_installer} && {tmp_installer} --force'],
             capture_output=True,
             text=True,
             timeout=300  # 5 minute timeout
         )
+        
+        # Cleanup temp file
+        try:
+            os.remove(tmp_installer)
+        except:
+            pass
         
         if result.returncode == 0:
             return {'success': True, 'message': 'Update completed successfully'}

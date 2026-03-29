@@ -1,6 +1,17 @@
 #!/bin/bash
 # RHCSA EX200 Exam Simulator - One-Line Installer
 # Usage: curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh | sudo bash
+# Usage with force (skip prompts): curl -sL ... | sudo bash -s -- --force
+
+# Parse arguments
+FORCE_UPDATE=false
+for arg in "$@"; do
+    case $arg in
+        --force|-f)
+            FORCE_UPDATE=true
+            ;;
+    esac
+done
 
 # Check if running as root - if not, re-run with sudo
 if [[ $EUID -ne 0 ]]; then
@@ -54,6 +65,13 @@ trap cleanup EXIT
 
 # Check for updates if already installed
 check_for_update() {
+    # Skip if force update flag is set
+    if [[ "$FORCE_UPDATE" == "true" ]]; then
+        echo -e "${GREEN}Force update requested, proceeding with installation...${NC}"
+        echo ""
+        return 0
+    fi
+    
     if [[ -f "$VERSION_FILE" ]]; then
         INSTALLED_COMMIT=$(cat "$VERSION_FILE" 2>/dev/null)
         LATEST_COMMIT=$(curl -sL "$GITHUB_REPO_API" 2>/dev/null | grep '"sha"' | head -1 | sed 's/.*"sha": "\([^"]*\)".*/\1/')

@@ -1408,9 +1408,13 @@ check_for_update() {
             echo ""
             echo -e "  ${CYAN}Downloading and running installer...${RESET}"
             echo ""
-            # Download and run the installer
-            curl -sL "$INSTALLER_URL" | bash
-            exit 0
+            show_cursor
+            # Download installer to temp file and run with --force flag
+            local tmp_installer="/tmp/rhcsa_update_$$.sh"
+            curl -sL "$INSTALLER_URL" -o "$tmp_installer"
+            chmod +x "$tmp_installer"
+            # Run installer with --force to skip prompts, then cleanup and exit
+            exec bash "$tmp_installer" --force
         else
             echo ""
             echo -e "  ${YELLOW}Update skipped. Run 'rhcsa' again to update later.${RESET}"
