@@ -72,7 +72,7 @@ check_tasks() {
 # Cleanup the lab environment before exit
 cleanup_lab() {
     local target_hostname="server1.rhcsa.github.io"
-    local original_hostname="server_support_test_ec2..nbc-ged.lan"
+    local original_hostname="exam_simulator.rhcsa@github.io"
     
     echo -e "  ${DIM}• Cleaning up lab environment...${RESET}"
     
