@@ -265,4 +265,4 @@ Thank you to everyone who contributes to this project! Your work helps aspiring 
 
 ---
 
-*Made with ❤️ by the RHCSA community*
+*Made with ❤️*
