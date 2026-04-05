@@ -1,51 +1,59 @@
-# RHCSA Questions and Labs Directory
+# RHCSA Questions and Labs - Contribution Guide
 
-This directory contains all questions and lab exercises organized by RHCSA exam objectives.
+## 🎉 Welcome Contributors!
 
-## Directory Structure
+This is an **open source project** and we need your help! Currently, only **Chapter 01 (Understand and use essential tools)** has complete questions. We're looking for contributors to help add questions for chapters 2-10.
+
+**Your contributions will help thousands of RHCSA exam candidates worldwide!**
+
+---
+
+## 🚀 How to Contribute
+
+### Quick Start (3 Simple Steps)
+
+1. **Fork the repository** on GitHub: https://github.com/RHCSA/RHCSA.github.io
+2. **Add your question/lab** following the templates below
+3. **Submit a Pull Request** - we'll review and merge it!
+
+### What We Need
+
+| Chapter | Topic | Status |
+|---------|-------|--------|
+| 1 | Understand and use essential tools | ✅ Complete (75+ labs) |
+| 2 | Manage software | ❌ Needs questions |
+| 3 | Create simple shell scripts | ❌ Needs questions |
+| 4 | Operate running systems | ❌ Needs questions |
+| 5 | Configure local storage | ❌ Needs questions |
+| 6 | Create and configure file systems | ❌ Needs questions |
+| 7 | Deploy, configure, and maintain systems | ❌ Needs questions |
+| 8 | Manage basic networking | ❌ Needs questions |
+| 9 | Manage users and groups | ❌ Needs questions |
+| 10 | Manage security | ❌ Needs questions |
+
+---
+
+## 📁 Directory Structure
 
 ```
 questions/
-├── 1/   # Objective 1: Understand and use essential tools
-├── 2/   # Objective 2: Manage software
-├── 3/   # Objective 3: Create simple shell scripts
-├── 4/   # Objective 4: Operate running systems
-├── 5/   # Objective 5: Configure local storage
-├── 6/   # Objective 6: Create and configure file systems
-├── 7/   # Objective 7: Deploy, configure, and maintain systems
-├── 8/   # Objective 8: Manage basic networking
-├── 9/   # Objective 9: Manage users and groups
-└── 10/  # Objective 10: Manage security
+├── 1/   # Chapter 01: Understand and use essential tools ✅
+├── 2/   # Chapter 02: Manage software
+├── 3/   # Chapter 03: Create simple shell scripts
+├── 4/   # Chapter 04: Operate running systems
+├── 5/   # Chapter 05: Configure local storage
+├── 6/   # Chapter 06: Create and configure file systems
+├── 7/   # Chapter 07: Deploy, configure, and maintain systems
+├── 8/   # Chapter 08: Manage basic networking
+├── 9/   # Chapter 09: Manage users and groups
+└── 10/  # Chapter 10: Manage security
 ```
 
-## Adding a New Question
+---
 
-1. Navigate to the appropriate objective directory (0-9)
-2. Create a new `.sh` file (e.g., `q2.sh`, `q3.sh`)
-3. Add the following content:
+## 🧪 Adding a New Lab Exercise (Hands-on Practice)
 
-```bash
-#!/bin/bash
-# Objective X: [Objective Name]
-# Question N: [Brief description]
-
-QUESTION="Your question text here"
-ANSWER="The correct answer"
-HINT="A helpful hint for the student"
-```
-
-**Example:** `questions/0/q2.sh`
-```bash
-#!/bin/bash
-# Objective 0: Essential Tools
-# Question 2: List files
-
-QUESTION="What command lists files in a directory?"
-ANSWER="ls - Use 'ls -la' to show all files including hidden ones with details"
-HINT="This is one of the most basic commands. Think about 'listing' files."
-```
-
-## Adding a New Lab Exercise
+Labs are interactive exercises where students complete tasks in a real terminal. This is the **recommended format** for RHCSA practice!
 
 1. Navigate to the appropriate objective directory (0-9)
 2. Create a new `.sh` file with prefix `lab_` (e.g., `lab_firewall.sh`)
@@ -179,19 +187,16 @@ check_tasks() {
 }
 ```
 
-## File Naming Convention
+---
 
-- **Questions:** `q1.sh`, `q2.sh`, `q3.sh`, etc.
+## 📛 File Naming Convention
+
 - **Labs:** `lab_<name>.sh` (e.g., `lab_hostname.sh`, `lab_firewall.sh`)
 
-Files are sorted alphabetically, so `lab_*` files will appear before `q*` files.
-If you want labs to appear in a specific order, use numbering like:
-- `lab_01_hostname.sh`
-- `lab_02_firewall.sh`
-- `q01.sh`
-- `q02.sh`
 
-## Available Variables in Lab Functions
+---
+
+## 🎨 Available Variables in Lab Functions
 
 The following variables are available from the main script:
 - `${DIM}` - Dim text formatting
@@ -201,9 +206,63 @@ The following variables are available from the main script:
 - `${YELLOW}` - Yellow text
 - `${CYAN}` - Cyan text
 
-## Tips
+---
+
+## 💡 Tips for Contributors
 
 1. **Test your questions/labs:** Run the main RHCSA script and navigate to your new question to test it
 2. **Keep hints helpful:** Provide enough guidance without giving away the answer
 3. **Lab preparation:** Always reset the environment to a known state so students can retry
 4. **Task checks:** Make checks specific enough to validate correct completion
+
+---
+
+## 🔍 Example: Look at Existing Labs
+
+The best way to learn is by example! Check out the existing labs in the `1/` directory:
+
+```bash
+ls -la questions/1/
+```
+
+Some good examples to study:
+- `lab_chmod_symbolic.sh` - Simple file permissions lab
+- `lab_tar_create.sh` - Archive creation lab
+- `lab_grep_basic.sh` - Text searching lab
+
+---
+
+## 📝 Contribution Checklist
+
+Before submitting your Pull Request:
+
+- [ ] File is in the correct chapter directory (1-10)
+- [ ] File has `.sh` extension
+- [ ] File follows naming convention (`lab_*.sh` or `q*.sh`)
+- [ ] `QUESTION` variable is clear and descriptive
+- [ ] `HINT` provides helpful guidance
+- [ ] For labs: `prepare_lab()` resets the environment properly
+- [ ] For labs: `check_tasks()` correctly validates completion
+- [ ] Tested on a RHEL/CentOS/Rocky Linux system
+
+---
+
+## 🤝 Need Help?
+
+- **Questions?** Open an issue on GitHub
+- **Found a bug?** Please report it!
+- **Want to discuss ideas?** Start a GitHub Discussion
+
+**Repository:** https://github.com/RHCSA/RHCSA.github.io
+
+---
+
+## 🏆 Contributors
+
+Thank you to everyone who contributes to this project! Your work helps aspiring Linux system administrators achieve their RHCSA certification.
+
+**Every contribution matters - even fixing a typo helps!**
+
+---
+
+*Made with ❤️ by the RHCSA community*
