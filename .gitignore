@@ -1,0 +1,36 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# macOS
+.DS_Store
+
+# Kubernetes
+kubeconfig
+*.kubeconfig
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# NodeJS
+node_modules/
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Helm
+charts/*/charts/
