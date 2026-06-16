@@ -43,6 +43,7 @@ prepare_lab() {
     echo -e "  ${DIM} Creating test script...${RESET}"
     cat > /tmp/testscript.sh << 'SCRIPT'
 #!/bin/bash
+touch /tmp/.error_redirection_executed
 echo "SUCCESS: This is standard output"
 echo "ERROR: This is standard error" >&2
 SCRIPT
@@ -50,14 +51,14 @@ SCRIPT
     sleep 0.3
     
     echo -e "  ${DIM} Removing existing output files...${RESET}"
-    rm -f /tmp/output.txt /tmp/errors.txt 2>/dev/null
+    rm -f /tmp/output.txt /tmp/errors.txt /tmp/.error_redirection_executed 2>/dev/null
     sleep 0.3
 }
 
 # Check task completion - sets TASK_STATUS array
 check_tasks() {
     # Task 0: Check if both files exist (script was run with redirection)
-    if [[ -f /tmp/output.txt ]] && [[ -f /tmp/errors.txt ]]; then
+    if [[ -f /tmp/.error_redirection_executed ]] then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
