@@ -14,7 +14,6 @@ LAB_TASK_COUNT=5
 # =============================================================================
 # TASK DEFINITIONS - Each task has question, hint, and command(s)
 # =============================================================================
-
 # Task 1
 TASK_1_QUESTION="Find files owned by examuser, save to /tmp/exam/user_files.txt"
 TASK_1_HINT="Use find with -user examuser"
@@ -36,7 +35,7 @@ TASK_4_HINT="Use find with -name '*.log' -o -name '*.tmp' (OR logic)"
 TASK_4_COMMAND_1="find /tmp/exam -type f \\( -name '*.log' -o -name '*.tmp' \\) > /tmp/exam/log_or_tmp.txt"
 
 # Task 5
-TASK_5_QUESTION="Find files that are NOT .conf, save to /tmp/exam/not_conf.txt"
+TASK_5_QUESTION="Find files in /tmp/exam that are NOT .conf, save to /tmp/exam/not_conf.txt"
 TASK_5_HINT="Use find with ! -name '*.conf' (NOT logic)"
 TASK_5_COMMAND_1="find /tmp/exam -type f ! -name '*.conf' > /tmp/exam/not_conf.txt"
 

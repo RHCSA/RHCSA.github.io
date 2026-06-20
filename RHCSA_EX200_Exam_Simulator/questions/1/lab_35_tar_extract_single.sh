@@ -23,8 +23,8 @@ TASK_1_COMMAND_1="tar -tvzf /tmp/system.tar.gz > /tmp/archive_list.txt"
 # Task 2
 TASK_2_QUESTION="Extract only 'etc/hostname' from /tmp/system.tar.gz to current directory"
 TASK_2_HINT="Specify the exact path of the file to extract after the archive name"
-TASK_2_COMMAND_1="tar -xvzf /tmp/system.tar.gz etc/hostname"
-
+# TASK_2_COMMAND_1="tar -xvzf /tmp/system.tar.gz etc/hostname"
+TASK_2_COMMAND_1="tar -xvzf /tmp/system.tar.gz -C /tmp etc/hostname"
 
 # Auto-generate HINT from commands
 HINT=$(_build_hint)
@@ -73,7 +73,9 @@ check_tasks() {
     # Could be in current dir or /tmp/lab_extract_test
     local hostname_found="false"
 
-    if [[ -f ./etc/hostname ]] || [[ -f /tmp/lab_extract_test/etc/hostname ]]; then
+    # Task 1: Check if hostname was extracted to the lab workdir
+    if [[ -f /tmp/etc/hostname ]] && \
+      grep -q "lab-hostname" /tmp/etc/hostname 2>/dev/null; then
         hostname_found="true"
     fi
 
@@ -89,7 +91,7 @@ cleanup_lab() {
     echo -e "  ${DIM} Cleaning up lab environment...${RESET}"
     rm -f /tmp/system.tar.gz /tmp/archive_list.txt 2>/dev/null
     rm -rf /tmp/lab_extract_test 2>/dev/null
-    rm -rf ./etc 2>/dev/null
+    rm -rf /tmp/etc 2>/dev/null
     echo -e "  ${GREEN} Lab environment cleaned up${RESET}"
     sleep 1
 }

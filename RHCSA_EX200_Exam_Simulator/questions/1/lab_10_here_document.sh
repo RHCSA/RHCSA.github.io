@@ -19,8 +19,8 @@ LAB_TASK_COUNT=2
 TASK_1_QUESTION="Create /tmp/app.conf with here document containing hostname"
 TASK_1_HINT="Use cat << EOF > file to create a here document"
 TASK_1_COMMAND_1="cat << EOF > /tmp/app.conf
-hostname=\$(hostname)
-user=\$(whoami)
+hostname=$(hostname)
+user=$(whoami)
 EOF"
 
 # Task 2
