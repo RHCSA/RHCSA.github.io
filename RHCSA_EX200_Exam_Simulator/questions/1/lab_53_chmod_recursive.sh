@@ -26,9 +26,9 @@ TASK_2_HINT="Use find with -type f to target files and -exec chmod to change per
 TASK_2_COMMAND_1="find /tmp/webroot -type f -exec chmod 644 {} \\;"
 
 # Task 3
-TASK_3_QUESTION="Remove write permission for others on everything in /tmp/webroot/"
-TASK_3_HINT="Use chmod -R with o-w to recursively remove write for others"
-TASK_3_COMMAND_1="chmod -R o-w /tmp/webroot/"
+TASK_3_QUESTION="Add write permission for group on everything in /tmp/webroot/"
+TASK_3_HINT="Use chmod -R g+w to recursively add write permission for group"
+TASK_3_COMMAND_1="chmod -R g+w /tmp/webroot/"
 
 
 # Auto-generate HINT from commands
@@ -42,13 +42,13 @@ HINT=$(_build_hint)
 prepare_lab() {
     echo -e "  ${DIM}• Creating web directory structure...${RESET}"
     rm -rf /tmp/webroot 2>/dev/null
-    
+
     mkdir -p /tmp/webroot/css /tmp/webroot/js /tmp/webroot/images
     touch /tmp/webroot/index.html
     touch /tmp/webroot/css/style.css
     touch /tmp/webroot/js/app.js
     touch /tmp/webroot/images/logo.png
-    
+
     # Set wrong permissions initially
     chmod 777 /tmp/webroot /tmp/webroot/css /tmp/webroot/js /tmp/webroot/images
     chmod 777 /tmp/webroot/index.html /tmp/webroot/css/style.css
@@ -58,57 +58,74 @@ prepare_lab() {
 
 # Check task completion - sets TASK_STATUS array
 check_tasks() {
-    # Task 0: Check all directories are 755
-    local all_dirs_correct=true
+    local task3_done=false
+    local dirs_755=true
+    local files_644=true
+    local dirs_775=true
+    local files_664=true
+
+    # Collect current permission state.
     while IFS= read -r dir; do
-        local perms=$(stat -c %a "$dir" 2>/dev/null)
+        local perms
+        perms=$(stat -c %a "$dir" 2>/dev/null)
+
         if [[ "$perms" != "755" ]]; then
-            all_dirs_correct=false
-            break
+            dirs_755=false
+        fi
+
+        if [[ "$perms" != "775" ]]; then
+            dirs_775=false
         fi
     done < <(find /tmp/webroot -type d 2>/dev/null)
-    
-    if [[ "$all_dirs_correct" == "true" ]]; then
+
+    while IFS= read -r file; do
+        local perms
+        perms=$(stat -c %a "$file" 2>/dev/null)
+
+        if [[ "$perms" != "644" ]]; then
+            files_644=false
+        fi
+
+        if [[ "$perms" != "664" ]]; then
+            files_664=false
+        fi
+    done < <(find /tmp/webroot -type f 2>/dev/null)
+
+    # Task 3 is only correct when the earlier permission model is preserved
+    # and group write has been added to both directories and files:
+    # directories: 755 -> 775
+    # files:       644 -> 664
+    if [[ "$dirs_775" == "true" && "$files_664" == "true" ]]; then
+        task3_done=true
+    fi
+
+    # Task 1:
+    # Before task 3, directories must be exactly 755.
+    # After task 3, directories are allowed to be 775 because group write was added.
+    if [[ "$dirs_755" == "true" || "$task3_done" == "true" ]]; then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
     fi
-    
-    # Task 1: Check all files are 644
-    local all_files_correct=true
-    while IFS= read -r file; do
-        local perms=$(stat -c %a "$file" 2>/dev/null)
-        if [[ "$perms" != "644" ]]; then
-            all_files_correct=false
-            break
-        fi
-    done < <(find /tmp/webroot -type f 2>/dev/null)
-    
-    if [[ "$all_files_correct" == "true" ]]; then
+
+    # Task 2:
+    # Before task 3, files must be exactly 644.
+    # After task 3, files are allowed to be 664 because group write was added.
+    if [[ "$files_644" == "true" || "$task3_done" == "true" ]]; then
         TASK_STATUS[1]="true"
     else
         TASK_STATUS[1]="false"
     fi
-    
-    # Task 2: Check no write for others on anything
-    local no_other_write=true
-    while IFS= read -r item; do
-        local perms=$(stat -c %a "$item" 2>/dev/null)
-        local other_perm="${perms:2:1}"
-        # Others should not have write (must be 0,1,4,5)
-        if [[ "$other_perm" =~ ^[2367]$ ]]; then
-            no_other_write=false
-            break
-        fi
-    done < <(find /tmp/webroot 2>/dev/null)
-    
-    if [[ "$no_other_write" == "true" ]]; then
+
+    # Task 3:
+    # Final expected state after the sequential changes:
+    # directories must be 775 and files must be 664.
+    if [[ "$task3_done" == "true" ]]; then
         TASK_STATUS[2]="true"
     else
         TASK_STATUS[2]="false"
     fi
 }
-
 # Cleanup the lab environment before exit
 cleanup_lab() {
     echo -e "  ${DIM}• Cleaning up lab environment...${RESET}"

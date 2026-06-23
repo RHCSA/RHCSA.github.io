@@ -5,7 +5,7 @@
 IS_LAB=true
 LAB_ID="docs_comprehensive"
 
-QUESTION="Comprehensive practice: man sections, apropos, help, and /usr/share/doc"
+QUESTION="Comprehensive practice: man sections, apropos, help, man page location, and package documentation"
 
 LAB_TASK_COUNT=5
 
@@ -14,33 +14,34 @@ LAB_TASK_COUNT=5
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="Get /etc/shadow file format documentation (section 5), save to /tmp/exam/shadow_format.txt"
-TASK_1_HINT="Section 5 contains file format documentation"
-TASK_1_COMMAND_1="man 5 shadow > /tmp/exam/shadow_format.txt"
+TASK_1_QUESTION="Get /etc/passwd file format documentation from manual section 5 and save it to /tmp/exam/passwd_format.txt"
+TASK_1_HINT="Section 5 contains file format documentation. Specify the section number before the page name."
+TASK_1_COMMAND_1="man 5 passwd > /tmp/exam/passwd_format.txt"
 
 # Task 2
-TASK_2_QUESTION="Find filesystem admin commands (section 8), save to /tmp/exam/fs_admin.txt"
-TASK_2_HINT="Use apropos -s 8 to search only admin commands"
-TASK_2_COMMAND_1="apropos -s 8 filesystem > /tmp/exam/fs_admin.txt"
+TASK_2_QUESTION="Find user administration manual pages from section 8 and save the results to /tmp/exam/user_admin.txt"
+TASK_2_HINT="Use apropos with a section filter for administrator commands."
+TASK_2_COMMAND_1="apropos -s 8 user > /tmp/exam/user_admin.txt"
 
 # Task 3
-TASK_3_QUESTION="Find where ls man page file is stored, save to /tmp/exam/man_location.txt"
-TASK_3_HINT="man -w shows the location of the man page file"
-TASK_3_COMMAND_1="man -w ls > /tmp/exam/man_location.txt"
+TASK_3_QUESTION="Find where the ls manual page file is stored and save the path to /tmp/exam/ls_man_location.txt"
+TASK_3_HINT="Use the man option that prints the manual page file location instead of opening the page."
+TASK_3_COMMAND_1="man -w ls > /tmp/exam/ls_man_location.txt"
 
 # Task 4
-TASK_4_QUESTION="Get help for 'alias' builtin, save to /tmp/exam/alias_help.txt"
-TASK_4_HINT="Use help command for shell builtins"
+TASK_4_QUESTION="Get help for the alias Bash builtin and save it to /tmp/exam/alias_help.txt"
+TASK_4_HINT="Use the shell help command for Bash builtins."
 TASK_4_COMMAND_1="help alias > /tmp/exam/alias_help.txt"
 
 # Task 5
-TASK_5_QUESTION="List first 10 doc files for coreutils, save to /tmp/exam/coreutils_docs.txt"
-TASK_5_HINT="rpm -qd lists doc files, pipe to head for first 10"
-TASK_5_COMMAND_1="rpm -qd coreutils | head -10 > /tmp/exam/coreutils_docs.txt"
+TASK_5_QUESTION="List the first 10 documentation files installed by the bash package and save them to /tmp/exam/bash_docs.txt"
+TASK_5_HINT="Use rpm to query documentation files for an installed package, then limit the output."
+TASK_5_COMMAND_1="rpm -qd bash | head -10 > /tmp/exam/bash_docs.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
+# Auto-generate HINT from commands if the simulator framework provides _build_hint
+if declare -F _build_hint >/dev/null 2>&1; then
+    HINT=$(_build_hint)
+fi
 
 # =============================================================================
 # LAB IMPLEMENTATION
@@ -50,62 +51,60 @@ prepare_lab() {
     echo "  • Creating comprehensive documentation lab environment..."
     rm -rf /tmp/exam 2>/dev/null
     mkdir -p /tmp/exam
+
+    # apropos/whatis/man -k rely on the man-db index. Rebuild quietly when available.
+    if command -v mandb >/dev/null 2>&1; then
+        mandb -q >/dev/null 2>&1 || true
+    fi
+
     echo "  • Lab environment ready"
 }
 
+_file_has_content() {
+    local file="$1"
+    [[ -f "$file" && -s "$file" ]]
+}
+
 check_tasks() {
-    # Task 0: shadow_format.txt should have shadow file documentation
-    if [[ -f /tmp/exam/shadow_format.txt ]]; then
-        if grep -qi "shadow\|password" /tmp/exam/shadow_format.txt 2>/dev/null; then
-            TASK_STATUS[0]=true
-        else
-            TASK_STATUS[0]=false
-        fi
+    # Task 1: passwd_format.txt should contain the section 5 passwd file-format documentation.
+    if _file_has_content /tmp/exam/passwd_format.txt \
+       && grep -qiE "passwd|password file|/etc/passwd|account information" /tmp/exam/passwd_format.txt 2>/dev/null; then
+        TASK_STATUS[0]=true
     else
         TASK_STATUS[0]=false
     fi
-    
-    # Task 1: fs_admin.txt should have section 8 results
-    if [[ -f /tmp/exam/fs_admin.txt ]]; then
-        local count=$(wc -l < /tmp/exam/fs_admin.txt 2>/dev/null)
-        if [[ $count -ge 1 ]]; then
-            TASK_STATUS[1]=true
-        else
-            TASK_STATUS[1]=false
-        fi
+
+    # Task 2: user_admin.txt should contain section 8 user administration manual pages.
+    # Do not require exact ordering; apropos output can vary by installed man pages.
+    if _file_has_content /tmp/exam/user_admin.txt \
+       && grep -qiE '\(8\)' /tmp/exam/user_admin.txt 2>/dev/null \
+       && grep -qiE 'user|account|login|passwd|shadow' /tmp/exam/user_admin.txt 2>/dev/null; then
+        TASK_STATUS[1]=true
     else
         TASK_STATUS[1]=false
     fi
-    
-    # Task 2: man_location.txt should have path to man page
-    if [[ -f /tmp/exam/man_location.txt ]]; then
-        if grep -q "/usr/share/man\|man1/ls" /tmp/exam/man_location.txt 2>/dev/null; then
-            TASK_STATUS[2]=true
-        else
-            TASK_STATUS[2]=false
-        fi
+
+    # Task 3: ls_man_location.txt should contain a path to the ls man page.
+    if _file_has_content /tmp/exam/ls_man_location.txt \
+       && grep -qE '/usr/share/man/.*/ls\.[0-9]' /tmp/exam/ls_man_location.txt 2>/dev/null; then
+        TASK_STATUS[2]=true
     else
         TASK_STATUS[2]=false
     fi
-    
-    # Task 3: alias_help.txt should have alias help
-    if [[ -f /tmp/exam/alias_help.txt ]]; then
-        if grep -qi "alias" /tmp/exam/alias_help.txt 2>/dev/null; then
-            TASK_STATUS[3]=true
-        else
-            TASK_STATUS[3]=false
-        fi
+
+    # Task 4: alias_help.txt should contain Bash help for alias.
+    if _file_has_content /tmp/exam/alias_help.txt \
+       && grep -qiE '^alias:|alias \[' /tmp/exam/alias_help.txt 2>/dev/null; then
+        TASK_STATUS[3]=true
     else
         TASK_STATUS[3]=false
     fi
-    
-    # Task 4: coreutils_docs.txt should have file paths
-    if [[ -f /tmp/exam/coreutils_docs.txt ]]; then
-        if grep -q "/" /tmp/exam/coreutils_docs.txt 2>/dev/null; then
-            TASK_STATUS[4]=true
-        else
-            TASK_STATUS[4]=false
-        fi
+
+    # Task 5: bash_docs.txt should contain documentation paths from the installed bash package.
+    # bash is part of the base system, unlike optional packages such as coreutils-doc.
+    if _file_has_content /tmp/exam/bash_docs.txt \
+       && grep -qE '^/usr/share/(doc|info|man)/' /tmp/exam/bash_docs.txt 2>/dev/null; then
+        TASK_STATUS[4]=true
     else
         TASK_STATUS[4]=false
     fi
