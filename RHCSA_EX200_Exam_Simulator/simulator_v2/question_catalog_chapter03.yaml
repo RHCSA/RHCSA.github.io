@@ -1,0 +1,120 @@
+- file: questions/3/lab_01_basic_executable_script.sh
+  lab_id: script_basic_executable
+  tasks: 3
+  question: "Create an executable Bash script that writes a fixed status line"
+- file: questions/3/lab_02_script_output_redirection.sh
+  lab_id: script_output_redirection
+  tasks: 3
+  question: "Create a script that writes system identity data to a report"
+- file: questions/3/lab_03_variables_backup_name.sh
+  lab_id: script_variables_backup
+  tasks: 3
+  question: "Create a backup script that uses variables and a date stamp"
+- file: questions/3/lab_04_positional_parameters.sh
+  lab_id: script_positional_parameters
+  tasks: 3
+  question: "Create a script that validates two positional parameters"
+- file: questions/3/lab_05_if_user_exists.sh
+  lab_id: script_if_user_exists
+  tasks: 3
+  question: "Create a script that reports whether a user exists"
+- file: questions/3/lab_06_if_service_status.sh
+  lab_id: script_if_service_status
+  tasks: 3
+  question: "Create a script that checks whether a systemd service is active"
+- file: questions/3/lab_07_for_loop_create_users.sh
+  lab_id: script_for_loop_users
+  tasks: 3
+  question: "Create a script that uses a for loop to create multiple users"
+- file: questions/3/lab_08_while_read_userlist.sh
+  lab_id: script_while_read_userlist
+  tasks: 4
+  question: "Create users from a text file with a while read loop"
+- file: questions/3/lab_09_csv_users_groups.sh
+  lab_id: script_csv_users_groups
+  tasks: 4
+  question: "Create users and groups from a CSV file"
+- file: questions/3/lab_10_awk_passwd_report.sh
+  lab_id: script_awk_passwd_report
+  tasks: 3
+  question: "Create a script that uses awk to report normal users"
+- file: questions/3/lab_11_grep_log_errors.sh
+  lab_id: script_grep_log_errors
+  tasks: 3
+  question: "Create a script that extracts ERROR and FAILED lines from a log file"
+- file: questions/3/lab_12_sed_config_replace.sh
+  lab_id: script_sed_config_replace
+  tasks: 3
+  question: "Create a script that changes a configuration value using sed"
+- file: questions/3/lab_13_loop_fix_permissions.sh
+  lab_id: script_loop_fix_permissions
+  tasks: 3
+  question: "Create a script that fixes permissions on multiple files"
+- file: questions/3/lab_14_exit_codes_validation.sh
+  lab_id: script_exit_codes_validation
+  tasks: 3
+  question: "Create a script that returns useful exit codes"
+- file: questions/3/lab_15_logging_and_stderr.sh
+  lab_id: script_logging_stderr
+  tasks: 3
+  question: "Create a script with simple logging and stderr error messages"
+- file: questions/3/lab_16_cron_script_schedule.sh
+  lab_id: script_cron_schedule
+  tasks: 4
+  question: "Create a script and schedule it with cron"
+- file: questions/3/lab_17_service_watchdog_script.sh
+  lab_id: script_service_watchdog
+  tasks: 3
+  question: "Create a watchdog script that starts a service if it is inactive"
+- file: questions/3/lab_18_find_big_files_report.sh
+  lab_id: script_find_big_files
+  tasks: 3
+  question: "Create a script that reports files larger than 1 MiB"
+- file: questions/3/lab_19_backup_rotation_script.sh
+  lab_id: script_backup_rotation
+  tasks: 3
+  question: "Create a script that backs up a directory and keeps only the latest three archives"
+- file: questions/3/lab_20_case_statement_service.sh
+  lab_id: script_case_statement
+  tasks: 3
+  question: "Create a script that uses a case statement for service actions"
+- file: questions/3/lab_21_profiled_environment.sh
+  lab_id: script_profiled_environment
+  tasks: 3
+  question: "Create a profile.d script that exports an environment variable"
+- file: questions/3/lab_22_fix_broken_script.sh
+  lab_id: script_fix_broken
+  tasks: 3
+  question: "Fix a broken script so it runs successfully"
+- file: questions/3/lab_23_idempotent_group_script.sh
+  lab_id: script_idempotent_group
+  tasks: 3
+  question: "Create a script that can be safely run multiple times"
+- file: questions/3/lab_24_input_validation.sh
+  lab_id: script_input_validation
+  tasks: 3
+  question: "Create a script that validates usernames before creating accounts"
+- file: questions/3/lab_25_permissions_audit_script.sh
+  lab_id: script_permissions_audit
+  tasks: 3
+  question: "Create a script that reports world-writable files"
+- file: questions/3/lab_26_mount_audit_script.sh
+  lab_id: script_mount_audit
+  tasks: 3
+  question: "Create a script that reports current mounts and fstab entries"
+- file: questions/3/lab_27_disk_usage_threshold.sh
+  lab_id: script_disk_threshold
+  tasks: 3
+  question: "Create a script that checks root filesystem usage against a threshold"
+- file: questions/3/lab_28_security_log_report.sh
+  lab_id: script_security_log_report
+  tasks: 3
+  question: "Create a script that counts failed login events in a log file"
+- file: questions/3/lab_29_comprehensive_system_audit.sh
+  lab_id: script_comprehensive_audit
+  tasks: 4
+  question: "Create a single audit script that reports users, services, mounts and disk usage"
+- file: questions/3/lab_30_exam_onboarding_scenario.sh
+  lab_id: script_exam_onboarding
+  tasks: 5
+  question: "Exam scenario: automate user onboarding and reporting from CSV input"
