@@ -60,6 +60,44 @@
             color: #ffc107;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .version-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 6px;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            line-height: 1.2;
+            font-family: inherit;
+        }
+
+        .version-badge:hover {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        .version-badge-label {
+            font-size: 0.65em;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .version-badge-value {
+            font-size: 0.85em;
+            color: #fff;
+            font-weight: bold;
+            font-family: monospace;
+        }
+
         /* Main Container */
         .main-container {
             display: flex;
@@ -797,7 +835,13 @@
             <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/redhat.png?raw=true" alt="Red Hat Logo" class="header-logo">
             <h1>Red Hat Certified System Administrator (RHCSA) EX200 Exam Simulator</h1>
         </div>
-        <a href="#" onclick="openWebsites(); return false;" class="header-link">WWW.RHCSA.GITHUB.IO</a>
+        <div class="header-right">
+            <button class="version-badge" onclick="checkVersionManual()" title="Check for updates">
+                <span class="version-badge-label">Version:</span>
+                <span class="version-badge-value" id="versionBadgeValue">...</span>
+            </button>
+            <a href="#" onclick="openWebsites(); return false;" class="header-link">WWW.RHCSA.GITHUB.IO</a>
+        </div>
     </div>
 
     <!-- Main Container -->
@@ -941,10 +985,112 @@
                         document.getElementById('installedVersion').textContent = data.installed || 'unknown';
                         document.getElementById('latestVersion').textContent = data.latest || 'unknown';
                         document.getElementById('updateModal').classList.add('show');
+                    } else if (data.error || data.message) {
+                        // Check ran but couldn't determine update status (offline, rate-limited, etc.)
+                        console.warn('Version check did not complete:', data.error || data.message);
                     }
                 }
             } catch (e) {
                 console.log('Version check skipped:', e.message);
+            }
+        }
+
+        // Populate the header version badge (local file only, no network call)
+        async function loadInstalledVersion() {
+            try {
+                const response = await fetch(`${API_BASE}/version/installed`);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('versionBadgeValue').textContent = data.installed || 'unknown';
+                }
+            } catch (e) {
+                document.getElementById('versionBadgeValue').textContent = 'unknown';
+            }
+        }
+
+        // Manually triggered from the header badge - checks now and shows the result
+        async function checkVersionManual() {
+            document.getElementById('updateModal').innerHTML = `
+                <div class="update-modal">
+                    <div class="update-modal-icon">🔄</div>
+                    <h2>Checking for Updates...</h2>
+                    <p style="color: #888;">Please wait...</p>
+                </div>
+            `;
+            document.getElementById('updateModal').classList.add('show');
+
+            try {
+                const response = await fetch(`${API_BASE}/version/check`);
+                const data = await response.json();
+
+                if (data.updateAvailable) {
+                    updateAvailable = true;
+                    document.getElementById('updateModal').innerHTML = `
+                        <div class="update-modal">
+                            <div class="update-modal-icon">🔄</div>
+                            <h2>Update Available!</h2>
+                            <p>A new version of RHCSA Exam Simulator is available.</p>
+                            <div class="update-version-info">
+                                <div class="version-row">
+                                    <span class="label">Installed:</span>
+                                    <span class="installed">${data.installed || 'unknown'}</span>
+                                </div>
+                                <div class="version-row">
+                                    <span class="label">Latest:</span>
+                                    <span class="latest">${data.latest || 'unknown'}</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 0.85em; color: #888;">Update includes bug fixes and new features.</p>
+                            <div class="update-modal-buttons">
+                                <button class="btn-update-later" onclick="dismissUpdate()">Later</button>
+                                <button class="btn-update-now" onclick="runUpdate()">Update Now</button>
+                            </div>
+                        </div>
+                    `;
+                } else if (data.error || data.message) {
+                    // Check ran but couldn't determine status (offline, rate-limited, etc.) -
+                    // don't claim "up to date" when we actually don't know.
+                    document.getElementById('updateModal').innerHTML = `
+                        <div class="update-modal">
+                            <div class="update-modal-icon">⚠️</div>
+                            <h2>Could Not Check for Updates</h2>
+                            <p>${data.error || data.message}</p>
+                            <p style="font-size: 0.85em; color: #888;">Make sure this machine has internet access, then try again.</p>
+                            <div class="update-modal-buttons">
+                                <button class="btn-update-later" onclick="dismissUpdate()">Close</button>
+                                <button class="btn-update-now" onclick="checkVersionManual()">Try Again</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('updateModal').innerHTML = `
+                        <div class="update-modal">
+                            <div class="update-modal-icon">✅</div>
+                            <h2>You're Up to Date!</h2>
+                            <p>You already have the latest version installed.</p>
+                            <div class="update-version-info">
+                                <div class="version-row">
+                                    <span class="label">Version:</span>
+                                    <span class="installed">${data.installed || 'unknown'}</span>
+                                </div>
+                            </div>
+                            <div class="update-modal-buttons">
+                                <button class="btn-update-later" onclick="dismissUpdate()">Close</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                document.getElementById('updateModal').innerHTML = `
+                    <div class="update-modal">
+                        <div class="update-modal-icon">❌</div>
+                        <h2>Check Failed</h2>
+                        <p>Could not check for updates.</p>
+                        <div class="update-modal-buttons">
+                            <button class="btn-update-later" onclick="dismissUpdate()">Close</button>
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -1061,6 +1207,7 @@
             loadObjectives();
             loadCompletedLabs();
             initResizer();
+            loadInstalledVersion();
             // Check for updates (non-blocking)
             checkForUpdate();
         });

@@ -8,7 +8,7 @@
 IS_LAB=true
 LAB_ID="lvm_pv_vg_lv"
 
-QUESTION="[LAB] Set up LVM storage: create physical volumes, a volume group, and a logical volume; format it and mount it permanently"
+QUESTION="Set up LVM storage: create physical volumes, a volume group, and a logical volume with an EXACT size; format it and mount it permanently"
 
 # Lab configuration
 LAB_TITLE="LVM: Physical Volumes, Volume Group, and Logical Volume"
@@ -261,8 +261,15 @@ check_tasks() {
     # Task 4: mounted right now AND persisted in /etc/fstab
     local mounted=false
     local persisted=false
-    if findmnt -no SOURCE "$MOUNT_POINT" 2>/dev/null | grep -qE "${VG_NAME}-${LV_NAME}|${VG_NAME}/${LV_NAME}"; then
-        mounted=true
+    local cur_src
+    cur_src=$(findmnt -no SOURCE "$MOUNT_POINT" 2>/dev/null)
+    # Compare real device nodes, not name strings - device-mapper doubles any
+    # dash already inside the VG/LV name (data-vg -> data--vg), so a plain
+    # string match against the /dev/mapper/<name> form is unreliable.
+    if [[ -n "$cur_src" ]] && [[ -e "/dev/${VG_NAME}/${LV_NAME}" ]]; then
+        if [[ "$(readlink -f "$cur_src" 2>/dev/null)" == "$(readlink -f "/dev/${VG_NAME}/${LV_NAME}" 2>/dev/null)" ]]; then
+            mounted=true
+        fi
     fi
     if grep -qE "^[[:space:]]*/dev/${VG_NAME}/${LV_NAME}[[:space:]]+${MOUNT_POINT}[[:space:]]" /etc/fstab 2>/dev/null || \
        grep -qE "^[[:space:]]*/dev/mapper/${VG_NAME}-${LV_NAME}[[:space:]]+${MOUNT_POINT}[[:space:]]" /etc/fstab 2>/dev/null; then

@@ -72,6 +72,10 @@ class RHCSAAPIHandler(SimpleHTTPRequestHandler):
             # Check for updates
             self.send_json(check_version())
         
+        elif path == '/api/version/installed':
+            # Currently installed version only (no network call, always fast)
+            self.send_json(get_installed_version())
+        
         else:
             self.send_error(404)
     
@@ -685,6 +689,16 @@ GITHUB_REPO_API = "https://api.github.com/repos/RHCSA/RHCSA.github.io/commits/ma
 INSTALLER_URL = "https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh"
 
 
+def get_installed_version():
+    """Currently installed version only - reads the local file, no network call"""
+    if os.path.exists(VERSION_FILE):
+        with open(VERSION_FILE, 'r') as f:
+            installed = f.read().strip()
+        if installed:
+            return {'installed': installed[:7], 'installedFull': installed}
+    return {'installed': 'unknown', 'installedFull': ''}
+
+
 def check_version():
     """Check if an update is available"""
     try:
@@ -697,6 +711,7 @@ def check_version():
                 installed = f.read().strip()
         
         if not installed:
+            print("check_version: version file not found or empty")
             return {'updateAvailable': False, 'message': 'Version file not found'}
         
         # Fetch latest version from GitHub
@@ -706,6 +721,7 @@ def check_version():
             latest = data.get('sha', '')
         
         if not latest:
+            print("check_version: GitHub API response had no commit sha")
             return {'updateAvailable': False, 'message': 'Could not fetch latest version'}
         
         # Compare versions
@@ -719,6 +735,7 @@ def check_version():
             'latestFull': latest
         }
     except Exception as e:
+        print(f"check_version failed: {e}")
         return {'updateAvailable': False, 'error': str(e)}
 
 
