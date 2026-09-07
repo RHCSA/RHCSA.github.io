@@ -311,3 +311,4 @@ cleanup_lab() {
     echo -e "  ${GREEN}✓ Lab environment cleaned up${RESET}"
     sleep 1
 }
+
