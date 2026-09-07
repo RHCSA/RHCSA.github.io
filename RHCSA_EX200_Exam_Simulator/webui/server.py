@@ -352,7 +352,7 @@ def parse_lab_file(filepath):
         extra_terminals = parse_extra_terminals(content)
         main_name_match = re.search(r'PREPARE_LAB_1_NAME="([^"]*)"', content)
         main_name = main_name_match.group(1) if main_name_match else 'Terminal'
-        terminals = [{'index': 1, 'name': main_name, 'window': MAIN_WINDOW_NAME}] + extra_terminals if extra_terminals else []
+        terminals = [{'index': 1, 'name': main_name, 'window': MAIN_WINDOW_NAME}] + extra_terminals
         
         # Extract tasks
         tasks = []

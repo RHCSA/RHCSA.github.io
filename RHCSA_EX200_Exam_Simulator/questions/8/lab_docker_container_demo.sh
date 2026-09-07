@@ -53,6 +53,12 @@ prepare_lab() {
     sleep 2
 }
 
+# Prepare tab 2 (web UI only) - required so the web UI detects and creates
+# the container tab; the container itself is already started by prepare_lab.
+prepare_lab_2() {
+    :
+}
+
 # Check task completion - sets TASK_STATUS array
 check_tasks() {
     # Task 0: httpd installed inside the container
