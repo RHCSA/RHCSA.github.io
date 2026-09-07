@@ -301,6 +301,14 @@ def start_lab(data):
     if not lab_data:
         return {'error': 'Failed to parse lab file'}
     
+    # Web UI only: optional prerequisite check before touching anything on the machine
+    prereq_ok, prereq_message = check_lab_prerequisites(filepath)
+    if not prereq_ok:
+        return {
+            'error': 'prerequisite_failed',
+            'message': prereq_message or 'This lab requires something that is not available on this machine.'
+        }
+    
     # Reset terminal before starting new lab
     reset_terminal()
     
@@ -314,6 +322,9 @@ def start_lab(data):
     
     # Make sure the student lands on the main tab, regardless of how many tabs exist
     subprocess.run(['tmux', 'select-window', '-t', f'{TMUX_SESSION}:{MAIN_WINDOW_NAME}'], capture_output=True)
+    
+    # Re-resolve any runtime-computed values (e.g. disk names) now that prepare_lab has run
+    resolve_dynamic_lab_data(filepath, lab_data)
     
     return lab_data
 
@@ -377,6 +388,7 @@ def parse_lab_file(filepath):
                 if cmd_match:
                     commands.append({
                         'task': i,
+                        'cmd_index': j,
                         'label': f'Task {i}' + (f' - Command {j}' if j > 1 else ''),
                         'hint': task_hint if j == 1 else '',  # Show hint only for first command of each task
                         'command': cmd_match.group(1)
@@ -411,6 +423,105 @@ source "$1"
         subprocess.run(['bash', '-c', script, 'bash', filepath], capture_output=True, timeout=30)
     except Exception as e:
         print(f"Error running {function_name}: {e}")
+
+
+def run_bash_capture(filepath, script_body, timeout=30):
+    """Source a lab file then run script_body, returning captured stdout (or '' on error)."""
+    script = f'''
+#!/bin/bash
+RESET=$'\\e[0m'
+DIM="\\033[2m"
+GREEN="\\033[32m"
+RED="\\033[31m"
+YELLOW="\\033[33m"
+
+source "$1"
+{script_body}
+'''
+    try:
+        result = subprocess.run(['bash', '-c', script, 'bash', filepath],
+                                 capture_output=True, text=True, timeout=timeout)
+        return result.stdout
+    except Exception as e:
+        print(f"Error running bash capture for {filepath}: {e}")
+        return ''
+
+
+def check_lab_prerequisites(filepath):
+    """Run the lab's optional check_prerequisites() (web UI only).
+
+    A lab can define this to verify the machine has what it needs (e.g. spare
+    disks for an LVM lab) before prepare_lab ever runs. It should set
+    PREREQ_OK=true/false and, when false, PREREQ_MESSAGE explaining what's
+    missing. Labs that don't define check_prerequisites always pass - this is
+    a strictly additive, opt-in feature and doesn't affect existing labs.
+    """
+    script = '''
+if declare -f check_prerequisites > /dev/null; then
+    check_prerequisites
+    echo "RHCSA_PREREQ_OK:${PREREQ_OK:-true}"
+    echo "RHCSA_PREREQ_MSG_START"
+    echo "${PREREQ_MESSAGE:-}"
+    echo "RHCSA_PREREQ_MSG_END"
+else
+    echo "RHCSA_PREREQ_OK:true"
+fi
+'''
+    stdout = run_bash_capture(filepath, script, timeout=30)
+
+    ok = True
+    message_lines = []
+    capturing = False
+    for line in stdout.splitlines():
+        if line.startswith('RHCSA_PREREQ_OK:'):
+            ok = line.split(':', 1)[1].strip().lower() != 'false'
+        elif line == 'RHCSA_PREREQ_MSG_START':
+            capturing = True
+        elif line == 'RHCSA_PREREQ_MSG_END':
+            capturing = False
+        elif capturing:
+            message_lines.append(line)
+
+    return ok, '\n'.join(message_lines).strip()
+
+
+def resolve_dynamic_lab_data(filepath, lab_data):
+    """Re-resolve task text/commands after prepare_lab has run, so labs that
+    pick values at runtime (e.g. disk names) show the real values in the web
+    UI. No-op for ordinary labs: get_task_description()/TASK_i_COMMAND_j
+    already just echo back the same static string the regex parser found.
+    """
+    task_count = lab_data.get('task_count', 0)
+    commands = lab_data.get('commands', [])
+    if task_count <= 0 and not commands:
+        return
+
+    script_lines = []
+    for i in range(1, task_count + 1):
+        script_lines.append(f'echo "RHCSA_TASK_{i}:$(get_task_description {i - 1} 2>/dev/null)"')
+    for entry in commands:
+        i, j = entry['task'], entry['cmd_index']
+        script_lines.append(f'__v="TASK_{i}_COMMAND_{j}"; echo "RHCSA_CMD_{i}_{j}:${{!__v}}"')
+
+    stdout = run_bash_capture(filepath, '\n'.join(script_lines), timeout=15)
+
+    tasks = list(lab_data.get('tasks', []))
+    for line in stdout.splitlines():
+        m = re.match(r'^RHCSA_TASK_(\d+):(.*)$', line)
+        if m:
+            idx = int(m.group(1)) - 1
+            if 0 <= idx < len(tasks):
+                tasks[idx] = m.group(2)
+            continue
+        m = re.match(r'^RHCSA_CMD_(\d+)_(\d+):(.*)$', line)
+        if m:
+            ti, tj, val = int(m.group(1)), int(m.group(2)), m.group(3)
+            for entry in commands:
+                if entry['task'] == ti and entry['cmd_index'] == tj:
+                    entry['command'] = val
+                    break
+
+    lab_data['tasks'] = tasks
 
 
 def check_lab(data):
@@ -504,8 +615,13 @@ def get_hint(data):
         return {'error': 'Lab file not found', 'commands': []}
     
     lab_data = parse_lab_file(filepath)
+    if not lab_data:
+        return {'commands': []}
     
-    return {'commands': lab_data.get('commands', []) if lab_data else []}
+    # Re-resolve any runtime-computed values (e.g. disk names chosen in prepare_lab)
+    resolve_dynamic_lab_data(filepath, lab_data)
+    
+    return {'commands': lab_data.get('commands', [])}
 
 
 def exit_lab(data):
@@ -607,31 +723,43 @@ def check_version():
 
 
 def run_update():
-    """Run the installer to update"""
+    """Kick off the installer in the background and return immediately.
+
+    The installer's own `systemctl restart rhcsa-webui` step kills this
+    service's whole cgroup (default KillMode=control-group), which would
+    otherwise kill the installer itself mid-run if it were a normal child of
+    this request (that's what caused the old synchronous version to always
+    report "Update Failed" - the process died before it could respond, even
+    though the update kept working in the background). Running it via
+    `systemd-run --scope` puts it in its own cgroup so it survives that
+    restart, and not blocking here keeps the single-threaded web server able
+    to answer the frontend's status-polling requests while it runs.
+    """
+    tmp_installer = '/tmp/rhcsa_webui_update.sh'
+    log_file = '/tmp/rhcsa_webui_update.log'
+    install_cmd = (
+        f'curl -sL {INSTALLER_URL} -o {tmp_installer} && '
+        f'chmod +x {tmp_installer} && {tmp_installer} --force; '
+        f'rm -f {tmp_installer}'
+    )
+
     try:
-        # Download installer to temp file and run with --force flag
-        tmp_installer = '/tmp/rhcsa_webui_update.sh'
-        result = subprocess.run(
-            ['bash', '-c', f'curl -sL {INSTALLER_URL} -o {tmp_installer} && chmod +x {tmp_installer} && {tmp_installer} --force'],
-            capture_output=True,
-            text=True,
-            timeout=300  # 5 minute timeout
+        subprocess.run(['systemd-run', '--version'], capture_output=True, check=True)
+        subprocess.Popen(
+            ['systemd-run', '--scope', '--unit=rhcsa-webui-update', '--collect',
+             'bash', '-c', f'{install_cmd} > {log_file} 2>&1'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
-        
-        # Cleanup temp file
-        try:
-            os.remove(tmp_installer)
-        except:
-            pass
-        
-        if result.returncode == 0:
-            return {'success': True, 'message': 'Update completed successfully'}
-        else:
-            return {'success': False, 'error': result.stderr or 'Update failed'}
-    except subprocess.TimeoutExpired:
-        return {'success': False, 'error': 'Update timed out'}
-    except Exception as e:
-        return {'success': False, 'error': str(e)}
+    except Exception:
+        # Not running under systemd (or systemd-run missing) - best effort:
+        # detach into its own session so it isn't tied to this request at least.
+        subprocess.Popen(
+            ['bash', '-c', f'{install_cmd} > {log_file} 2>&1'],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True
+        )
+
+    return {'success': True, 'started': True}
+
 
 
 def start_ttyd():

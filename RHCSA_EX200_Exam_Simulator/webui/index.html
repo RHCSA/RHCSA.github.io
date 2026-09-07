@@ -971,15 +971,13 @@
                 if (data.success) {
                     document.getElementById('updateModal').innerHTML = `
                         <div class="update-modal">
-                            <div class="update-modal-icon">✅</div>
-                            <h2>Update Complete!</h2>
-                            <p>The simulator has been updated successfully.</p>
-                            <p style="color: #4caf50;">Please refresh the page to use the new version.</p>
-                            <div class="update-modal-buttons">
-                                <button class="btn-update-now" onclick="location.reload()">Refresh Now</button>
-                            </div>
+                            <div class="update-modal-icon">⏳</div>
+                            <h2>Update Running...</h2>
+                            <p>The update is installing in the background and will restart the server.</p>
+                            <p style="color: #888;">This page will reload automatically when it's ready...</p>
                         </div>
                     `;
+                    waitForServerRestart();
                 } else {
                     document.getElementById('updateModal').innerHTML = `
                         <div class="update-modal">
@@ -1006,6 +1004,47 @@
                 `;
             }
         }
+
+        // Poll until the web server comes back up (it restarts partway through
+        // the update), then reload so the browser picks up the new version.
+        function waitForServerRestart() {
+            let sawDown = false;
+            const maxAttempts = 120; // ~10 minutes at 5s each
+            let attempts = 0;
+
+            const poll = async () => {
+                attempts++;
+                try {
+                    const response = await fetch(`${API_BASE}/objectives`, { cache: 'no-store' });
+                    if (response.ok) {
+                        if (sawDown) {
+                            location.reload();
+                            return;
+                        }
+                        // Server never actually went down yet (restart hasn't happened) - keep polling.
+                    }
+                } catch (e) {
+                    sawDown = true;
+                }
+                if (attempts < maxAttempts) {
+                    setTimeout(poll, 5000);
+                } else {
+                    document.getElementById('updateModal').innerHTML = `
+                        <div class="update-modal">
+                            <div class="update-modal-icon">⚠️</div>
+                            <h2>Taking longer than expected</h2>
+                            <p>Please refresh the page manually in a minute.</p>
+                            <div class="update-modal-buttons">
+                                <button class="btn-update-now" onclick="location.reload()">Refresh Now</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            };
+
+            setTimeout(poll, 3000);
+        }
+
 
         // Open both websites
         function openWebsites() {
@@ -1186,6 +1225,14 @@
                 
                 if (response.ok) {
                     const labData = await response.json();
+                    
+                    if (labData.error === 'prerequisite_failed') {
+                        // Requirements not met (web UI only check) - stay on the menu
+                        alert(labData.message || 'This lab requires something that is not available on this machine.');
+                        hideLoading();
+                        return;
+                    }
+                    
                     currentLab = { objId, idx, file, ...labData };
                     
                     // Also fetch hints
