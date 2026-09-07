@@ -34,7 +34,7 @@ set -e
 # ============================================================================
 GITHUB_RAW_BASE="https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/RHCSA_EX200_Exam_Simulator"
 GITHUB_API_URL="https://api.github.com/repos/RHCSA/RHCSA.github.io/contents/RHCSA_EX200_Exam_Simulator"
-GITHUB_REPO_API="https://api.github.com/repos/RHCSA/RHCSA.github.io/commits/main"
+GITHUB_COMMITS_API="https://api.github.com/repos/RHCSA/RHCSA.github.io/commits?sha=main&per_page=1"
 VERSION_FILE="/usr/local/share/rhcsa/.version"
 # ============================================================================
 
@@ -63,6 +63,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Version = total number of commits on main, a simple incrementing number.
+# Read from the Link response header's rel="last" page number (per_page=1
+# means each page is exactly one commit, so the last page number == total count).
+get_latest_commit_count() {
+    local headers count
+    headers=$(curl -s -D - -o /dev/null -H "User-Agent: RHCSA-Simulator" "$GITHUB_COMMITS_API" 2>/dev/null)
+    count=$(echo "$headers" | tr -d '\r' | grep -i '^link:' | grep -oE 'page=[0-9]+>; rel="last"' | grep -oE '[0-9]+' | head -1)
+    echo "$count"
+}
+
 # Check for updates if already installed
 check_for_update() {
     # Skip if force update flag is set
@@ -73,17 +83,17 @@ check_for_update() {
     fi
     
     if [[ -f "$VERSION_FILE" ]]; then
-        INSTALLED_COMMIT=$(cat "$VERSION_FILE" 2>/dev/null)
-        LATEST_COMMIT=$(curl -sL "$GITHUB_REPO_API" 2>/dev/null | grep '"sha"' | head -1 | sed 's/.*"sha": "\([^"]*\)".*/\1/')
+        INSTALLED_VERSION=$(cat "$VERSION_FILE" 2>/dev/null)
+        LATEST_VERSION=$(get_latest_commit_count)
         
-        if [[ -n "$LATEST_COMMIT" ]] && [[ "$INSTALLED_COMMIT" != "$LATEST_COMMIT" ]]; then
+        if [[ -n "$LATEST_VERSION" ]] && [[ "$INSTALLED_VERSION" != "$LATEST_VERSION" ]]; then
             echo ""
             echo -e "${CYAN}${BOLD}╔════════════════════════════════════════════════════════════╗${NC}"
             echo -e "${CYAN}${BOLD}║              Update Available!                              ║${NC}"
             echo -e "${CYAN}${BOLD}╚════════════════════════════════════════════════════════════╝${NC}"
             echo ""
-            echo -e "  Installed: ${YELLOW}${INSTALLED_COMMIT:0:7}${NC}"
-            echo -e "  Latest:    ${GREEN}${LATEST_COMMIT:0:7}${NC}"
+            echo -e "  Installed: ${YELLOW}v${INSTALLED_VERSION}${NC}"
+            echo -e "  Latest:    ${GREEN}v${LATEST_VERSION}${NC}"
             echo ""
             read -p "  Do you want to update now? (y/n): " -n 1 -r
             echo ""
@@ -96,13 +106,13 @@ check_for_update() {
             echo ""
             echo -e "${GREEN}Proceeding with update...${NC}"
             echo ""
-        elif [[ -n "$LATEST_COMMIT" ]] && [[ "$INSTALLED_COMMIT" == "$LATEST_COMMIT" ]]; then
+        elif [[ -n "$LATEST_VERSION" ]] && [[ "$INSTALLED_VERSION" == "$LATEST_VERSION" ]]; then
             echo ""
             echo -e "${GREEN}${BOLD}╔════════════════════════════════════════════════════════════╗${NC}"
             echo -e "${GREEN}${BOLD}║              Already up to date!                           ║${NC}"
             echo -e "${GREEN}${BOLD}╚════════════════════════════════════════════════════════════╝${NC}"
             echo ""
-            echo -e "  Version: ${GREEN}${INSTALLED_COMMIT:0:7}${NC}"
+            echo -e "  Version: ${GREEN}v${INSTALLED_VERSION}${NC}"
             echo ""
             read -p "  Do you want to reinstall anyway? (y/n): " -n 1 -r
             echo ""
@@ -281,7 +291,7 @@ echo -e "        ${GREEN}✓${NC} Command created"
 
 # Step 6: Configure firewall and SELinux
 echo -e "  ${YELLOW}[6/7]${NC} Configuring firewall and SELinux..."
-WEBUI_PORT=8080
+WEBUI_PORT=80
 TERMINAL_PORT=7682
 
 # Configure firewall
@@ -335,12 +345,12 @@ else
     echo -e "        ${YELLOW}ℹ${NC} Web Interface service file not found, skipping"
 fi
 
-# Step 8: Save version (commit hash) for update checking
+# Step 8: Save version (commit count) for update checking
 echo -e "  ${YELLOW}[8/8]${NC} Saving version information..."
-LATEST_COMMIT=$(curl -sL "$GITHUB_REPO_API" 2>/dev/null | grep '"sha"' | head -1 | sed 's/.*"sha": "\([^"]*\)".*/\1/')
-if [[ -n "$LATEST_COMMIT" ]]; then
-    echo "$LATEST_COMMIT" > "$VERSION_FILE"
-    echo -e "        ${GREEN}✓${NC} Version saved (${LATEST_COMMIT:0:7})"
+LATEST_VERSION=$(get_latest_commit_count)
+if [[ -n "$LATEST_VERSION" ]]; then
+    echo "$LATEST_VERSION" > "$VERSION_FILE"
+    echo -e "        ${GREEN}✓${NC} Version saved (v${LATEST_VERSION})"
 else
     echo -e "        ${YELLOW}ℹ${NC} Could not fetch version info"
 fi

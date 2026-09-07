@@ -2,7 +2,7 @@
 # RHCSA Web Interface Startup Script
 # Starts both the web API server and ttyd terminal
 
-WEBUI_PORT=8080
+WEBUI_PORT=80
 TERMINAL_PORT=7682
 INSTALL_DIR="/usr/local/share/rhcsa"
 WEBUI_DIR="${INSTALL_DIR}/webui"

@@ -1,29 +1,31 @@
 #!/bin/bash
 # Objective 5: Configure local storage
-# LAB: Create physical volumes, a volume group, and a logical volume
+# LAB: Create physical volumes on partitions, a volume group, and a logical
+#      volume using 100% of the free space, mounted permanently via UUID
 # NOTE: check_prerequisites() is only read by the web UI (webui/server.py).
 # The CLI simulator (rhcsa) never calls it, so on the CLI this lab just runs
 # prepare_lab/check_tasks/cleanup_lab like any other lab (no pre-flight popup).
 
 IS_LAB=true
-LAB_ID="lvm_pv_vg_lv"
+LAB_ID="lvm_partitions_fullsize"
 
-QUESTION="Set up LVM storage: create physical volumes, a volume group, and a logical volume with an EXACT size; format it and mount it permanently"
+QUESTION="Set up LVM storage on partitions: create partitions, physical volumes, a volume group, and a logical volume using 100% of the free space; format it and mount it permanently by UUID"
 
 # Lab configuration
-LAB_TITLE="LVM: Physical Volumes, Volume Group, and Logical Volume"
-LAB_TASK_COUNT=5
+LAB_TITLE="LVM: Partitions, 100% Free Space, UUID Mount"
+LAB_TASK_COUNT=6
 
 # =============================================================================
-# DISK DISCOVERY - find 2 spare disks (not the one holding /) to use for LVM
+# DISK DISCOVERY - find 2 spare disks (not the one holding /) to partition
 # =============================================================================
 
-STATE_FILE="/tmp/.rhcsa_lab_lvm_disks"
-VG_NAME="data-vg"
-LV_NAME="data-lv"
-LV_SIZE="7G"
-LV_SIZE_BYTES=$((7 * 1024 * 1024 * 1024))
-MOUNT_POINT="/data"
+STATE_FILE="/tmp/.rhcsa_lab_lvm_fullsize_disks"
+VG_NAME="full-size-vg"
+LV_NAME="full-size-lv"
+PART1_SIZE_MB=123
+PART2_SIZE_MB=456
+PART_TOLERANCE_BYTES=$((4 * 1024 * 1024))
+MOUNT_POINT="/full-size"
 MIN_DISK_SIZE_GB=5
 
 # Whole disks that are safe to use: no existing partition table (a disk with
@@ -65,32 +67,38 @@ _lvm_load_disks
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="Create LVM physical volumes on the two available extra disks: ${DISK1} and ${DISK2} (do not use the disk that holds /)"
-TASK_1_HINT="Use pvcreate on both disks to initialize them as LVM physical volumes"
-TASK_1_COMMAND_1="pvcreate ${DISK1} ${DISK2}"
+TASK_1_QUESTION="Create a ${PART1_SIZE_MB}M partition on ${DISK1} and a ${PART2_SIZE_MB}M partition on ${DISK2}"
+TASK_1_HINT="Use fdisk or parted to create one partition of each requested size"
+TASK_1_COMMAND_1="parted -s ${DISK1} mklabel msdos mkpart primary 1MiB $((PART1_SIZE_MB + 1))MiB"
+TASK_1_COMMAND_2="parted -s ${DISK2} mklabel msdos mkpart primary 1MiB $((PART2_SIZE_MB + 1))MiB"
 
 # Task 2
-TASK_2_QUESTION="Create a volume group named ${VG_NAME} from ${DISK1} and ${DISK2}"
-TASK_2_HINT="Use vgcreate to combine both physical volumes into one volume group"
-TASK_2_COMMAND_1="vgcreate ${VG_NAME} ${DISK1} ${DISK2}"
+TASK_2_QUESTION="Create LVM physical volumes on ${DISK1}1 and ${DISK2}1"
+TASK_2_HINT="Use pvcreate on both partitions to initialize them as LVM physical volumes"
+TASK_2_COMMAND_1="pvcreate ${DISK1}1 ${DISK2}1"
 
 # Task 3
-TASK_3_QUESTION="Create a logical volume named ${LV_NAME} in ${VG_NAME} with a size of EXACTLY ${LV_SIZE}"
-TASK_3_HINT="Use lvcreate with --name and --size to request the exact size"
-TASK_3_COMMAND_1="lvcreate --name ${LV_NAME} --size ${LV_SIZE} ${VG_NAME}"
+TASK_3_QUESTION="Create a volume group named ${VG_NAME} from ${DISK1}1 and ${DISK2}1"
+TASK_3_HINT="Use vgcreate to combine both physical volumes into one volume group"
+TASK_3_COMMAND_1="vgcreate ${VG_NAME} ${DISK1}1 ${DISK2}1"
 
 # Task 4
-TASK_4_QUESTION="Format /dev/${VG_NAME}/${LV_NAME} with the xfs file system"
-TASK_4_HINT="Use mkfs.xfs to format the logical volume"
-TASK_4_COMMAND_1="mkfs.xfs /dev/${VG_NAME}/${LV_NAME}"
+TASK_4_QUESTION="Create a logical volume named ${LV_NAME} using 100% of the free space in ${VG_NAME}"
+TASK_4_HINT="Use lvcreate with --extents 100%FREE to consume all remaining space in the volume group"
+TASK_4_COMMAND_1="lvcreate --name ${LV_NAME} --extents 100%FREE ${VG_NAME}"
 
 # Task 5
-TASK_5_QUESTION="Create ${MOUNT_POINT} and mount /dev/${VG_NAME}/${LV_NAME} there permanently (must persist after reboot)"
-TASK_5_HINT="Add an entry to /etc/fstab, then reload systemd and mount -a"
-TASK_5_COMMAND_1="mkdir ${MOUNT_POINT}"
-TASK_5_COMMAND_2="echo '/dev/${VG_NAME}/${LV_NAME} ${MOUNT_POINT} xfs defaults 0 0' >> /etc/fstab"
-TASK_5_COMMAND_3="systemctl daemon-reload"
-TASK_5_COMMAND_4="mount -a"
+TASK_5_QUESTION="Format /dev/${VG_NAME}/${LV_NAME} with the xfs file system"
+TASK_5_HINT="Use mkfs.xfs to format the logical volume"
+TASK_5_COMMAND_1="mkfs.xfs /dev/${VG_NAME}/${LV_NAME}"
+
+# Task 6
+TASK_6_QUESTION="Create ${MOUNT_POINT} and mount /dev/${VG_NAME}/${LV_NAME} there permanently using its UUID (must persist after reboot)"
+TASK_6_HINT="Look up the UUID with blkid, then add a UUID= entry to /etc/fstab"
+TASK_6_COMMAND_1="mkdir ${MOUNT_POINT}"
+TASK_6_COMMAND_2="echo \"UUID=\$(blkid -o value -s UUID /dev/${VG_NAME}/${LV_NAME}) ${MOUNT_POINT} xfs defaults 0 0\" >> /etc/fstab"
+TASK_6_COMMAND_3="systemctl daemon-reload"
+TASK_6_COMMAND_4="mount -a"
 
 # =============================================================================
 # TASK HELPER FUNCTIONS
@@ -195,18 +203,25 @@ prepare_lab() {
         done
     done
 
-    # Remove any existing LVM structures built on top of these disks
+    # Remove any existing LVM structures built on top of these disks/partitions
     for d in "$DISK1" "$DISK2"; do
-        for vg in $(pvs --noheadings -o vg_name "$d" 2>/dev/null | awk 'NF'); do
-            lvremove -f "$vg" &>/dev/null || true
-            vgremove -f "$vg" &>/dev/null || true
+        for dev in "$d" "$d"1 "$d"2 "$d"3; do
+            [[ -e "$dev" ]] || continue
+            for vg in $(pvs --noheadings -o vg_name "$dev" 2>/dev/null | awk 'NF'); do
+                lvremove -f "$vg" &>/dev/null || true
+                vgremove -f "$vg" &>/dev/null || true
+            done
+            pvremove -ff -y "$dev" &>/dev/null || true
         done
-        pvremove -ff -y "$d" &>/dev/null || true
     done
 
     # Wipe filesystem/partition/LVM signatures so the disks start blank
     wipefs -a "$DISK1" &>/dev/null || true
     wipefs -a "$DISK2" &>/dev/null || true
+    dd if=/dev/zero of="$DISK1" bs=1M count=1 &>/dev/null || true
+    dd if=/dev/zero of="$DISK2" bs=1M count=1 &>/dev/null || true
+    partprobe "$DISK1" &>/dev/null || true
+    partprobe "$DISK2" &>/dev/null || true
 
     sleep 0.3
 }
@@ -215,32 +230,33 @@ prepare_lab() {
 check_tasks() {
     _lvm_load_disks
 
-    # Task 0: both disks are LVM physical volumes
-    if pvs "$DISK1" &>/dev/null && pvs "$DISK2" &>/dev/null; then
+    # Task 0: partitions of the requested sizes exist on each disk
+    local p1_bytes p2_bytes exp1_bytes exp2_bytes
+    p1_bytes=$(blockdev --getsize64 "${DISK1}1" 2>/dev/null)
+    p2_bytes=$(blockdev --getsize64 "${DISK2}1" 2>/dev/null)
+    exp1_bytes=$((PART1_SIZE_MB * 1024 * 1024))
+    exp2_bytes=$((PART2_SIZE_MB * 1024 * 1024))
+    if [[ -n "$p1_bytes" ]] && [[ -n "$p2_bytes" ]] \
+        && (( p1_bytes >= exp1_bytes - PART_TOLERANCE_BYTES && p1_bytes <= exp1_bytes + PART_TOLERANCE_BYTES )) \
+        && (( p2_bytes >= exp2_bytes - PART_TOLERANCE_BYTES && p2_bytes <= exp2_bytes + PART_TOLERANCE_BYTES )); then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
     fi
 
-    # Task 1: volume group exists and contains both physical volumes
-    if vgs "$VG_NAME" &>/dev/null; then
-        local vg1 vg2
-        vg1=$(pvs -o vg_name --noheadings "$DISK1" 2>/dev/null | tr -d ' ')
-        vg2=$(pvs -o vg_name --noheadings "$DISK2" 2>/dev/null | tr -d ' ')
-        if [[ "$vg1" == "$VG_NAME" ]] && [[ "$vg2" == "$VG_NAME" ]]; then
-            TASK_STATUS[1]="true"
-        else
-            TASK_STATUS[1]="false"
-        fi
+    # Task 1: both partitions are LVM physical volumes
+    if pvs "${DISK1}1" &>/dev/null && pvs "${DISK2}1" &>/dev/null; then
+        TASK_STATUS[1]="true"
     else
         TASK_STATUS[1]="false"
     fi
 
-    # Task 2: logical volume exists in the volume group with exactly the right size
-    if lvs "${VG_NAME}/${LV_NAME}" &>/dev/null; then
-        local lv_bytes
-        lv_bytes=$(lvs --noheadings --units b --nosuffix -o lv_size "${VG_NAME}/${LV_NAME}" 2>/dev/null | tr -d ' ')
-        if [[ "$lv_bytes" == "$LV_SIZE_BYTES" ]]; then
+    # Task 2: volume group exists and contains both physical volumes
+    if vgs "$VG_NAME" &>/dev/null; then
+        local vg1 vg2
+        vg1=$(pvs -o vg_name --noheadings "${DISK1}1" 2>/dev/null | tr -d ' ')
+        vg2=$(pvs -o vg_name --noheadings "${DISK2}1" 2>/dev/null | tr -d ' ')
+        if [[ "$vg1" == "$VG_NAME" ]] && [[ "$vg2" == "$VG_NAME" ]]; then
             TASK_STATUS[2]="true"
         else
             TASK_STATUS[2]="false"
@@ -249,36 +265,47 @@ check_tasks() {
         TASK_STATUS[2]="false"
     fi
 
-    # Task 3: logical volume formatted with xfs
-    local fstype
-    fstype=$(blkid -o value -s TYPE "/dev/${VG_NAME}/${LV_NAME}" 2>/dev/null)
-    if [[ "$fstype" == "xfs" ]]; then
-        TASK_STATUS[3]="true"
+    # Task 3: logical volume exists and consumes (close to) all of the VG's space
+    if lvs "${VG_NAME}/${LV_NAME}" &>/dev/null; then
+        local lv_bytes vg_bytes
+        lv_bytes=$(lvs --noheadings --units b --nosuffix -o lv_size "${VG_NAME}/${LV_NAME}" 2>/dev/null | tr -d ' ')
+        vg_bytes=$(vgs --noheadings --units b --nosuffix -o vg_size "$VG_NAME" 2>/dev/null | tr -d ' ')
+        if [[ -n "$lv_bytes" ]] && [[ -n "$vg_bytes" ]] && (( vg_bytes - lv_bytes <= 8 * 1024 * 1024 )); then
+            TASK_STATUS[3]="true"
+        else
+            TASK_STATUS[3]="false"
+        fi
     else
         TASK_STATUS[3]="false"
     fi
 
-    # Task 4: mounted right now AND persisted in /etc/fstab
+    # Task 4: logical volume formatted with xfs
+    local fstype
+    fstype=$(blkid -o value -s TYPE "/dev/${VG_NAME}/${LV_NAME}" 2>/dev/null)
+    if [[ "$fstype" == "xfs" ]]; then
+        TASK_STATUS[4]="true"
+    else
+        TASK_STATUS[4]="false"
+    fi
+
+    # Task 5: mounted right now (by UUID) AND persisted in /etc/fstab using UUID=
     local mounted=false
     local persisted=false
-    local cur_src
+    local cur_src lv_uuid
     cur_src=$(findmnt -no SOURCE "$MOUNT_POINT" 2>/dev/null)
-    # Compare real device nodes, not name strings - device-mapper doubles any
-    # dash already inside the VG/LV name (data-vg -> data--vg), so a plain
-    # string match against the /dev/mapper/<name> form is unreliable.
+    lv_uuid=$(blkid -o value -s UUID "/dev/${VG_NAME}/${LV_NAME}" 2>/dev/null)
     if [[ -n "$cur_src" ]] && [[ -e "/dev/${VG_NAME}/${LV_NAME}" ]]; then
         if [[ "$(readlink -f "$cur_src" 2>/dev/null)" == "$(readlink -f "/dev/${VG_NAME}/${LV_NAME}" 2>/dev/null)" ]]; then
             mounted=true
         fi
     fi
-    if grep -qE "^[[:space:]]*/dev/${VG_NAME}/${LV_NAME}[[:space:]]+${MOUNT_POINT}[[:space:]]" /etc/fstab 2>/dev/null || \
-       grep -qE "^[[:space:]]*/dev/mapper/${VG_NAME}-${LV_NAME}[[:space:]]+${MOUNT_POINT}[[:space:]]" /etc/fstab 2>/dev/null; then
+    if [[ -n "$lv_uuid" ]] && grep -qE "^[[:space:]]*UUID=${lv_uuid}[[:space:]]+${MOUNT_POINT}[[:space:]]" /etc/fstab 2>/dev/null; then
         persisted=true
     fi
     if $mounted && $persisted; then
-        TASK_STATUS[4]="true"
+        TASK_STATUS[5]="true"
     else
-        TASK_STATUS[4]="false"
+        TASK_STATUS[5]="false"
     fi
 }
 
@@ -298,14 +325,18 @@ cleanup_lab() {
     lvremove -f "$VG_NAME" &>/dev/null || true
     vgremove -f "$VG_NAME" &>/dev/null || true
 
-    if [[ -n "$DISK1" ]] && [[ "$DISK1" != "<disk1>" ]]; then
-        pvremove -ff -y "$DISK1" &>/dev/null || true
-        wipefs -a "$DISK1" &>/dev/null || true
-    fi
-    if [[ -n "$DISK2" ]] && [[ "$DISK2" != "<disk2>" ]]; then
-        pvremove -ff -y "$DISK2" &>/dev/null || true
-        wipefs -a "$DISK2" &>/dev/null || true
-    fi
+    for d in "$DISK1" "$DISK2"; do
+        [[ -n "$d" ]] || continue
+        [[ "$d" == "<disk1>" || "$d" == "<disk2>" ]] && continue
+        for dev in "$d"1 "$d"2 "$d"3; do
+            [[ -e "$dev" ]] || continue
+            pvremove -ff -y "$dev" &>/dev/null || true
+        done
+        parted -s "$d" rm 1 &>/dev/null || true
+        wipefs -a "$d" &>/dev/null || true
+        dd if=/dev/zero of="$d" bs=1M count=1 &>/dev/null || true
+        partprobe "$d" &>/dev/null || true
+    done
 
     rm -f "$STATE_FILE"
     echo -e "  ${GREEN}✓ Lab environment cleaned up${RESET}"

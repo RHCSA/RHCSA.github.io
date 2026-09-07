@@ -15,7 +15,7 @@ import threading
 import signal
 
 # Configuration
-WEBUI_PORT = 8080
+WEBUI_PORT = 80
 TERMINAL_PORT = 7682
 TMUX_SESSION = 'rhcsa-terminal'
 MAIN_WINDOW_NAME = 'lab_main'  # stable tmux window name for the default/first terminal tab
@@ -685,7 +685,7 @@ def send_to_terminal(data):
 
 # Version check configuration
 VERSION_FILE = "/usr/local/share/rhcsa/.version"
-GITHUB_REPO_API = "https://api.github.com/repos/RHCSA/RHCSA.github.io/commits/main"
+GITHUB_COMMITS_API = "https://api.github.com/repos/RHCSA/RHCSA.github.io/commits?sha=main&per_page=1"
 INSTALLER_URL = "https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh"
 
 
@@ -695,15 +695,28 @@ def get_installed_version():
         with open(VERSION_FILE, 'r') as f:
             installed = f.read().strip()
         if installed:
-            return {'installed': installed[:7], 'installedFull': installed}
+            return {'installed': installed, 'installedFull': installed}
     return {'installed': 'unknown', 'installedFull': ''}
+
+
+def get_latest_commit_count():
+    """Total number of commits on main - a simple incrementing version number.
+    Read from the Link response header's rel="last" page number (per_page=1
+    means each page is exactly one commit, so the last page number == total count)."""
+    import urllib.request
+
+    req = urllib.request.Request(GITHUB_COMMITS_API, headers={'User-Agent': 'RHCSA-Simulator'})
+    with urllib.request.urlopen(req, timeout=5) as response:
+        link = response.headers.get('Link', '')
+        response.read()  # drain the body
+
+    match = re.search(r'page=(\d+)>;\s*rel="last"', link)
+    return match.group(1) if match else None
 
 
 def check_version():
     """Check if an update is available"""
     try:
-        import urllib.request
-        
         # Read installed version
         installed = None
         if os.path.exists(VERSION_FILE):
@@ -714,14 +727,11 @@ def check_version():
             print("check_version: version file not found or empty")
             return {'updateAvailable': False, 'message': 'Version file not found'}
         
-        # Fetch latest version from GitHub
-        req = urllib.request.Request(GITHUB_REPO_API, headers={'User-Agent': 'RHCSA-Simulator'})
-        with urllib.request.urlopen(req, timeout=5) as response:
-            data = json.loads(response.read().decode('utf-8'))
-            latest = data.get('sha', '')
+        # Fetch latest version (commit count) from GitHub
+        latest = get_latest_commit_count()
         
         if not latest:
-            print("check_version: GitHub API response had no commit sha")
+            print("check_version: GitHub API response had no Link/last page")
             return {'updateAvailable': False, 'message': 'Could not fetch latest version'}
         
         # Compare versions
@@ -729,14 +739,15 @@ def check_version():
         
         return {
             'updateAvailable': update_available,
-            'installed': installed[:7] if installed else 'unknown',
-            'latest': latest[:7] if latest else 'unknown',
+            'installed': installed,
+            'latest': latest,
             'installedFull': installed,
             'latestFull': latest
         }
     except Exception as e:
         print(f"check_version failed: {e}")
         return {'updateAvailable': False, 'error': str(e)}
+
 
 
 def run_update():
