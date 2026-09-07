@@ -152,18 +152,37 @@ if ! command -v python3 &>/dev/null; then
     echo -e "        ${CYAN}Installing python3...${NC}"
     dnf install -y python3 &>/dev/null || yum install -y python3 &>/dev/null
 fi
-if ! command -v ttyd &>/dev/null; then
+# command -v can't see /usr/local/bin under sudo's secure_path, so also check the file directly
+if ! command -v ttyd &>/dev/null && [[ ! -x /usr/local/bin/ttyd ]]; then
     echo -e "        ${CYAN}Installing ttyd for web terminal...${NC}"
     # Try EPEL first
     dnf install -y epel-release &>/dev/null || yum install -y epel-release &>/dev/null || true
     dnf install -y ttyd &>/dev/null || yum install -y ttyd &>/dev/null || {
         # If package not available, download binary
         echo -e "        ${CYAN}Downloading ttyd binary...${NC}"
+        # A running ttyd holds its binary open; overwriting it fails with "text file busy"
+        pkill -f "ttyd.*7682" &>/dev/null || true
         curl -sL https://github.com/tsl0922/ttyd/releases/latest/download/ttyd.x86_64 -o /usr/local/bin/ttyd
         chmod +x /usr/local/bin/ttyd
     }
 fi
-echo -e "        ${GREEN}✓${NC} Requirements satisfied (curl, tmux, python3, ttyd)"
+
+# Install Docker if not already present (used by container-based labs)
+if ! command -v docker &>/dev/null; then
+    echo -e "        ${CYAN}Installing Docker...${NC}"
+    dnf install -y dnf-plugins-core &>/dev/null || dnf install -y 'dnf-command(config-manager)' &>/dev/null || true
+    dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo &>/dev/null || true
+    dnf install -y docker-ce docker-ce-cli containerd.io &>/dev/null || true
+fi
+if command -v docker &>/dev/null; then
+    systemctl enable --now docker &>/dev/null || true
+
+    # Pre-pull the RHEL practice image so container-based labs start instantly.
+    # Update/extend this if a lab starts using a different image.
+    echo -e "        ${CYAN}Pulling RHEL practice container image (this may take a minute)...${NC}"
+    docker pull rockylinux/rockylinux:10-ubi-init &>/dev/null || true
+fi
+echo -e "        ${GREEN}✓${NC} Requirements satisfied (curl, tmux, python3, ttyd, docker)"
 
 # Step 3: Create temp directory and download files
 echo -e "  ${YELLOW}[3/7]${NC} Downloading RHCSA Exam Simulator files..."
@@ -302,15 +321,15 @@ if [[ -f "$INSTALL_DIR/webui/rhcsa-webui.service" ]]; then
     systemctl daemon-reload
     systemctl enable rhcsa-webui &>/dev/null || true
     
-    # Start the service and verify it's running
-    systemctl start rhcsa-webui
+    # Restart (not just start) so an update actually picks up the new files
+    systemctl restart rhcsa-webui
     sleep 2
     
     if systemctl is-active rhcsa-webui &>/dev/null; then
         echo -e "        ${GREEN}✓${NC} Web Interface service installed and running"
     else
         echo -e "        ${YELLOW}ℹ${NC} Web Interface service installed (may need manual start)"
-        echo -e "        ${YELLOW}ℹ${NC} Run: systemctl start rhcsa-webui"
+        echo -e "        ${YELLOW}ℹ${NC} Run: systemctl restart rhcsa-webui"
     fi
 else
     echo -e "        ${YELLOW}ℹ${NC} Web Interface service file not found, skipping"

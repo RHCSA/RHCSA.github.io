@@ -555,11 +555,47 @@
 
         .terminal-view.active {
             display: flex;
+            flex-direction: column;
+        }
+
+        /* Tab bar - only shown when a lab defines more than one terminal (prepare_lab_2, prepare_lab_3, ...) */
+        .terminal-tabs {
+            display: none;
+            flex-shrink: 0;
+            background-color: #1a1a1a;
+            border-bottom: 2px solid #cc0000;
+            overflow-x: auto;
+        }
+
+        .terminal-tabs.show {
+            display: flex;
+        }
+
+        .terminal-tab {
+            padding: 10px 16px;
+            color: #bbb;
+            background-color: #1a1a1a;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            border-right: 1px solid #333;
+            white-space: nowrap;
+        }
+
+        .terminal-tab:hover {
+            background-color: #282424;
+            color: #fff;
+        }
+
+        .terminal-tab.active {
+            background-color: #282424;
+            color: #fff;
+            box-shadow: inset 0 -2px 0 #cc0000;
         }
 
         .terminal-view iframe {
             width: 100%;
-            height: 100%;
+            flex: 1;
             border: none;
         }
 
@@ -841,6 +877,7 @@
 
             <!-- Terminal View (Full Panel when Lab Active) -->
             <div class="terminal-view" id="terminalView">
+                <div class="terminal-tabs" id="terminalTabs"></div>
                 <iframe id="terminalFrame" src=""></iframe>
             </div>
         </div>
@@ -1251,6 +1288,46 @@
             // Load terminal
             const terminalFrame = document.getElementById('terminalFrame');
             terminalFrame.src = `http://${window.location.hostname}:${TERMINAL_PORT}`;
+
+            // Show terminal tabs only if this lab defines more than one terminal
+            renderTerminalTabs(labData.terminals);
+        }
+
+        // Build (or hide) the terminal tab bar for the current lab
+        function renderTerminalTabs(terminals) {
+            const tabsContainer = document.getElementById('terminalTabs');
+            tabsContainer.innerHTML = '';
+
+            if (!terminals || terminals.length <= 1) {
+                tabsContainer.classList.remove('show');
+                return;
+            }
+
+            terminals.forEach((t, i) => {
+                const tab = document.createElement('div');
+                tab.className = 'terminal-tab' + (i === 0 ? ' active' : '');
+                tab.textContent = t.name;
+                tab.onclick = () => selectTerminalTab(tab, t.window);
+                tabsContainer.appendChild(tab);
+            });
+
+            tabsContainer.classList.add('show');
+        }
+
+        // Switch the shared terminal view to a different tab (same machine, different tmux window)
+        async function selectTerminalTab(tabEl, windowName) {
+            document.querySelectorAll('.terminal-tab').forEach(el => el.classList.remove('active'));
+            tabEl.classList.add('active');
+
+            try {
+                await fetch(`${API_BASE}/terminal/select`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ window: windowName })
+                });
+            } catch (e) {
+                console.error('Failed to switch terminal tab:', e);
+            }
         }
 
         // Check tasks
@@ -1451,6 +1528,11 @@
             newIframe.id = 'terminalFrame';
             newIframe.src = '';
             parent.replaceChild(newIframe, terminalFrame);
+
+            // Hide/clear terminal tabs
+            const tabsContainer = document.getElementById('terminalTabs');
+            tabsContainer.innerHTML = '';
+            tabsContainer.classList.remove('show');
             
             showLoading();
             
