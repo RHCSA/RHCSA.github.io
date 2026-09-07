@@ -26,31 +26,16 @@ LV_SIZE_BYTES=$((7 * 1024 * 1024 * 1024))
 MOUNT_POINT="/data"
 MIN_DISK_SIZE_GB=5
 
-# Whole disk backing the root filesystem, walked up through any partition/LVM layers
-_lvm_root_disk() {
-    local src pk parent
-    src=$(findmnt -no SOURCE / 2>/dev/null)
-    [[ -z "$src" ]] && return
-    pk=$(lsblk -no PKNAME "$src" 2>/dev/null)
-    if [[ -z "$pk" ]]; then
-        basename "$src"
-        return
-    fi
-    parent=$(lsblk -no PKNAME "/dev/$pk" 2>/dev/null)
-    if [[ -n "$parent" ]]; then
-        echo "$parent"
-    else
-        echo "$pk"
-    fi
-}
-
-# Whole disks that are not the root disk and are >= MIN_DISK_SIZE_GB
+# Whole disks that are safe to use: no existing partition table (a disk with
+# partitions is always OS/boot/manually-used data and must never be touched),
+# and >= MIN_DISK_SIZE_GB. A disk with only a stray leftover LVM signature and
+# no partitions still qualifies - prepare_lab wipes and reuses it.
 _lvm_find_spare_disks() {
-    local root_disk
-    root_disk=$(_lvm_root_disk)
     lsblk -dnb -o NAME,TYPE,SIZE 2>/dev/null | while read -r name type size; do
         [[ "$type" == "disk" ]] || continue
-        [[ "$name" == "$root_disk" ]] && continue
+        if lsblk -n -o TYPE "/dev/$name" 2>/dev/null | grep -q '^part$'; then
+            continue
+        fi
         local size_gb=$((size / 1024 / 1024 / 1024))
         if [[ $size_gb -ge $MIN_DISK_SIZE_GB ]]; then
             echo "/dev/$name"
