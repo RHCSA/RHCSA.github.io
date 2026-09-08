@@ -7,11 +7,10 @@
 # The CLI simulator (rhcsa) never calls it, so on the CLI this lab just runs
 # prepare_lab/check_tasks/cleanup_lab like any other lab (no pre-flight popup).
 #
-# IMPORTANT: 100 extents @ 32M PE size = 3.125 GiB, and this lab grows the LV
-# by another 100 extents (6.25 GiB total) before the final 100%FREE step -
-# so it needs a spare disk somewhat larger than the 5G disks used by the
-# other LVM labs in this chapter. If the only spare disks on this machine are
-# 5G, check_prerequisites will correctly report that there isn't enough space.
+# IMPORTANT: 100 extents @ 32M PE size = 3.125 GiB. Each disk only needs to
+# individually cover that initial size - disk2 joins the volume group in
+# task 7, before the LV is grown further in task 8, so the +100 extent step
+# draws from the combined capacity of both disks rather than disk1 alone.
 
 IS_LAB=true
 LAB_ID="lvm_extent_sizing"
@@ -39,9 +38,11 @@ AFTER_EXTEND_SIZE_BYTES=$(((INITIAL_EXTENTS + EXTEND_EXTENTS) * PE_SIZE_BYTES))
 VG_SIZE_TOLERANCE_BYTES=$((8 * 1024 * 1024))
 MOUNT_POINT="/my-extent-dir"
 TEST_FILE="${MOUNT_POINT}/testfile"
-# 200 extents (6.25 GiB) is needed just to reach task 7, plus headroom so the
-# final 100%FREE step has something meaningful left to consume
-MIN_DISK_SIZE_GB=8
+# Each disk needs to individually cover the initial 100 extents (3.125 GiB)
+# plus a little headroom for LVM metadata - the combined pair (after disk2
+# joins in task 7) is then plenty for the +100 extent step and the final
+# 100%FREE step to have something meaningful left to consume.
+MIN_DISK_SIZE_GB=4
 
 # Whole disks that are safe to use: no existing partition table (a disk with
 # partitions is always OS/boot/manually-used data and must never be touched),
