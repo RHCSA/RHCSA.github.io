@@ -1,31 +1,47 @@
 #!/bin/bash
 # Objective 5: Configure local storage
-# LAB: Resize an existing logical volume to use 100% of its volume group
+# LAB: Create an LVM volume group/logical volume sized in extents, with a
+#      custom PE size, then grow it first by a fixed extent count and finally
+#      to consume all remaining free space in the volume group
 # NOTE: check_prerequisites() is only read by the web UI (webui/server.py).
 # The CLI simulator (rhcsa) never calls it, so on the CLI this lab just runs
 # prepare_lab/check_tasks/cleanup_lab like any other lab (no pre-flight popup).
+#
+# IMPORTANT: 100 extents @ 32M PE size = 3.125 GiB, and this lab grows the LV
+# by another 100 extents (6.25 GiB total) before the final 100%FREE step -
+# so it needs a spare disk somewhat larger than the 5G disks used by the
+# other LVM labs in this chapter. If the only spare disks on this machine are
+# 5G, check_prerequisites will correctly report that there isn't enough space.
 
 IS_LAB=true
-LAB_ID="lvm_resize_lv_100vg"
+LAB_ID="lvm_extent_sizing"
 
-QUESTION="Create a logical volume, format and mount it, then expand it to use 100% of its volume group and grow its file system to match"
+QUESTION="Create an LVM volume group with a custom PE (physical extent) size, size a logical volume in extents, then grow it - first by a fixed extent count, then to use all remaining free space"
 
 # Lab configuration
-LAB_TITLE="LVM: Resize a Logical Volume to 100% of its Volume Group"
-LAB_TASK_COUNT=6
+LAB_TITLE="LVM: PE Size and Extent-Based Sizing"
+LAB_TASK_COUNT=9
 
 # =============================================================================
-# DISK DISCOVERY - find 1 spare disk (not the one holding /) to use for LVM
+# DISK DISCOVERY - this lab needs 2 spare disks available: the first is used
+# to create the volume group, the second is added to it later (task 7)
 # =============================================================================
 
-STATE_FILE="/tmp/.rhcsa_lab_lvm_vgfull_disk"
-VG_NAME="vg-full-usage"
-LV_NAME="lv-full-usage"
-INITIAL_SIZE="3456M"
-INITIAL_SIZE_BYTES=$((3456 * 1024 * 1024))
+STATE_FILE="/tmp/.rhcsa_lab_lvm_extent_disks"
+VG_NAME="my-extent-vg"
+LV_NAME="my-extent-lv"
+PE_SIZE="32M"
+PE_SIZE_BYTES=$((32 * 1024 * 1024))
+INITIAL_EXTENTS=100
+EXTEND_EXTENTS=100
+INITIAL_SIZE_BYTES=$((INITIAL_EXTENTS * PE_SIZE_BYTES))
+AFTER_EXTEND_SIZE_BYTES=$(((INITIAL_EXTENTS + EXTEND_EXTENTS) * PE_SIZE_BYTES))
 VG_SIZE_TOLERANCE_BYTES=$((8 * 1024 * 1024))
-MOUNT_POINT="/vgfull-data"
-MIN_DISK_SIZE_GB=5
+MOUNT_POINT="/my-extent-dir"
+TEST_FILE="${MOUNT_POINT}/testfile"
+# 200 extents (6.25 GiB) is needed just to reach task 7, plus headroom so the
+# final 100%FREE step has something meaningful left to consume
+MIN_DISK_SIZE_GB=8
 
 # Whole disks that are safe to use: no existing partition table (a disk with
 # partitions is always OS/boot/manually-used data and must never be touched),
@@ -50,17 +66,19 @@ _lvm_find_spare_disks() {
     done
 }
 
-# Resolve DISK1: reuse the disk already chosen for this run (state file)
+# Resolve DISK1/DISK2: reuse the disks already chosen for this run (state file)
 # if prepare_lab has already run, otherwise detect fresh.
 _lvm_load_disks() {
     if [[ -f "$STATE_FILE" ]]; then
         DISK1=$(sed -n '1p' "$STATE_FILE")
+        DISK2=$(sed -n '2p' "$STATE_FILE")
     else
         local spares=()
         while IFS= read -r d; do
             [[ -n "$d" ]] && spares+=("$d")
         done < <(_lvm_find_spare_disks)
         DISK1="${spares[0]:-<disk1>}"
+        DISK2="${spares[1]:-<disk2>}"
     fi
 }
 _lvm_load_disks
@@ -70,19 +88,19 @@ _lvm_load_disks
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="Create an LVM physical volume on ${DISK1} (do not use the disk that holds /)"
+TASK_1_QUESTION="Create a physical volume on the first available extra disk: ${DISK1} (not the disk that holds /)"
 TASK_1_HINT="Use pvcreate to initialize the disk as an LVM physical volume"
 TASK_1_COMMAND_1="pvcreate ${DISK1}"
 
 # Task 2
-TASK_2_QUESTION="Create a volume group named ${VG_NAME} from ${DISK1}"
-TASK_2_HINT="Use vgcreate to build a volume group on top of the physical volume"
-TASK_2_COMMAND_1="vgcreate ${VG_NAME} ${DISK1}"
+TASK_2_QUESTION="Create a volume group named ${VG_NAME} using ${DISK1} with a PE (physical extent) size of ${PE_SIZE}"
+TASK_2_HINT="Use vgcreate with --physicalextentsize to set a custom PE size"
+TASK_2_COMMAND_1="vgcreate --physicalextentsize ${PE_SIZE} ${VG_NAME} ${DISK1}"
 
 # Task 3
-TASK_3_QUESTION="Create a logical volume named ${LV_NAME} with a size of ${INITIAL_SIZE} in ${VG_NAME}"
-TASK_3_HINT="Use lvcreate with --name and --size"
-TASK_3_COMMAND_1="lvcreate --name ${LV_NAME} --size ${INITIAL_SIZE} ${VG_NAME}"
+TASK_3_QUESTION="Create a logical volume named ${LV_NAME} in ${VG_NAME} with an initial size of ${INITIAL_EXTENTS} extents"
+TASK_3_HINT="Use lvcreate with --extents to size the logical volume in extents instead of bytes"
+TASK_3_COMMAND_1="lvcreate --name ${LV_NAME} --extents ${INITIAL_EXTENTS} ${VG_NAME}"
 
 # Task 4
 TASK_4_QUESTION="Format /dev/${VG_NAME}/${LV_NAME} with the xfs file system"
@@ -98,9 +116,25 @@ TASK_5_COMMAND_3="systemctl daemon-reload"
 TASK_5_COMMAND_4="mount -a"
 
 # Task 6
-TASK_6_QUESTION="Expand ${LV_NAME} to use 100% of ${VG_NAME} and grow its file system to match, in one command"
-TASK_6_HINT="Use lvresize with --extents --size 100%VG so the file system is grown along with the logical volume"
-TASK_6_COMMAND_1="lvresize --extents 100%VG --resizefs /dev/${VG_NAME}/${LV_NAME}"
+TASK_6_QUESTION="Create a file named testfile inside ${MOUNT_POINT} to confirm the volume is functional"
+TASK_6_HINT="Use touch to create an empty file inside the mounted directory"
+TASK_6_COMMAND_1="touch ${TEST_FILE}"
+
+# Task 7
+TASK_7_QUESTION="Expand ${VG_NAME} by adding a new disk: create a physical volume on ${DISK2} and add it to the volume group"
+TASK_7_HINT="Use pvcreate on the new disk, then vgextend to add it to the existing volume group"
+TASK_7_COMMAND_1="pvcreate ${DISK2}"
+TASK_7_COMMAND_2="vgextend ${VG_NAME} ${DISK2}"
+
+# Task 8
+TASK_8_QUESTION="Resize ${LV_NAME} to add ${EXTEND_EXTENTS} extents, ensuring the file system is resized automatically, in one command"
+TASK_8_HINT="Use lvextend with --resizefs and --extents +${EXTEND_EXTENTS}"
+TASK_8_COMMAND_1="lvextend --resizefs --extents +${EXTEND_EXTENTS} /dev/${VG_NAME}/${LV_NAME}"
+
+# Task 9
+TASK_9_QUESTION="Extend ${LV_NAME} to use all remaining free space in ${VG_NAME}, resizing the file system accordingly, in one command"
+TASK_9_HINT="Use lvextend with --resizefs and --extents +100%FREE"
+TASK_9_COMMAND_1="lvextend --resizefs --extents +100%FREE /dev/${VG_NAME}/${LV_NAME}"
 
 # =============================================================================
 # TASK HELPER FUNCTIONS
@@ -160,17 +194,18 @@ HINT=$(_build_hint)
 # LAB IMPLEMENTATION
 # =============================================================================
 
-# Web UI only: verify 1 spare disk (>= 5G, not the root disk) exists before
-# starting. If not, the web UI shows this message and never starts the lab.
+# Web UI only: verify 2 spare disks (>= MIN_DISK_SIZE_GB, not the root disk)
+# exist before starting. If not, the web UI shows this message and never
+# starts the lab.
 check_prerequisites() {
     local spares=()
     while IFS= read -r d; do
         [[ -n "$d" ]] && spares+=("$d")
     done < <(_lvm_find_spare_disks)
 
-    if [[ ${#spares[@]} -lt 1 ]]; then
+    if [[ ${#spares[@]} -lt 2 ]]; then
         PREREQ_OK=false
-        PREREQ_MESSAGE="This lab needs at least 1 extra disk of 5 GB or more (not the disk that holds /). No matching disk was found on this machine. Add at least 1 disk of 5 GB+ and try again."
+        PREREQ_MESSAGE="This lab needs at least 2 extra disks of ${MIN_DISK_SIZE_GB} GB or more each (not the disk that holds /). Only ${#spares[@]} matching disk(s) were found on this machine. Add at least 2 disks of ${MIN_DISK_SIZE_GB} GB+ and try again."
         return
     fi
 
@@ -179,34 +214,36 @@ check_prerequisites() {
 
 # Prepare the lab environment
 prepare_lab() {
-    echo -e "  ${DIM}• Detecting a spare disk...${RESET}"
+    echo -e "  ${DIM}• Detecting spare disks...${RESET}"
     local spares=()
     while IFS= read -r d; do
         [[ -n "$d" ]] && spares+=("$d")
     done < <(_lvm_find_spare_disks)
 
-    if [[ ${#spares[@]} -lt 1 ]]; then
-        echo -e "  ${RED}✗ No spare disk found${RESET}"
+    if [[ ${#spares[@]} -lt 2 ]]; then
+        echo -e "  ${RED}✗ Not enough spare disks found (need 2 of ${MIN_DISK_SIZE_GB}G+, found ${#spares[@]})${RESET}"
         return
     fi
 
     DISK1="${spares[0]}"
-    printf '%s\n' "$DISK1" > "$STATE_FILE"
+    DISK2="${spares[1]}"
+    printf '%s\n%s\n' "$DISK1" "$DISK2" > "$STATE_FILE"
 
-    echo -e "  ${DIM}• Using ${DISK1} for this lab...${RESET}"
-    echo -e "  ${DIM}• Wiping any existing data on ${DISK1}...${RESET}"
+    echo -e "  ${DIM}• Using ${DISK1} for this lab (${DISK2} will be added to the VG later)...${RESET}"
+    echo -e "  ${DIM}• Wiping any existing data on ${DISK1} and ${DISK2}...${RESET}"
 
-    for part in "$DISK1"*; do
-        [[ -e "$part" ]] || continue
-        umount "$part" &>/dev/null || true
+    for d in "$DISK1" "$DISK2"; do
+        for part in "$d"*; do
+            [[ -e "$part" ]] || continue
+            umount "$part" &>/dev/null || true
+        done
+        for vg in $(pvs --noheadings -o vg_name "$d" 2>/dev/null | awk 'NF'); do
+            lvremove -f "$vg" &>/dev/null || true
+            vgremove -f "$vg" &>/dev/null || true
+        done
+        pvremove -ff -y "$d" &>/dev/null || true
+        wipefs -a "$d" &>/dev/null || true
     done
-
-    for vg in $(pvs --noheadings -o vg_name "$DISK1" 2>/dev/null | awk 'NF'); do
-        lvremove -f "$vg" &>/dev/null || true
-        vgremove -f "$vg" &>/dev/null || true
-    done
-    pvremove -ff -y "$DISK1" &>/dev/null || true
-    wipefs -a "$DISK1" &>/dev/null || true
 
     sleep 0.3
 }
@@ -215,18 +252,19 @@ prepare_lab() {
 check_tasks() {
     _lvm_load_disks
 
-    # Task 0: disk is an LVM physical volume
+    # Task 0: disk1 is an LVM physical volume
     if pvs "$DISK1" &>/dev/null; then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
     fi
 
-    # Task 1: volume group exists and contains the physical volume
+    # Task 1: volume group exists, contains disk1, and has the requested PE size
     if vgs "$VG_NAME" &>/dev/null; then
-        local vg1
+        local vg1 pe_bytes
         vg1=$(pvs -o vg_name --noheadings "$DISK1" 2>/dev/null | tr -d ' ')
-        if [[ "$vg1" == "$VG_NAME" ]]; then
+        pe_bytes=$(vgs --noheadings --units b --nosuffix -o vg_extent_size "$VG_NAME" 2>/dev/null | tr -d ' ')
+        if [[ "$vg1" == "$VG_NAME" ]] && [[ "$pe_bytes" == "$PE_SIZE_BYTES" ]]; then
             TASK_STATUS[1]="true"
         else
             TASK_STATUS[1]="false"
@@ -236,8 +274,8 @@ check_tasks() {
     fi
 
     # Task 2: logical volume exists and is at least the initial size
-    # (>= not == because task 5 expands it later - a strict equality check
-    # here would flip back to "incomplete" once the LV has been expanded)
+    # (>= not == because tasks 7/8 grow it later - a strict equality check
+    # here would flip back to "incomplete" once the LV has been extended)
     if lvs "${VG_NAME}/${LV_NAME}" &>/dev/null; then
         local lv_bytes
         lv_bytes=$(lvs --noheadings --units b --nosuffix -o lv_size "${VG_NAME}/${LV_NAME}" 2>/dev/null | tr -d ' ')
@@ -279,7 +317,50 @@ check_tasks() {
         TASK_STATUS[4]="false"
     fi
 
-    # Task 5: logical volume uses (close to) 100% of the volume group's total
+    # Task 5: testfile exists inside the mounted directory
+    if [[ -f "$TEST_FILE" ]]; then
+        TASK_STATUS[5]="true"
+    else
+        TASK_STATUS[5]="false"
+    fi
+
+    # Task 6: volume group has been expanded with a physical volume on disk2
+    if vgs "$VG_NAME" &>/dev/null; then
+        local vg2
+        vg2=$(pvs -o vg_name --noheadings "$DISK2" 2>/dev/null | tr -d ' ')
+        if pvs "$DISK2" &>/dev/null && [[ "$vg2" == "$VG_NAME" ]]; then
+            TASK_STATUS[6]="true"
+        else
+            TASK_STATUS[6]="false"
+        fi
+    else
+        TASK_STATUS[6]="false"
+    fi
+
+    # Task 7: logical volume is at least the extended size (100 + 100 extents)
+    # AND the file system was actually grown to use the new space
+    # (>= not == because task 9 grows it further to 100%FREE)
+    if lvs "${VG_NAME}/${LV_NAME}" &>/dev/null; then
+        local lv_bytes fs_blocks fs_bsize fs_bytes
+        lv_bytes=$(lvs --noheadings --units b --nosuffix -o lv_size "${VG_NAME}/${LV_NAME}" 2>/dev/null | tr -d ' ')
+        fs_blocks=$(stat -f --format=%b "$MOUNT_POINT" 2>/dev/null)
+        fs_bsize=$(stat -f --format=%S "$MOUNT_POINT" 2>/dev/null)
+        if [[ -n "$lv_bytes" ]] && [[ -n "$fs_blocks" ]] && [[ -n "$fs_bsize" ]] \
+            && (( lv_bytes >= AFTER_EXTEND_SIZE_BYTES )); then
+            fs_bytes=$((fs_blocks * fs_bsize))
+            if (( fs_bytes >= AFTER_EXTEND_SIZE_BYTES * 90 / 100 )); then
+                TASK_STATUS[7]="true"
+            else
+                TASK_STATUS[7]="false"
+            fi
+        else
+            TASK_STATUS[7]="false"
+        fi
+    else
+        TASK_STATUS[7]="false"
+    fi
+
+    # Task 8: logical volume uses (close to) 100% of the volume group's total
     # size AND the file system was actually grown to use the new space.
     # The exact byte target isn't fixed in advance - it depends on this
     # machine's actual disk size - so compare the LV to the VG dynamically.
@@ -293,19 +374,19 @@ check_tasks() {
             && (( vg_bytes - lv_bytes <= VG_SIZE_TOLERANCE_BYTES )); then
             fs_bytes=$((fs_blocks * fs_bsize))
             if (( fs_bytes >= lv_bytes * 90 / 100 )); then
-                TASK_STATUS[5]="true"
+                TASK_STATUS[8]="true"
             else
-                TASK_STATUS[5]="false"
+                TASK_STATUS[8]="false"
             fi
         else
-            TASK_STATUS[5]="false"
+            TASK_STATUS[8]="false"
         fi
     else
-        TASK_STATUS[5]="false"
+        TASK_STATUS[8]="false"
     fi
 }
 
-# Cleanup the lab environment before exit - leave the disk completely blank
+# Cleanup the lab environment before exit - leave the disks completely blank
 cleanup_lab() {
     echo -e "  ${DIM}• Cleaning up lab environment...${RESET}"
     _lvm_load_disks
@@ -321,10 +402,12 @@ cleanup_lab() {
     lvremove -f "$VG_NAME" &>/dev/null || true
     vgremove -f "$VG_NAME" &>/dev/null || true
 
-    if [[ -n "$DISK1" ]] && [[ "$DISK1" != "<disk1>" ]]; then
-        pvremove -ff -y "$DISK1" &>/dev/null || true
-        wipefs -a "$DISK1" &>/dev/null || true
-    fi
+    for d in "$DISK1" "$DISK2"; do
+        [[ -n "$d" ]] || continue
+        [[ "$d" == "<disk1>" || "$d" == "<disk2>" ]] && continue
+        pvremove -ff -y "$d" &>/dev/null || true
+        wipefs -a "$d" &>/dev/null || true
+    done
 
     rm -f "$STATE_FILE"
     echo -e "  ${GREEN}✓ Lab environment cleaned up${RESET}"

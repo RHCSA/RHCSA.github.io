@@ -23,19 +23,28 @@ VG_NAME="vg-to-resize"
 LV_NAME="lv-to-resize"
 INITIAL_SIZE="1234M"
 INITIAL_SIZE_BYTES=$((1234 * 1024 * 1024))
-TARGET_SIZE="2345M"
-TARGET_SIZE_BYTES=$((2345 * 1024 * 1024))
+TARGET_SIZE="2.9G"
+# 2.9 GiB isn't a whole number of bytes, and LVM rounds to the nearest extent
+# (default 4 MiB) - compare with a tolerance instead of requiring bit-exact equality
+TARGET_SIZE_BYTES=$((29 * 1024 * 1024 * 1024 / 10))
+TARGET_SIZE_TOLERANCE_BYTES=$((8 * 1024 * 1024))
 MOUNT_POINT="/resize-data"
 MIN_DISK_SIZE_GB=5
 
 # Whole disks that are safe to use: no existing partition table (a disk with
 # partitions is always OS/boot/manually-used data and must never be touched),
-# and >= MIN_DISK_SIZE_GB. A disk with only a stray leftover LVM signature and
-# no partitions still qualifies - prepare_lab wipes and reuses it.
+# nothing in the disk's device tree is mounted or used as swap (catches the
+# OS disk even when it's a bare whole-disk PV with no partition table, e.g.
+# /, /boot, swap, /home), and >= MIN_DISK_SIZE_GB. A disk with only a stray
+# leftover LVM signature and no partitions/mounts still qualifies - prepare_lab
+# wipes and reuses it.
 _lvm_find_spare_disks() {
     lsblk -dnb -o NAME,TYPE,SIZE 2>/dev/null | while read -r name type size; do
         [[ "$type" == "disk" ]] || continue
         if lsblk -n -o TYPE "/dev/$name" 2>/dev/null | grep -q '^part$'; then
+            continue
+        fi
+        if lsblk -n -o MOUNTPOINT "/dev/$name" 2>/dev/null | grep -qE '\S'; then
             continue
         fi
         local size_gb=$((size / 1024 / 1024 / 1024))
@@ -274,14 +283,17 @@ check_tasks() {
         TASK_STATUS[4]="false"
     fi
 
-    # Task 5: logical volume is EXACTLY the target size AND the file system
-    # was actually grown to use the new space (not just the LV metadata)
+    # Task 5: logical volume is EXACTLY the target size (within a tolerance,
+    # since 2.9G isn't a whole number of bytes / LVM extents) AND the file
+    # system was actually grown to use the new space (not just the LV metadata)
     if lvs "${VG_NAME}/${LV_NAME}" &>/dev/null; then
         local lv_bytes fs_blocks fs_bsize fs_bytes
         lv_bytes=$(lvs --noheadings --units b --nosuffix -o lv_size "${VG_NAME}/${LV_NAME}" 2>/dev/null | tr -d ' ')
         fs_blocks=$(stat -f --format=%b "$MOUNT_POINT" 2>/dev/null)
         fs_bsize=$(stat -f --format=%S "$MOUNT_POINT" 2>/dev/null)
-        if [[ "$lv_bytes" == "$TARGET_SIZE_BYTES" ]] && [[ -n "$fs_blocks" ]] && [[ -n "$fs_bsize" ]]; then
+        if [[ -n "$lv_bytes" ]] && [[ -n "$fs_blocks" ]] && [[ -n "$fs_bsize" ]] \
+            && (( lv_bytes >= TARGET_SIZE_BYTES - TARGET_SIZE_TOLERANCE_BYTES )) \
+            && (( lv_bytes <= TARGET_SIZE_BYTES + TARGET_SIZE_TOLERANCE_BYTES )); then
             fs_bytes=$((fs_blocks * fs_bsize))
             if (( fs_bytes >= TARGET_SIZE_BYTES * 90 / 100 )); then
                 TASK_STATUS[5]="true"

@@ -30,12 +30,18 @@ MIN_DISK_SIZE_GB=5
 
 # Whole disks that are safe to use: no existing partition table (a disk with
 # partitions is always OS/boot/manually-used data and must never be touched),
-# and >= MIN_DISK_SIZE_GB. A disk with only a stray leftover LVM signature and
-# no partitions still qualifies - prepare_lab wipes and reuses it.
+# nothing in the disk's device tree is mounted or used as swap (catches the
+# OS disk even when it's a bare whole-disk PV with no partition table, e.g.
+# /, /boot, swap, /home), and >= MIN_DISK_SIZE_GB. A disk with only a stray
+# leftover LVM signature and no partitions/mounts still qualifies - prepare_lab
+# wipes and reuses it.
 _lvm_find_spare_disks() {
     lsblk -dnb -o NAME,TYPE,SIZE 2>/dev/null | while read -r name type size; do
         [[ "$type" == "disk" ]] || continue
         if lsblk -n -o TYPE "/dev/$name" 2>/dev/null | grep -q '^part$'; then
+            continue
+        fi
+        if lsblk -n -o MOUNTPOINT "/dev/$name" 2>/dev/null | grep -qE '\S'; then
             continue
         fi
         local size_gb=$((size / 1024 / 1024 / 1024))
