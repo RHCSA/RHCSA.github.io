@@ -184,10 +184,15 @@ def parse_question_file(filepath):
         task_count_match = re.search(r'LAB_TASK_COUNT=(\d+)', content)
         task_count = int(task_count_match.group(1)) if task_count_match else 0
         
+        # Extract ANSWER (used by non-lab, plain Q&A questions only)
+        answer_match = re.search(r'ANSWER="([^"]*)"', content)
+        answer = answer_match.group(1) if answer_match else ""
+        
         return {
             'question': question,
             'is_lab': is_lab,
-            'task_count': task_count
+            'task_count': task_count,
+            'answer': answer
         }
     except Exception as e:
         print(f"Error parsing {filepath}: {e}")

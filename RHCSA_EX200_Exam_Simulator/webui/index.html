@@ -549,6 +549,14 @@
         }
         .btn-back.success:hover { background-color: #218838; }
 
+        /* Non-lab (plain Q&A) mode: hide lab-specific chrome, keep only the
+           question header and the Back button */
+        .lab-view.non-lab-mode .lab-tasks,
+        .lab-view.non-lab-mode .btn-hint,
+        .lab-view.non-lab-mode .btn-check {
+            display: none;
+        }
+
         /* ==================== WELCOME VIEW ==================== */
         .welcome-view {
             flex: 1;
@@ -594,6 +602,35 @@
         .terminal-view.active {
             display: flex;
             flex-direction: column;
+        }
+
+        /* ==================== ANSWER VIEW (non-lab questions) ==================== */
+        .answer-view {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 25px;
+            background-color: #121212;
+        }
+
+        .answer-view.active {
+            display: flex;
+        }
+
+        .answer-view .answer-label {
+            color: #888;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .answer-view .answer-text {
+            color: #eaeaea;
+            font-size: 1em;
+            line-height: 1.6;
+            white-space: pre-wrap;
         }
 
         /* Tab bar - only shown when a lab defines more than one terminal (prepare_lab_2, prepare_lab_3, ...) */
@@ -870,7 +907,7 @@
                 
                 <!-- Fixed Control Buttons -->
                 <div class="lab-controls" id="labControls">
-                    <button class="lab-btn btn-back" id="backBtn" onclick="exitLab()">
+                    <button class="lab-btn btn-back" id="backBtn" onclick="handleBackClick()">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                         </svg>
@@ -924,6 +961,12 @@
                 <div class="terminal-tabs" id="terminalTabs"></div>
                 <iframe id="terminalFrame" src=""></iframe>
             </div>
+
+            <!-- Answer View (Full Panel for non-lab, plain Q&A questions) -->
+            <div class="answer-view" id="answerView">
+                <div class="answer-label">Answer</div>
+                <div class="answer-text" id="answerText"></div>
+            </div>
         </div>
     </div>
 
@@ -943,6 +986,7 @@
         let hintVisible = false;
         let labHints = [];  // Stores hint data for each task
         let allTasksComplete = false;
+        let questionsData = {};  // Cached question metadata (incl. answer/is_lab), keyed by file
 
         // SVG Icons
         const icons = {
@@ -1229,7 +1273,9 @@
             try {
                 const response = await fetch(`${API_BASE}/questions/${objId}`);
                 if (response.ok) {
-                    return await response.json();
+                    const data = await response.json();
+                    data.forEach(q => { questionsData[q.file] = q; });
+                    return data;
                 }
             } catch (e) {
                 console.error('Error fetching questions:', e);
@@ -1343,6 +1389,32 @@
 
         // Select a question/lab
         async function selectQuestion(objId, idx, file) {
+            const qData = questionsData[file];
+            if (qData && qData.is_lab === false) {
+                // Clean up any previous real lab first. Normally unreachable
+                // since the menu is hidden while a lab is active, but this is
+                // a cheap safety net against leaving a container/tmux window
+                // running if this is ever invoked in an unexpected state.
+                if (currentLab) {
+                    try {
+                        await fetch(`${API_BASE}/lab/exit`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                objective: currentLab.objId,
+                                index: currentLab.idx,
+                                file: currentLab.file
+                            })
+                        });
+                    } catch (e) {
+                        console.warn('Failed to cleanup previous lab:', e);
+                    }
+                    currentLab = null;
+                }
+                showAnswerInterface(qData);
+                return;
+            }
+
             showLoading();
             
             try {
@@ -1427,10 +1499,12 @@
             // Switch left panel from menu to lab view
             document.getElementById('menuView').classList.add('hidden');
             document.getElementById('labView').classList.add('active');
+            document.getElementById('labView').classList.remove('non-lab-mode');
             
             // Switch right panel from welcome to terminal
             document.getElementById('welcomeView').classList.add('hidden');
             document.getElementById('terminalView').classList.add('active');
+            document.getElementById('answerView').classList.remove('active');
             
             // Populate lab content
             document.getElementById('labQuestion').textContent = labData.question;
@@ -1697,6 +1771,41 @@
                         }, 2000);
                     }
                 } catch (e2) {}
+            }
+        }
+
+        // Show a plain question+answer view (non-lab questions) - no
+        // terminal, no prepare_lab/check_tasks calls at all
+        function showAnswerInterface(qData) {
+            document.getElementById('menuView').classList.add('hidden');
+            document.getElementById('labView').classList.add('active');
+            document.getElementById('labView').classList.add('non-lab-mode');
+
+            document.getElementById('welcomeView').classList.add('hidden');
+            document.getElementById('answerView').classList.add('active');
+
+            document.getElementById('labQuestion').textContent = qData.question;
+            document.getElementById('answerText').textContent = qData.answer || 'No answer provided yet.';
+        }
+
+        // Back button behavior for the plain-answer view (currentLab is
+        // never set for these, so exitLab() would just no-op if reused here)
+        function backToMenuFromAnswer() {
+            document.getElementById('labView').classList.remove('active');
+            document.getElementById('labView').classList.remove('non-lab-mode');
+            document.getElementById('menuView').classList.remove('hidden');
+
+            document.getElementById('answerView').classList.remove('active');
+            document.getElementById('welcomeView').classList.remove('hidden');
+        }
+
+        // The single Back button serves both real labs and plain-answer
+        // questions - dispatch based on which one is currently showing
+        function handleBackClick() {
+            if (currentLab) {
+                exitLab();
+            } else {
+                backToMenuFromAnswer();
             }
         }
 

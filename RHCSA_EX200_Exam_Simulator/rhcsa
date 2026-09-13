@@ -1156,8 +1156,8 @@ display_question() {
         return
     fi
     
-    local hint="${LOADED_HINTS[$q_idx]}"
-    local show_hint=false
+    local answer="${LOADED_ANSWERS[$q_idx]}"
+    local show_answer=false
     local term_width=$(tput cols)
     local box_width=$((term_width - 8))
     
@@ -1175,9 +1175,9 @@ display_question() {
         
         echo ""
         
-        # Show hint/answer if requested
-        if $show_hint; then
-            draw_box "💡 ANSWER" "$hint" "${GREEN}"
+        # Show answer if requested
+        if $show_answer; then
+            draw_box "💡 ANSWER" "$answer" "${GREEN}"
             echo ""
         else
             # Prompt to reveal answer
@@ -1210,7 +1210,7 @@ display_question() {
         local key=$(read_key)
         case "$key" in
             "HINT"|"ENTER")
-                show_hint=true
+                show_answer=true
                 ;;
             "ESC"|"BACKSPACE")
                 return

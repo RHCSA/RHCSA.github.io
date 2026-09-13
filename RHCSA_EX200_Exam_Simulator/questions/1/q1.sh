@@ -4,4 +4,3 @@
 
 QUESTION="What command shows the current working directory?"
 ANSWER="pwd - Print Working Directory"
-HINT="This is a basic navigation command. Think about what 'pwd' stands for."
