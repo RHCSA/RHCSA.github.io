@@ -23,6 +23,57 @@ QUESTIONS_DIR = "/usr/local/share/rhcsa/questions"
 PROGRESS_FILE = "/usr/local/share/rhcsa/.progress"
 WEBUI_DIR = "/usr/local/share/rhcsa/webui"
 
+# Shared TASK_* helper functions every lab file relies on (get_task_description,
+# get_task_commands, _build_hint). The rhcsa CLI defines these once itself and
+# lab files inherit them for free when sourced from within it - but the web UI
+# sources lab files in their own isolated bash process, so we must provide the
+# exact same definitions here or these calls silently fail (empty output),
+# which then overwrites perfectly good static task text with blanks.
+TASK_HELPER_FUNCTIONS_BASH = '''
+get_task_description() {
+    local task_idx=$1
+    local task_num=$((task_idx + 1))
+    local var_name="TASK_${task_num}_QUESTION"
+    echo "${!var_name}"
+}
+
+get_task_commands() {
+    local task_idx=$1
+    local task_num=$((task_idx + 1))
+    local result=""
+    for i in 1 2 3 4 5; do
+        local var_name="TASK_${task_num}_COMMAND_${i}"
+        local cmd="${!var_name}"
+        if [[ -n "$cmd" ]]; then
+            if [[ -n "$result" ]]; then
+                result+=$'\\n'
+            fi
+            result+="$cmd"
+        fi
+    done
+    echo "$result"
+}
+
+_build_hint() {
+    local result=""
+    for ((i=0; i<LAB_TASK_COUNT; i++)); do
+        local task_num=$((i+1))
+        local cmds=$(get_task_commands $i)
+        if [[ -n "$cmds" ]]; then
+            while IFS= read -r cmd; do
+                if [[ -n "$cmd" ]]; then
+                    if [[ -n "$result" ]]; then
+                        result+=$'\\n'
+                    fi
+                    result+="Task ${task_num}: ${cmd}"
+                fi
+            done <<< "$cmds"
+        fi
+    done
+    echo "$result"
+}
+'''
+
 class RHCSAAPIHandler(SimpleHTTPRequestHandler):
     """Custom HTTP handler for RHCSA API"""
     
@@ -426,6 +477,8 @@ RESET=$'\\e[0m'
 DIM="\\033[2m"
 GREEN="\\033[32m"
 
+{TASK_HELPER_FUNCTIONS_BASH}
+
 source "$1"
 {function_name}
 '''
@@ -443,6 +496,8 @@ DIM="\\033[2m"
 GREEN="\\033[32m"
 RED="\\033[31m"
 YELLOW="\\033[33m"
+
+{TASK_HELPER_FUNCTIONS_BASH}
 
 source "$1"
 {script_body}
@@ -519,12 +574,17 @@ def resolve_dynamic_lab_data(filepath, lab_data):
         m = re.match(r'^RHCSA_TASK_(\d+):(.*)$', line)
         if m:
             idx = int(m.group(1)) - 1
-            if 0 <= idx < len(tasks):
+            # Never overwrite good static text with a blank - if the bash call
+            # produced nothing (missing helper function, etc.) keep what the
+            # regex parser already found instead of blanking the task out.
+            if 0 <= idx < len(tasks) and m.group(2):
                 tasks[idx] = m.group(2)
             continue
         m = re.match(r'^RHCSA_CMD_(\d+)_(\d+):(.*)$', line)
         if m:
             ti, tj, val = int(m.group(1)), int(m.group(2)), m.group(3)
+            if not val:
+                continue
             for entry in commands:
                 if entry['task'] == ti and entry['cmd_index'] == tj:
                     entry['command'] = val
