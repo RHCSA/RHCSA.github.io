@@ -30,24 +30,24 @@ TASK_1_HINT="dnf install flatpak -y installs the Flatpak package manager itself"
 TASK_1_COMMAND_1="dnf install flatpak -y"
 
 # Task 2
-TASK_2_QUESTION="List the currently configured Flatpak remotes, and redirect the output into /root/remotes_list.txt instead of the screen"
-TASK_2_HINT="flatpak remotes lists every repository Flatpak currently knows about; there may be none yet at this point"
-TASK_2_COMMAND_1="flatpak remotes > /root/remotes_list.txt"
+TASK_2_QUESTION="Add the Flathub repository as a system-wide remote"
+TASK_2_HINT="flatpak remote-add --if-not-exists flathub followed by its repo URL registers Flathub for every user on this machine; --if-not-exists avoids an error if it is already configured"
+TASK_2_COMMAND_1="flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
 
 # Task 3
-TASK_3_QUESTION="Add the Flathub repository as a system-wide remote"
-TASK_3_HINT="flatpak remote-add --if-not-exists flathub followed by its repo URL registers Flathub for every user on this machine; --if-not-exists avoids an error if it is already configured"
-TASK_3_COMMAND_1="flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
+TASK_3_QUESTION="Add the Flathub repository again, this time as a remote for only the current user"
+TASK_3_HINT="adding --user registers the remote for just the current user's account, separately from the system-wide copy"
+TASK_3_COMMAND_1="flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
 
 # Task 4
-TASK_4_QUESTION="Add the Flathub repository again, this time as a remote for only the current user"
-TASK_4_HINT="adding --user registers the remote for just the current user's account, separately from the system-wide copy"
-TASK_4_COMMAND_1="flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo"
+TASK_4_QUESTION="List the currently configured Flatpak remotes, and redirect the output into /root/remotes_list.txt instead of the screen"
+TASK_4_HINT="flatpak remotes lists every repository Flatpak currently knows about - it should now show flathub registered twice (system and user)"
+TASK_4_COMMAND_1="flatpak remotes > /root/remotes_list.txt"
 
 # Task 5
 TASK_5_QUESTION="List the applications available from the Flathub remote, and redirect the output into /root/flathub_apps.txt instead of the screen"
-TASK_5_HINT="flatpak remote-ls flathub lists every application Flathub offers"
-TASK_5_COMMAND_1="flatpak remote-ls flathub > /root/flathub_apps.txt"
+TASK_5_HINT="flathub is now registered in both the system and user installations, so flatpak remote-ls needs --system or --user to say which one to read from"
+TASK_5_COMMAND_1="flatpak remote-ls --system flathub > /root/flathub_apps.txt"
 
 # Task 6
 TASK_6_QUESTION="Search Flathub for applications related to 'editor', and redirect the output into /root/search_editor.txt instead of the screen"
@@ -56,8 +56,8 @@ TASK_6_COMMAND_1="flatpak search editor > /root/search_editor.txt"
 
 # Task 7
 TASK_7_QUESTION="Install Firefox from Flathub, then confirm it with flatpak info org.mozilla.firefox"
-TASK_7_HINT="flatpak install -y flathub org.mozilla.firefox installs that application from the named remote; flatpak info shows its details once installed"
-TASK_7_COMMAND_1="flatpak install -y flathub org.mozilla.firefox"
+TASK_7_HINT="flathub is registered in both installations, so flatpak install also needs --system or --user to say which one to install into; flatpak info shows its details once installed"
+TASK_7_COMMAND_1="flatpak install -y --system flathub org.mozilla.firefox"
 
 # Task 8
 TASK_8_QUESTION="Update every installed Flatpak application"
@@ -97,28 +97,28 @@ check_tasks() {
         TASK_STATUS[0]="false"
     fi
 
-    # Task 1: remotes listing redirected into a file matching a fresh
-    # listing taken right now (may legitimately be empty at this point, so
-    # this compares against a live re-run instead of requiring non-empty)
-    local real_remotes file_remotes
-    real_remotes=$(docker exec "$CONTAINER_NAME" flatpak remotes 2>/dev/null)
-    file_remotes=$(docker exec "$CONTAINER_NAME" cat /root/remotes_list.txt 2>/dev/null)
-    if docker exec "$CONTAINER_NAME" test -f /root/remotes_list.txt &>/dev/null \
-        && [[ "$file_remotes" == "$real_remotes" ]]; then
+    # Task 1: flathub registered as a system-wide remote
+    if docker exec "$CONTAINER_NAME" flatpak remotes --system 2>/dev/null | grep -qw flathub; then
         TASK_STATUS[1]="true"
     else
         TASK_STATUS[1]="false"
     fi
 
-    # Task 2: flathub registered as a system-wide remote
-    if docker exec "$CONTAINER_NAME" flatpak remotes --system 2>/dev/null | grep -qw flathub; then
+    # Task 2: flathub registered as a user-wide remote too
+    if docker exec "$CONTAINER_NAME" flatpak remotes --user 2>/dev/null | grep -qw flathub; then
         TASK_STATUS[2]="true"
     else
         TASK_STATUS[2]="false"
     fi
 
-    # Task 3: flathub registered as a user-wide remote too
-    if docker exec "$CONTAINER_NAME" flatpak remotes --user 2>/dev/null | grep -qw flathub; then
+    # Task 3: remotes listing redirected into a file matching a fresh
+    # listing taken right now (compares against a live re-run rather than
+    # requiring specific content, since the exact remotes present can vary)
+    local real_remotes file_remotes
+    real_remotes=$(docker exec "$CONTAINER_NAME" flatpak remotes 2>/dev/null)
+    file_remotes=$(docker exec "$CONTAINER_NAME" cat /root/remotes_list.txt 2>/dev/null)
+    if docker exec "$CONTAINER_NAME" test -f /root/remotes_list.txt &>/dev/null \
+        && [[ "$file_remotes" == "$real_remotes" ]]; then
         TASK_STATUS[3]="true"
     else
         TASK_STATUS[3]="false"

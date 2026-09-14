@@ -560,12 +560,23 @@ def resolve_dynamic_lab_data(filepath, lab_data):
     if task_count <= 0 and not commands:
         return
 
+    # Task text/commands can legitimately contain embedded newlines (e.g. a
+    # heredoc command). Since results are read back one bash-echoed line at a
+    # time, encode real newlines as a placeholder before echoing so a
+    # multi-line value doesn't get split across several unrelated lines and
+    # silently truncated to just its first line.
     script_lines = []
     for i in range(1, task_count + 1):
-        script_lines.append(f'echo "RHCSA_TASK_{i}:$(get_task_description {i - 1} 2>/dev/null)"')
+        script_lines.append(
+            f'__d="$(get_task_description {i - 1} 2>/dev/null)"; '
+            f'echo "RHCSA_TASK_{i}:${{__d//$\'\\n\'/@@RHCSA_NL@@}}"'
+        )
     for entry in commands:
         i, j = entry['task'], entry['cmd_index']
-        script_lines.append(f'__v="TASK_{i}_COMMAND_{j}"; echo "RHCSA_CMD_{i}_{j}:${{!__v}}"')
+        script_lines.append(
+            f'__v="TASK_{i}_COMMAND_{j}"; __c="${{!__v}}"; '
+            f'echo "RHCSA_CMD_{i}_{j}:${{__c//$\'\\n\'/@@RHCSA_NL@@}}"'
+        )
 
     stdout = run_bash_capture(filepath, '\n'.join(script_lines), timeout=15)
 
@@ -574,15 +585,17 @@ def resolve_dynamic_lab_data(filepath, lab_data):
         m = re.match(r'^RHCSA_TASK_(\d+):(.*)$', line)
         if m:
             idx = int(m.group(1)) - 1
+            text = m.group(2).replace('@@RHCSA_NL@@', '\n')
             # Never overwrite good static text with a blank - if the bash call
             # produced nothing (missing helper function, etc.) keep what the
             # regex parser already found instead of blanking the task out.
-            if 0 <= idx < len(tasks) and m.group(2):
-                tasks[idx] = m.group(2)
+            if 0 <= idx < len(tasks) and text:
+                tasks[idx] = text
             continue
         m = re.match(r'^RHCSA_CMD_(\d+)_(\d+):(.*)$', line)
         if m:
-            ti, tj, val = int(m.group(1)), int(m.group(2)), m.group(3)
+            ti, tj = int(m.group(1)), int(m.group(2))
+            val = m.group(3).replace('@@RHCSA_NL@@', '\n')
             if not val:
                 continue
             for entry in commands:

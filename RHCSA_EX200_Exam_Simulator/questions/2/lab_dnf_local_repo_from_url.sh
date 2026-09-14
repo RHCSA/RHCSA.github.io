@@ -6,6 +6,11 @@
 # note this is `repo info`, not `repo list`; only `info` includes those
 # fields) rather than looking for one specific repo ID or file, so a manual
 # /etc/yum.repos.d/*.repo file OR `dnf config-manager` both pass equally.
+# NOTE: TASK_1/2 use a manual repo file rather than `dnf config-manager
+# addrepo --set=...` - live testing showed dnf5's config-manager on this
+# system treats --set= as ambiguous with --setopt/--set-enabled/--set-disabled
+# ("Command line error: ambiguous option"), so the manual file is the
+# reliable option here.
 # NOTE: this lab needs real internet access to pkgs.k8s.io - unlike the
 # ISO-based local repo lab, it is not self-contained offline.
 # NOTE: repo ID/URLs verified live against kubernetes.io on 2026-09-10. If a
@@ -27,13 +32,20 @@ LAB_TASK_COUNT=4
 
 # Task 1
 TASK_1_QUESTION="Add a new DNF repository for Kubernetes using this base URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/ - enable the repository, but leave GPG checking off for now"
-TASK_1_HINT="dnf config-manager addrepo --id=kubernetes --set=baseurl=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/ --set=gpgcheck=0 creates and enables the repository in one command. Writing a file under /etc/yum.repos.d/ by hand with baseurl, enabled=1, and gpgcheck=0 works the same way"
-TASK_1_COMMAND_1="dnf config-manager addrepo --id=kubernetes --set=baseurl=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/ --set=gpgcheck=0"
+TASK_1_HINT="Create a file under /etc/yum.repos.d/ (e.g. kubernetes.repo) with a section containing baseurl, enabled=1, and gpgcheck=0"
+TASK_1_COMMAND_1="cat > /etc/yum.repos.d/kubernetes.repo << 'EOF'
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/
+enabled=1
+gpgcheck=0
+EOF"
 
 # Task 2
 TASK_2_QUESTION="Using this GPG key URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key - turn gpgcheck on for the Kubernetes repository and point it at that key"
-TASK_2_HINT="dnf config-manager setopt lets you change an existing repository's options, such as kubernetes.gpgcheck=1 and kubernetes.gpgkey=<url>, without recreating the whole repository"
-TASK_2_COMMAND_1="dnf config-manager setopt kubernetes.gpgcheck=1 kubernetes.gpgkey=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key"
+TASK_2_HINT="Edit the kubernetes.repo file: change gpgcheck to 1, and add a gpgkey= line pointing at the key URL"
+TASK_2_COMMAND_1="sed -i 's/^gpgcheck=0/gpgcheck=1/' /etc/yum.repos.d/kubernetes.repo"
+TASK_2_COMMAND_2="echo 'gpgkey=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key' >> /etc/yum.repos.d/kubernetes.repo"
 
 # Task 3
 TASK_3_QUESTION="Install kubectl using the Kubernetes repository, proving that the repository and its GPG key are both configured correctly"
@@ -42,8 +54,9 @@ TASK_3_COMMAND_1="dnf install -y kubectl"
 
 # Task 4
 TASK_4_QUESTION="Disable the Kubernetes repository, then confirm it is gone from dnf repolist --enabled"
-TASK_4_HINT="dnf config-manager --disable kubernetes turns the repository off without deleting its configuration; --enabled only lists repositories that are still active"
-TASK_4_COMMAND_1="dnf repolist --enabled"
+TASK_4_HINT="Set enabled=0 in the repo file; --enabled only lists repositories that are still active"
+TASK_4_COMMAND_1="sed -i 's/^enabled=1/enabled=0/' /etc/yum.repos.d/kubernetes.repo"
+TASK_4_COMMAND_2="dnf repolist --enabled"
 
 # Auto-generate HINT from commands
 HINT=$(_build_hint)

@@ -64,14 +64,19 @@ check_tasks() {
         TASK_STATUS[0]="false"
     fi
 
-    # Task 1: httpd's dependency list was redirected into a file matching a
-    # fresh query taken right now (sorted on both sides so line order can't
-    # cause a false mismatch)
-    local real_deps file_deps
-    real_deps=$(docker exec "$CONTAINER_NAME" rpm -qR httpd 2>/dev/null | sort)
-    file_deps=$(docker exec "$CONTAINER_NAME" sort /root/httpd_deps.txt 2>/dev/null)
-    if [[ -n "$real_deps" ]] && [[ "$file_deps" == "$real_deps" ]]; then
-        TASK_STATUS[1]="true"
+    # Task 1: httpd's dependency list was redirected into a real file that
+    # looks like actual rpm -qR httpd output. This checks for stable,
+    # well-known dependency markers rather than an exact match against a
+    # live re-run, since duplicate/ordering details in rpm's own dependency
+    # list are not guaranteed to be identical between two separate queries.
+    if docker exec "$CONTAINER_NAME" test -s /root/httpd_deps.txt &>/dev/null; then
+        local content
+        content=$(docker exec "$CONTAINER_NAME" cat /root/httpd_deps.txt 2>/dev/null)
+        if echo "$content" | grep -q 'httpd-core' && echo "$content" | grep -qi 'libc\.so'; then
+            TASK_STATUS[1]="true"
+        else
+            TASK_STATUS[1]="false"
+        fi
     else
         TASK_STATUS[1]="false"
     fi
