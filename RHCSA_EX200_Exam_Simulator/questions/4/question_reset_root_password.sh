@@ -8,6 +8,7 @@
 # Question/Answer entry (QUESTION + ANSWER only, no HINT needed).
 
 QUESTION="You forgot the root password. Reset it without reinstalling the system."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 ANSWER="1. Reboot the system.
 2. At the GRUB menu, press the 'e' key to edit the default entry.
 3. Find the line that starts with 'linux' (or 'linuxefi' on UEFI systems).

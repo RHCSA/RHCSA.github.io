@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="sudo_wheel_group"
 
 QUESTION="Add user to wheel group for sudo access"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

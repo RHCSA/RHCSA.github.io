@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="directory_backup"
 
 QUESTION="Create a nested directory structure, a dated backup file with system info, and multiple files"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

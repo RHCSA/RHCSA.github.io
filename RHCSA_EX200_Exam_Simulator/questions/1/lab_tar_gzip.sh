@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="tar_gzip"
 
 QUESTION="Create a gzip compressed tar archive"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="soft_links"
 
 QUESTION="Create symbolic links to files and directories"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

@@ -8,6 +8,7 @@ IS_LAB=true
 LAB_ID="script_file_state_tests"
 
 QUESTION="Write a script that reports whether a file is executable, writable, and non-empty."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

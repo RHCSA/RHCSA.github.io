@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_tr_case_conversion"
 
 QUESTION="Write a script that converts input text to lowercase using tr."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

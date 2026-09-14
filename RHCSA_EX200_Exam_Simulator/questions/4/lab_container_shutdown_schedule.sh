@@ -33,6 +33,7 @@ IS_LAB=true
 LAB_ID="container_shutdown_schedule"
 
 QUESTION="Schedule a system reboot, then reschedule it for a specific time."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

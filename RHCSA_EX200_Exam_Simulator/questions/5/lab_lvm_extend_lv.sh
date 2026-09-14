@@ -9,6 +9,7 @@ IS_LAB=true
 LAB_ID="lvm_extend_lv"
 
 QUESTION="Create a logical volume, format and mount it, then extend it by 500M and grow its file system to match"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TITLE="LVM: Extend a Logical Volume (+500M)"

@@ -8,6 +8,7 @@
 # HINT needed).
 
 QUESTION="A bad /etc/fstab entry for /data is stopping the system from booting. Fix it from emergency mode."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 ANSWER="1. At the GRUB menu, press the 'e' key to edit the entry.
 2. Find the line that starts with 'linux'.
 3. Add this to the end of the line: systemd.unit=emergency.target

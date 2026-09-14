@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_numeric_comparison"
 
 QUESTION="Write a script that compares a number to 10 using all six numeric test operators."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="pipes_filtering"
 
 QUESTION="Use pipes to filter and process command output"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

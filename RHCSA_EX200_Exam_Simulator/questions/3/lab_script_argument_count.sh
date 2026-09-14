@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_argument_count"
 
 QUESTION="Write a script that prints the total number of arguments it receives."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

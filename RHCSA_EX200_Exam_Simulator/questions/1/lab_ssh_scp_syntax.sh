@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="ssh_scp_transfer"
 
 QUESTION="File transfer to/from a server using SCP"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

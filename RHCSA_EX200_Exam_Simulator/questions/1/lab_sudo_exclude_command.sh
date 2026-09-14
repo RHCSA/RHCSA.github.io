@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="sudo_exclude_command"
 
 QUESTION="Configure sudo to allow all commands except specific ones"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

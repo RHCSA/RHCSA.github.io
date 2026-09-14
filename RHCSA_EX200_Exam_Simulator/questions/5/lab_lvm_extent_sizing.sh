@@ -16,6 +16,7 @@ IS_LAB=true
 LAB_ID="lvm_extent_sizing"
 
 QUESTION="Create an LVM volume group with a custom PE (physical extent) size, size a logical volume in extents, then grow it - first by a fixed extent count, then to use all remaining free space"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TITLE="LVM: PE Size and Extent-Based Sizing"

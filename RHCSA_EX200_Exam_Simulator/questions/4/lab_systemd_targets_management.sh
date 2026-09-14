@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="systemd_targets_management"
 
 QUESTION="List, inspect, and change systemd targets on this host"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

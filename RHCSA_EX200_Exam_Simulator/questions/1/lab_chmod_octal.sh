@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="chmod_octal"
 
 QUESTION="Set file permissions using octal (numeric) notation"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

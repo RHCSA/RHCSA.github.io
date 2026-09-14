@@ -6,6 +6,7 @@ IS_LAB=true
 LAB_ID="usr_share_doc"
 
 QUESTION="Find and explore package documentation in /usr/share/doc"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 LAB_TASK_COUNT=3
 

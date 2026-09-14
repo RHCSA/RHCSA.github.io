@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_while_count_to_5"
 
 QUESTION="Write a script that prints the numbers 1 through 5, each on its own line, using a while loop."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

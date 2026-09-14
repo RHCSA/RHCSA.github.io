@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="sudoers_dropin"
 
 QUESTION="Create a sudoers drop-in configuration file for a group"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_count_lines_per_file"
 
 QUESTION="Write a script that prints the line count of every file in the current directory."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

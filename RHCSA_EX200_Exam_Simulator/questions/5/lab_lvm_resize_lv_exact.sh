@@ -9,6 +9,7 @@ IS_LAB=true
 LAB_ID="lvm_resize_lv_exact"
 
 QUESTION="Create a logical volume, format and mount it, then resize it to an EXACT size and grow its file system to match"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TITLE="LVM: Resize a Logical Volume to an Exact Size"

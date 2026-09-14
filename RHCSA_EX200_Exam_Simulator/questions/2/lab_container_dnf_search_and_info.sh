@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="container_dnf_search_and_info"
 
 QUESTION="Search for, inspect, count, and update packages using dnf."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

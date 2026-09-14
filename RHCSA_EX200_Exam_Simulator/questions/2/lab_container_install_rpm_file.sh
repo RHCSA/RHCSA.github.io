@@ -14,6 +14,7 @@ IS_LAB=true
 LAB_ID="container_install_rpm_file"
 
 QUESTION="Install RPM packages from a local file and directly from a URL using dnf."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

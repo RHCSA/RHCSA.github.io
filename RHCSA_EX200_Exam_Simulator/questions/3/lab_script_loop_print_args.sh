@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_loop_print_args"
 
 QUESTION="Write a script that prints each of its arguments on its own line using a for loop, then prints its own name (print the script name)."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

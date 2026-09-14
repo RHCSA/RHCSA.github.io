@@ -7,6 +7,7 @@
 # entry (QUESTION + ANSWER only, no HINT needed).
 
 QUESTION="Reset the root password using the init=/bin/bash method."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 ANSWER="1. At the GRUB menu, press the 'e' key to edit the entry.
 2. Find the line that starts with 'linux'.
 3. Replace ro with rw, and add this to the end of the line: init=/bin/bash

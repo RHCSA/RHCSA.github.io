@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_return_codes"
 
 QUESTION="Write a script that checks a command's exit status to decide if it succeeded."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

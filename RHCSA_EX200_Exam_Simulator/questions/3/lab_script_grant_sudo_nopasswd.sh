@@ -8,6 +8,7 @@ IS_LAB=true
 LAB_ID="script_grant_sudo_nopasswd"
 
 QUESTION="Write a script that grants user Sam full, passwordless sudo access."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

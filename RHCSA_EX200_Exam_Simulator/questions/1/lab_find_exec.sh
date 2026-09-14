@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="find_exec"
 
 QUESTION="Use find -exec to perform actions on found files (chmod, cp, delete)"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=5

@@ -13,6 +13,7 @@ IS_LAB=true
 LAB_ID="container_install_httpd"
 
 QUESTION="Install httpd using dnf, then list its dependencies."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

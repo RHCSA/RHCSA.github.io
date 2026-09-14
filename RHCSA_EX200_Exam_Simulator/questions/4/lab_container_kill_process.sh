@@ -17,6 +17,7 @@ IS_LAB=true
 LAB_ID="container_kill_process"
 
 QUESTION="Kill processes inside a container: by PID, by owning user, and by name"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

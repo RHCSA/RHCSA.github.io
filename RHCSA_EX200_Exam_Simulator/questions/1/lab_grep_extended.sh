@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="grep_extended"
 
 QUESTION="Use grep -E (extended regex) for advanced pattern matching"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

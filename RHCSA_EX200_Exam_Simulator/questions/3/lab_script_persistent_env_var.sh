@@ -13,6 +13,7 @@ IS_LAB=true
 LAB_ID="script_persistent_env_var"
 
 QUESTION="Permanently set an environment variable for every new shell."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

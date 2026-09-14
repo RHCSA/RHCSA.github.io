@@ -6,6 +6,7 @@ IS_LAB=true
 LAB_ID="suid_sgid_display"
 
 QUESTION="Practice SUID/SGID with correct s/S display (lowercase s needs execute permission)"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 LAB_TASK_COUNT=6
 

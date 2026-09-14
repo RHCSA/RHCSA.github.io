@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="environment_variable"
 
 QUESTION="Create a persistent environment variable COMPANY with value 'RedHat' for all users"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

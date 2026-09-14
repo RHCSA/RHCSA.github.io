@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="hard_links"
 
 QUESTION="Create hard links and verify they share the same inode"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

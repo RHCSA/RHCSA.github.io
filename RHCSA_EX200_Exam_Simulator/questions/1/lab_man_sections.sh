@@ -6,6 +6,7 @@ IS_LAB=true
 LAB_ID="man_sections"
 
 QUESTION="Use man page sections to find command docs vs config file docs"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 LAB_TASK_COUNT=3
 

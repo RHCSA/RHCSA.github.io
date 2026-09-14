@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="ssh_authorized_keys"
 
 QUESTION="Set up authorized_keys for SSH key authentication"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

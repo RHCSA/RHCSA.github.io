@@ -6,6 +6,7 @@ IS_LAB=true
 LAB_ID="script_test_bracket_file_tests"
 
 QUESTION="Write a script that checks if a path is a directory using test -d or [ -d ]."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

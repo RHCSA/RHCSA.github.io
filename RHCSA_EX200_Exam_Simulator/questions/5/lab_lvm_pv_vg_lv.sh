@@ -9,6 +9,7 @@ IS_LAB=true
 LAB_ID="lvm_pv_vg_lv"
 
 QUESTION="Set up LVM storage: create physical volumes, a volume group, and a logical volume with an EXACT size; format it and mount it permanently"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TITLE="LVM: Physical Volumes, Volume Group, and Logical Volume"

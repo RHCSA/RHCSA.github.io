@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_custom_exit_codes"
 
 QUESTION="Write a script that exits with different custom status codes based on a condition."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

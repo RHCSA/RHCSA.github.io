@@ -14,6 +14,7 @@ IS_LAB=true
 LAB_ID="script_background_ping_servers"
 
 QUESTION="Write a script that uses a for loop to ping three different servers at the same time in the background."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

@@ -16,6 +16,7 @@ IS_LAB=true
 LAB_ID="container_flatpak_setup"
 
 QUESTION="Install Flatpak, add the Flathub repository, and manage Flatpak applications."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=8

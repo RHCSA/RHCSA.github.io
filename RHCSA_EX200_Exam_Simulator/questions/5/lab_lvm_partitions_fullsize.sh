@@ -10,6 +10,7 @@ IS_LAB=true
 LAB_ID="lvm_partitions_fullsize"
 
 QUESTION="Set up LVM storage on partitions: create partitions, physical volumes, a volume group, and a logical volume using 100% of the free space; format it and mount it permanently by UUID"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TITLE="LVM: Partitions, 100% Free Space, UUID Mount"

@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="link_survival"
 
 QUESTION="Understand link behavior when original file is deleted"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="sshd_config"
 
 QUESTION="Modify SSH daemon configuration with security settings"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=5

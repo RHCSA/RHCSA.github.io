@@ -6,6 +6,7 @@ IS_LAB=true
 LAB_ID="whatis_command"
 
 QUESTION="Use whatis and man -f to get one-line command descriptions"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 LAB_TASK_COUNT=3
 

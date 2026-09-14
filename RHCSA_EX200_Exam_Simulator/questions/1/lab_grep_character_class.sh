@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="grep_character_class"
 
 QUESTION="Use grep with character classes and POSIX classes"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

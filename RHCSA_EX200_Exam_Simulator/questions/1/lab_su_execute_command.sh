@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="su_execute_command"
 
 QUESTION="Execute a command as another user using su -c"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

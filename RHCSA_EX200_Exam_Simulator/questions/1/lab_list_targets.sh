@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="list_targets"
 
 QUESTION="Write a list of all systemd targets to a file"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="find_perm_modes"
 
 QUESTION="Practice find -perm with exact, minimum (-), and any (/) permission modes"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

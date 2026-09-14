@@ -26,6 +26,7 @@ IS_LAB=true
 LAB_ID="dnf_local_repo_from_iso"
 
 QUESTION="Configure a local DNF repository from a mounted ISO, install a package from it, then disable it."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

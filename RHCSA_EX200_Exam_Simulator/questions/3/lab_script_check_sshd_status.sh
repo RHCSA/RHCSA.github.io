@@ -17,6 +17,7 @@ IS_LAB=true
 LAB_ID="script_check_sshd_status"
 
 QUESTION="Write a script that prints ok only if sshd is both enabled and active, or not ok otherwise."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

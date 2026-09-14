@@ -6,6 +6,7 @@ IS_LAB=true
 LAB_ID="builtin_help"
 
 QUESTION="Identify shell built-in commands with 'type' and get help with 'help'"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 LAB_TASK_COUNT=3
 

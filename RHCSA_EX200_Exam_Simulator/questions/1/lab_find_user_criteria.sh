@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="find_user_criteria"
 
 QUESTION="Use find to search by user/UID and combine criteria with AND, OR, NOT"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=5

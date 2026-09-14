@@ -6,6 +6,7 @@ IS_LAB=true
 LAB_ID="docs_comprehensive"
 
 QUESTION="Comprehensive practice: man sections, apropos, help, and /usr/share/doc"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 LAB_TASK_COUNT=5
 

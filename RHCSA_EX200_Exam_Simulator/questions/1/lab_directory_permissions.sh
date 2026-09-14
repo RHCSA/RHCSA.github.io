@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="directory_permissions"
 
 QUESTION="Set directory permissions to control access (r=list, w=create/delete, x=enter)"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

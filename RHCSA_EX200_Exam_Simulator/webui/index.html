@@ -626,6 +626,14 @@
             margin-bottom: 10px;
         }
 
+        .btn-reveal-answer {
+            align-self: flex-start;
+            margin-bottom: 15px;
+            background-color: #ffc107;
+            color: #000;
+        }
+        .btn-reveal-answer:hover { background-color: #e0a800; }
+
         .answer-view .answer-text {
             color: #eaeaea;
             font-size: 1em;
@@ -633,7 +641,7 @@
             white-space: pre-wrap;
         }
 
-        /* Tab bar - only shown when a lab defines more than one terminal (prepare_lab_2, prepare_lab_3, ...) */
+        /* Tab bar - always shown while a lab/terminal is active (terminal tab(s) + video tab) */
         .terminal-tabs {
             display: none;
             flex-shrink: 0;
@@ -672,6 +680,11 @@
             width: 100%;
             flex: 1;
             border: none;
+            display: none;
+        }
+
+        .terminal-view iframe.active {
+            display: block;
         }
 
         /* ==================== LOADING ==================== */
@@ -960,11 +973,13 @@
             <div class="terminal-view" id="terminalView">
                 <div class="terminal-tabs" id="terminalTabs"></div>
                 <iframe id="terminalFrame" src=""></iframe>
+                <iframe id="videoFrame" class="video-frame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
 
             <!-- Answer View (Full Panel for non-lab, plain Q&A questions) -->
             <div class="answer-view" id="answerView">
                 <div class="answer-label">Answer</div>
+                <button class="lab-btn btn-reveal-answer" id="revealAnswerBtn" onclick="revealAnswer()">Show Answer</button>
                 <div class="answer-text" id="answerText"></div>
             </div>
         </div>
@@ -1247,9 +1262,12 @@
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadObjectives();
-            loadCompletedLabs();
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Load completion state first so every objective/question is
+            // rendered with the correct status right away, instead of
+            // showing "incomplete" until a later refresh updates it
+            await loadCompletedLabs();
+            await loadObjectives();
             initResizer();
             loadInstalledVersion();
             // Check for updates (non-blocking)
@@ -1411,7 +1429,7 @@
                     }
                     currentLab = null;
                 }
-                showAnswerInterface(qData);
+                showAnswerInterface(qData, objId, file);
                 return;
             }
 
@@ -1557,27 +1575,50 @@
             const terminalFrame = document.getElementById('terminalFrame');
             terminalFrame.src = `http://${window.location.hostname}:${TERMINAL_PORT}`;
 
-            // Show terminal tabs only if this lab defines more than one terminal
+            // Load the practice video in the background (muted) so it's ready to play
+            // as soon as the student switches to the video tab.
+            const videoFrame = document.getElementById('videoFrame');
+            videoFrame.src = getYoutubeEmbedUrl(labData.youtube_video);
+            videoFrame.classList.remove('active');
+            terminalFrame.classList.add('active');
+
+            // Always show the terminal tab bar: terminal tab(s) + a video tab
             renderTerminalTabs(labData.terminals);
         }
 
-        // Build (or hide) the terminal tab bar for the current lab
+        // Convert a YouTube "watch" or "youtu.be" URL into an autoplay+muted embed URL
+        function getYoutubeEmbedUrl(url) {
+            if (!url) return '';
+            let videoId = '';
+            const watchMatch = url.match(/[?&]v=([^&]+)/);
+            const shortMatch = url.match(/youtu\.be\/([^?&]+)/);
+            const embedMatch = url.match(/\/embed\/([^?&]+)/);
+            if (watchMatch) videoId = watchMatch[1];
+            else if (shortMatch) videoId = shortMatch[1];
+            else if (embedMatch) videoId = embedMatch[1];
+            if (!videoId) return '';
+            return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+        }
+
+        // Build the terminal tab bar for the current lab: terminal tab(s) + a permanent video tab
         function renderTerminalTabs(terminals) {
             const tabsContainer = document.getElementById('terminalTabs');
             tabsContainer.innerHTML = '';
 
-            if (!terminals || terminals.length <= 1) {
-                tabsContainer.classList.remove('show');
-                return;
-            }
-
-            terminals.forEach((t, i) => {
+            (terminals || []).forEach((t, i) => {
                 const tab = document.createElement('div');
                 tab.className = 'terminal-tab' + (i === 0 ? ' active' : '');
                 tab.textContent = t.name;
                 tab.onclick = () => selectTerminalTab(tab, t.window);
                 tabsContainer.appendChild(tab);
             });
+
+            // Permanent "Lab Video Practice" tab, present even for single-terminal labs
+            const videoTab = document.createElement('div');
+            videoTab.className = 'terminal-tab';
+            videoTab.textContent = 'Lab Video Practice';
+            videoTab.onclick = () => selectVideoTab(videoTab);
+            tabsContainer.appendChild(videoTab);
 
             tabsContainer.classList.add('show');
         }
@@ -1586,6 +1627,9 @@
         async function selectTerminalTab(tabEl, windowName) {
             document.querySelectorAll('.terminal-tab').forEach(el => el.classList.remove('active'));
             tabEl.classList.add('active');
+
+            document.getElementById('videoFrame').classList.remove('active');
+            document.getElementById('terminalFrame').classList.add('active');
 
             try {
                 await fetch(`${API_BASE}/terminal/select`, {
@@ -1597,6 +1641,16 @@
                 console.error('Failed to switch terminal tab:', e);
             }
         }
+
+        // Switch to the video tab: just toggle which iframe is visible, no terminal API call
+        function selectVideoTab(tabEl) {
+            document.querySelectorAll('.terminal-tab').forEach(el => el.classList.remove('active'));
+            tabEl.classList.add('active');
+
+            document.getElementById('terminalFrame').classList.remove('active');
+            document.getElementById('videoFrame').classList.add('active');
+        }
+
 
         // Check tasks
         async function checkTasks() {
@@ -1776,7 +1830,10 @@
 
         // Show a plain question+answer view (non-lab questions) - no
         // terminal, no prepare_lab/check_tasks calls at all
-        function showAnswerInterface(qData) {
+        let currentAnswerFile = null;
+        let currentAnswerObjId = null;
+
+        function showAnswerInterface(qData, objId, file) {
             document.getElementById('menuView').classList.add('hidden');
             document.getElementById('labView').classList.add('active');
             document.getElementById('labView').classList.add('non-lab-mode');
@@ -1786,6 +1843,39 @@
 
             document.getElementById('labQuestion').textContent = qData.question;
             document.getElementById('answerText').textContent = qData.answer || 'No answer provided yet.';
+
+            currentAnswerFile = file;
+            currentAnswerObjId = objId;
+
+            const btn = document.getElementById('revealAnswerBtn');
+            const text = document.getElementById('answerText');
+            if (file && completedLabs.has(file)) {
+                // Already revealed in a previous visit - just show it
+                btn.style.display = 'none';
+                text.style.display = 'block';
+            } else {
+                btn.style.display = 'flex';
+                text.style.display = 'none';
+            }
+        }
+
+        // Reveal the answer and mark this question as done
+        async function revealAnswer() {
+            document.getElementById('revealAnswerBtn').style.display = 'none';
+            document.getElementById('answerText').style.display = 'block';
+
+            if (!currentAnswerFile) return;
+            try {
+                await fetch(`${API_BASE}/question/mark_answered`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ objective: currentAnswerObjId, file: currentAnswerFile })
+                });
+                completedLabs.add(currentAnswerFile);
+                updateCompletionStatus();
+            } catch (e) {
+                console.error('Failed to mark question as answered:', e);
+            }
         }
 
         // Back button behavior for the plain-answer view (currentLab is
@@ -1832,10 +1922,16 @@
             newIframe.src = '';
             parent.replaceChild(newIframe, terminalFrame);
 
+            // Stop the practice video too
+            const videoFrame = document.getElementById('videoFrame');
+            videoFrame.src = '';
+            videoFrame.classList.remove('active');
+
             // Hide/clear terminal tabs
             const tabsContainer = document.getElementById('terminalTabs');
             tabsContainer.innerHTML = '';
             tabsContainer.classList.remove('show');
+
             
             showLoading();
             

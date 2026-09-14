@@ -156,6 +156,10 @@ class RHCSAAPIHandler(SimpleHTTPRequestHandler):
             result = exit_lab(data)
             self.send_json(result)
         
+        elif path == '/api/question/mark_answered':
+            result = mark_question_answered(data)
+            self.send_json(result)
+        
         elif path == '/api/terminal/send':
             result = send_to_terminal(data)
             self.send_json(result)
@@ -239,11 +243,16 @@ def parse_question_file(filepath):
         answer_match = re.search(r'ANSWER="([^"]*)"', content)
         answer = answer_match.group(1) if answer_match else ""
         
+        # Extract YOUTUBE_VIDEO (optional practice video link)
+        youtube_match = re.search(r'YOUTUBE_VIDEO="([^"]*)"', content)
+        youtube_video = youtube_match.group(1) if youtube_match else ""
+        
         return {
             'question': question,
             'is_lab': is_lab,
             'task_count': task_count,
-            'answer': answer
+            'answer': answer,
+            'youtube_video': youtube_video
         }
     except Exception as e:
         print(f"Error parsing {filepath}: {e}")
@@ -397,9 +406,17 @@ def parse_extra_terminals(content):
 
     for n in indices:
         name_match = re.search(rf'PREPARE_LAB_{n}_NAME="([^"]*)"', content)
-        name = name_match.group(1) if name_match else f'Terminal {n}'
         command_match = re.search(rf'PREPARE_LAB_{n}_COMMAND="([^"]*)"', content)
         command = command_match.group(1) if command_match else None
+
+        if name_match:
+            name = name_match.group(1)
+        else:
+            # No explicit tab name: if this tab drops into a container, use the
+            # container name instead of a generic "Terminal N" label.
+            container_in_cmd = re.search(r'docker exec[^"]*?(\S+)\s+bash', command) if command else None
+            name = container_in_cmd.group(1) if container_in_cmd else f'Terminal {n}'
+
         terminals.append({'index': n, 'name': name, 'window': f'lab_{n}', 'command': command})
 
     return terminals
@@ -419,10 +436,20 @@ def parse_lab_file(filepath):
         task_count_match = re.search(r'LAB_TASK_COUNT=(\d+)', content)
         task_count = int(task_count_match.group(1)) if task_count_match else 0
         
+        # Extract YOUTUBE_VIDEO (optional practice video link, shown in its own tab)
+        youtube_match = re.search(r'YOUTUBE_VIDEO="([^"]*)"', content)
+        youtube_video = youtube_match.group(1) if youtube_match else ""
+        
         # Extract optional extra terminal tabs (prepare_lab_2, prepare_lab_3, ...)
         extra_terminals = parse_extra_terminals(content)
         main_name_match = re.search(r'PREPARE_LAB_1_NAME="([^"]*)"', content)
-        main_name = main_name_match.group(1) if main_name_match else 'Terminal'
+        if main_name_match:
+            main_name = main_name_match.group(1)
+        else:
+            # No explicit name for the main tab: label it with the container name
+            # if this lab redirects the main terminal into one, otherwise "localhost".
+            container_name_match = re.search(r'^CONTAINER_NAME="([^"]*)"', content, re.MULTILINE)
+            main_name = container_name_match.group(1) if container_name_match else 'localhost'
         terminals = [{'index': 1, 'name': main_name, 'window': MAIN_WINDOW_NAME}] + extra_terminals
         
         # Extract tasks
@@ -459,7 +486,8 @@ def parse_lab_file(filepath):
             'tasks': tasks,
             'task_count': task_count,
             'commands': commands,
-            'terminals': terminals
+            'terminals': terminals,
+            'youtube_video': youtube_video
         }
     except Exception as e:
         print(f"Error parsing lab file {filepath}: {e}")
@@ -684,6 +712,16 @@ def mark_lab_completed(filename):
                 f.write(lab + '\n')
     except Exception as e:
         print(f"Error marking lab completed: {e}")
+
+
+def mark_question_answered(data):
+    """Mark a plain (non-lab) question as answered/viewed - reveal-answer
+    click handler on the web UI. Reuses the same progress file as labs."""
+    filename = data.get('file')
+    if not filename or not re.fullmatch(r'[A-Za-z0-9_.-]+\.sh', filename):
+        return {'success': False, 'error': 'Invalid file'}
+    mark_lab_completed(filename)
+    return {'success': True}
 
 
 def get_hint(data):

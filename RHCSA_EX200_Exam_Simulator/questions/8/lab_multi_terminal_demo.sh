@@ -10,6 +10,7 @@ IS_LAB=true
 LAB_ID="multi_terminal_demo"
 
 QUESTION="This lab has extra terminal tabs on the same machine (web UI only). Create /tmp/lab_multi_terminal/status.txt containing the word 'ready' - you can do this from any of the terminal tabs."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="script_string_comparison"
 
 QUESTION="Write a script that compares an input string to 'admin' using =, !=, -z, and -n."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

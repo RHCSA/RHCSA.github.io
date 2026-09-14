@@ -8,6 +8,7 @@
 # plain Question/Answer entry (QUESTION + ANSWER only, no HINT needed).
 
 QUESTION="At boot time, edit GRUB to boot into the rescue target."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 ANSWER="1. At the GRUB menu, press the 'e' key to edit the boot entry.
 2. Find the line that starts with 'linux' (or 'linuxefi').
 3. Add this to the end of that line: systemd.unit=rescue.target

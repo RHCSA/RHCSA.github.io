@@ -18,6 +18,7 @@ IS_LAB=true
 LAB_ID="script_backup_passwd_date"
 
 QUESTION="Write a script that backs up /etc/passwd to a dated file, or prints an error if it is missing."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

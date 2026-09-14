@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="find_links"
 
 QUESTION="Use find command to locate symbolic and hard links"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=2

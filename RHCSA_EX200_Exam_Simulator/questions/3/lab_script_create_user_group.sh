@@ -8,6 +8,7 @@ IS_LAB=true
 LAB_ID="script_create_user_group"
 
 QUESTION="Write a script that creates a user, a group, and sets the user's password."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3

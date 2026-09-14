@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="find_special_perms"
 
 QUESTION="Use find command to locate files with SUID, SGID, and sticky bit permissions"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=4

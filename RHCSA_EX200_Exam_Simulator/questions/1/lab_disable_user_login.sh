@@ -7,6 +7,7 @@ IS_LAB=true
 LAB_ID="disable_user_login"
 
 QUESTION="Disable login for a user account"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1

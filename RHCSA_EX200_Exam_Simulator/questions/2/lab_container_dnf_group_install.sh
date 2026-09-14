@@ -11,6 +11,7 @@ IS_LAB=true
 LAB_ID="container_dnf_group_install"
 
 QUESTION="List, inspect, and install a package group using dnf."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=3
