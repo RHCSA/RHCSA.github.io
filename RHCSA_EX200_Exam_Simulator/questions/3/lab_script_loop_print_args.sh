@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Loop Over Arguments (for, $@, $0)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $@/$arg/$0, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_loop_print_args"
@@ -25,11 +20,11 @@ TASK_1_QUESTION="Create an executable script at /root/print_args.sh. Use a for l
 TASK_1_HINT="A for loop can step through every argument a script was given, one at a time; echo the loop variable once per pass. A separate special variable holds the script's own name; echo it once after the loop ends"
 TASK_1_COMMAND_1="cat > /root/print_args.sh << 'SCRIPT_END'
 #!/bin/bash
-for arg in $@
+for arg in \$@
 do
-    echo $arg
+    echo \$arg
 done
-echo $0
+echo \$0
 SCRIPT_END
 chmod +x /root/print_args.sh"
 

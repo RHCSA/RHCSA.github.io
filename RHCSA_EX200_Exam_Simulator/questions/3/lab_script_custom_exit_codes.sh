@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Custom Exit Codes
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $1, which the
-# CLI's bash-based parser will expand while sourcing (a framework limitation
-# - see repo memory). This does NOT affect grading (check_tasks is real
-# bash, not a parsed string) or the web UI, which shows/sends it correctly.
-# CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_custom_exit_codes"
@@ -25,7 +20,7 @@ TASK_1_QUESTION="Create an executable script at /root/check_exit.sh. It should r
 TASK_1_HINT="if condition; then exit 100; else exit 1000; fi - use -gt to compare the argument to 10"
 TASK_1_COMMAND_1="cat > /root/check_exit.sh << 'SCRIPT_END'
 #!/bin/bash
-if [ $1 -gt 10 ]; then
+if [ \$1 -gt 10 ]; then
     exit 100
 else
     exit 1000

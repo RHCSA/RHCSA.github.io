@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Count Arguments ($#)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $#, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_argument_count"
@@ -25,7 +20,7 @@ TASK_1_QUESTION="Create an executable script at /root/count_args.sh. Have it pri
 TASK_1_HINT="A special shell variable already holds the number of arguments given to a script; echo that variable directly"
 TASK_1_COMMAND_1="cat > /root/count_args.sh << 'SCRIPT_END'
 #!/bin/bash
-echo $#
+echo \$#
 SCRIPT_END
 chmod +x /root/count_args.sh"
 

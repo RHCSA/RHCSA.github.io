@@ -25,13 +25,13 @@ TASK_1_QUESTION="Create an executable script at /root/check_string.sh. It should
 TASK_1_HINT="Use -z for empty, -n for non-empty, then = or != to compare the value to admin"
 TASK_1_COMMAND_1="cat > /root/check_string.sh << 'SCRIPT_END'
 #!/bin/bash
-name=$1
-if [[ -z $name ]]; then
+name=\$1
+if [[ -z \$name ]]; then
     echo No value provided
-elif [[ -n $name ]]; then
-    if [[ $name = admin ]]; then
+elif [[ -n \$name ]]; then
+    if [[ \$name = admin ]]; then
         echo Username matches
-    elif [[ $name != admin ]]; then
+    elif [[ \$name != admin ]]; then
         echo Username does not match
     fi
 fi

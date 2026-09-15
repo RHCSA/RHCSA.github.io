@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Sum Numeric Arguments (regex, for, $@)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $arg/$sum, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_sum_numeric_args"
@@ -26,14 +21,14 @@ TASK_1_HINT="Use a regex match such as an anchored one-or-more-digits pattern to
 TASK_1_COMMAND_1="cat > /root/sum_args.sh << 'SCRIPT_END'
 #!/bin/bash
 sum=0
-for arg in $@
+for arg in \$@
 do
-    if [[ $arg =~ ^[0-9]+$ ]]
+    if [[ \$arg =~ ^[0-9]+$ ]]
     then
-        sum=$((sum + arg))
+        sum=\$((sum + arg))
     fi
 done
-echo $sum
+echo \$sum
 SCRIPT_END
 chmod +x /root/sum_args.sh"
 

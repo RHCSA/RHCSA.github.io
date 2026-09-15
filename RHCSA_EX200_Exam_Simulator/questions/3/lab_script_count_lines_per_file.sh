@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Count Lines Per File (for, command substitution)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $FILE, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_count_lines_per_file"
@@ -25,9 +20,9 @@ TASK_1_QUESTION="Create an executable script at /root/count_lines.sh. Have it lo
 TASK_1_HINT="Loop over the output of ls; for each file name, use a command substitution with cat piped into wc -l to get its line count, then echo the file name and count together on one line"
 TASK_1_COMMAND_1="cat > /root/count_lines.sh << 'SCRIPT_END'
 #!/bin/bash
-for FILE in $(ls)
+for FILE in \$(ls)
 do
-    echo Line count of $FILE is $(cat $FILE | wc -l)
+    echo Line count of \$FILE is \$(cat \$FILE | wc -l)
 done
 SCRIPT_END
 chmod +x /root/count_lines.sh"

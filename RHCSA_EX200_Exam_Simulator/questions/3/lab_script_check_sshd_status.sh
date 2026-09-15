@@ -1,12 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Check a Service's Enabled and Active State (systemctl)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $enabled/
-# $active, which the CLI's bash-based parser will expand while sourcing (a
-# framework limitation - see repo memory). This does NOT affect grading
-# (check_tasks is real bash, not a parsed string) or the web UI, which
-# shows/sends it correctly. CLI users may see a slightly different hint
-# text for this task.
 # NOTE: sshd is what provides remote access to this machine, so its real
 # enabled/active state is only ever read here, never changed. The "not ok"
 # path is graded by running a copy of the script with "sshd" substituted
@@ -31,9 +25,9 @@ TASK_1_QUESTION="Create an executable script at /root/check_sshd_status.sh. Stor
 TASK_1_HINT="systemctl is-enabled sshd reports whether the service is enabled; systemctl is-active sshd reports whether it is currently running. Capture both with command substitution, then compare each result before deciding what to print"
 TASK_1_COMMAND_1="cat > /root/check_sshd_status.sh << 'SCRIPT_END'
 #!/bin/bash
-enabled=$(systemctl is-enabled sshd)
-active=$(systemctl is-active sshd)
-if [ $enabled = enabled ] && [ $active = active ]
+enabled=\$(systemctl is-enabled sshd)
+active=\$(systemctl is-active sshd)
+if [ \$enabled = enabled ] && [ \$active = active ]
 then
     echo ok
 else

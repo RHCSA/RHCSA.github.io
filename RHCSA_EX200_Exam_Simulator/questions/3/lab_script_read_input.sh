@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Reading User Input (read -p)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $name, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_read_input"
@@ -26,7 +21,7 @@ TASK_1_HINT="read -p followed by a prompt string reads user input into a variabl
 TASK_1_COMMAND_1="cat > /root/greet.sh << 'SCRIPT_END'
 #!/bin/bash
 read -p 'Name: ' name
-echo Hello $name
+echo Hello \$name
 SCRIPT_END
 chmod +x /root/greet.sh"
 

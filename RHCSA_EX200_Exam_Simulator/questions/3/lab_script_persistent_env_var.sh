@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Permanently Add an Environment Variable (/etc/bashrc)
-# NOTE ON HINT TEXT: TASK_2_COMMAND_1 below contains a literal $EXAM, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 # NOTE: this lab edits the real /etc/bashrc; prepare_lab/cleanup_lab remove
 # only the exact line this lab adds, restoring the file afterward.
 
@@ -32,7 +27,7 @@ SCRIPT_END"
 # Task 2
 TASK_2_QUESTION="Confirm a brand new shell actually has EXAM set to RHCSA, not just that the line exists in the file"
 TASK_2_HINT="Open a new interactive shell and check the value of EXAM in it"
-TASK_2_COMMAND_1="bash -ic 'echo $EXAM'"
+TASK_2_COMMAND_1="bash -ic 'echo \$EXAM'"
 
 # Auto-generate HINT from commands
 HINT=$(_build_hint)

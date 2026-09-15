@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Print the First Argument ($1)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $1, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_first_argument"
@@ -25,7 +20,7 @@ TASK_1_QUESTION="Create an executable script at /root/first_arg.sh. Have it prin
 TASK_1_HINT="The first command-line argument is available directly as its own variable. This is different from the variable that holds the script's own name, so echo the argument variable, not the name variable"
 TASK_1_COMMAND_1="cat > /root/first_arg.sh << 'SCRIPT_END'
 #!/bin/bash
-echo $1
+echo \$1
 SCRIPT_END
 chmod +x /root/first_arg.sh"
 

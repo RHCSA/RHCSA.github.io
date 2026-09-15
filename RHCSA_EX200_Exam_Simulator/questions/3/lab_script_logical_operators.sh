@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Logical Operators (-a, -o, !)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $1/$num, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_logical_operators"
@@ -25,14 +20,14 @@ TASK_1_QUESTION="Create an executable script at /root/check_combo.sh. It should 
 TASK_1_HINT="[ A -a B ] is true only if both A and B are true; [ A -o B ] is true if either is true; [ ! A ] negates A"
 TASK_1_COMMAND_1="cat > /root/check_combo.sh << 'SCRIPT_END'
 #!/bin/bash
-num=$1
-if [ $num -ge 1 -a $num -le 100 ]; then
+num=\$1
+if [ \$num -ge 1 -a \$num -le 100 ]; then
     echo In range
 fi
-if [ $num -lt 1 -o $num -gt 100 ]; then
+if [ \$num -lt 1 -o \$num -gt 100 ]; then
     echo Out of range
 fi
-if [ ! $num -eq 50 ]; then
+if [ ! \$num -eq 50 ]; then
     echo Not fifty
 fi
 SCRIPT_END

@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Convert Case with tr
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $input, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_tr_case_conversion"
@@ -26,7 +21,7 @@ TASK_1_HINT="Read the input into a variable, then pipe it through tr [:upper:] [
 TASK_1_COMMAND_1="cat > /root/lowercase.sh << 'SCRIPT_END'
 #!/bin/bash
 read input
-echo $input | tr '[:upper:]' '[:lower:]'
+echo \$input | tr '[:upper:]' '[:lower:]'
 SCRIPT_END
 chmod +x /root/lowercase.sh"
 

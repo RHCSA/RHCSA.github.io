@@ -4,11 +4,6 @@
 # NOTE: this lab launches real ping processes in the background to verify
 # concurrency; check_tasks always terminates them afterward, regardless of
 # outcome, so no ping processes are left running.
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $ip, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_background_ping_servers"
@@ -30,7 +25,7 @@ TASK_1_COMMAND_1="cat > /root/ping_servers.sh << 'SCRIPT_END'
 #!/bin/bash
 for ip in 8.8.8.8 8.8.4.4 1.1.1.1
 do
-    ping -c 5 $ip &
+    ping -c 5 \$ip &
 done
 wait
 SCRIPT_END

@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Numeric Comparisons (-eq, -ne, -lt, -le, -gt, -ge)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $1/$num, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_numeric_comparison"
@@ -25,23 +20,23 @@ TASK_1_QUESTION="Create an executable script at /root/check_number.sh. Store its
 TASK_1_HINT="Use test/[ ] once per operator, e.g. if the value is less than 10, greater than 10, etc."
 TASK_1_COMMAND_1="cat > /root/check_number.sh << 'SCRIPT_END'
 #!/bin/bash
-num=$1
-if [ $num -eq 10 ]; then
+num=\$1
+if [ \$num -eq 10 ]; then
     echo Equal to 10
 fi
-if [ $num -ne 10 ]; then
+if [ \$num -ne 10 ]; then
     echo Not equal to 10
 fi
-if [ $num -lt 10 ]; then
+if [ \$num -lt 10 ]; then
     echo Less than 10
 fi
-if [ $num -le 10 ]; then
+if [ \$num -le 10 ]; then
     echo Less than or equal to 10
 fi
-if [ $num -gt 10 ]; then
+if [ \$num -gt 10 ]; then
     echo Greater than 10
 fi
-if [ $num -ge 10 ]; then
+if [ \$num -ge 10 ]; then
     echo Greater than or equal to 10
 fi
 SCRIPT_END

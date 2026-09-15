@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Count with a While Loop
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $x, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_while_count_to_5"
@@ -26,10 +21,10 @@ TASK_1_HINT="Initialize a counter at 1; the while condition tests it with -le 5;
 TASK_1_COMMAND_1="cat > /root/count_to_5.sh << 'SCRIPT_END'
 #!/bin/bash
 x=1
-while [ $x -le 5 ]
+while [ \$x -le 5 ]
 do
-    echo $x
-    x=$(( x + 1 ))
+    echo \$x
+    x=\$(( x + 1 ))
 done
 SCRIPT_END
 chmod +x /root/count_to_5.sh"
