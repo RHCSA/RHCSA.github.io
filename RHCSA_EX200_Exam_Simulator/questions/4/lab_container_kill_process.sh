@@ -40,7 +40,7 @@ TEST_PID=$(_load_test_pid)
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. A test process is already running inside it with PID ${TEST_PID}. Kill it using signal 9"
+TASK_1_QUESTION="A test process is already running with PID ${TEST_PID}. Kill it using signal 9"
 TASK_1_HINT="Use kill -9 with the PID"
 TASK_1_COMMAND_1="kill -9 ${TEST_PID}"
 
@@ -122,6 +122,11 @@ prepare_lab() {
         -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$CONTAINER_IMAGE" /usr/sbin/init &>/dev/null
     sleep 2
 
+    # Web UI only: attach the single visible terminal straight into the
+    # container immediately, before the slower provisioning below - so a
+    # slow dnf install can never leave the terminal stuck on the host shell
+    tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null
+
     echo -e "  ${DIM}• Starting a test process for Task 1...${RESET}"
     local test_pid
     test_pid=$(docker exec "$CONTAINER_NAME" bash -c 'sleep 99999 & echo $!' 2>/dev/null)
@@ -135,10 +140,6 @@ prepare_lab() {
     echo -e "  ${DIM}• Installing and starting httpd...${RESET}"
     docker exec "$CONTAINER_NAME" dnf install -y httpd &>/dev/null
     docker exec "$CONTAINER_NAME" httpd &>/dev/null
-
-    # Web UI only: attach the single visible terminal straight into the
-    # container so no host shell is ever shown for this lab
-    tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null
 }
 
 # Check task completion - sets TASK_STATUS array

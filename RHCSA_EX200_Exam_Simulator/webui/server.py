@@ -510,7 +510,10 @@ GREEN="\\033[32m"
 source "$1"
 {function_name}
 '''
-        subprocess.run(['bash', '-c', script, 'bash', filepath], capture_output=True, timeout=30)
+        # 60s: prepare_lab for some labs runs a slow dnf install inside a
+        # container after already attaching the terminal to it - give that
+        # room to finish instead of getting silently killed mid-provision.
+        subprocess.run(['bash', '-c', script, 'bash', filepath], capture_output=True, timeout=60)
     except Exception as e:
         print(f"Error running {function_name}: {e}")
 

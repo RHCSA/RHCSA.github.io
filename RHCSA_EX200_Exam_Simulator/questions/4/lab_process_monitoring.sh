@@ -3,9 +3,8 @@
 # LAB: Monitor Processes (ps, pgrep, sort by CPU/memory)
 # Host-machine terminal only (no container) - the single default terminal
 # every lab starts with.
-# NOTE: Task 4 assumes postfix is installed, since it ships by default on
-# RHEL/CentOS/Rocky. prepare_lab only starts it if already installed - it
-# does not install the package, to avoid a slow/network-dependent lab start.
+# NOTE: Task 4 uses chrony (chronyd), since it ships and runs by default on
+# RHEL/CentOS/Rocky - no package install or service start needed.
 
 IS_LAB=true
 LAB_ID="process_monitoring"
@@ -36,9 +35,9 @@ TASK_3_HINT="Use pgrep"
 TASK_3_COMMAND_1="pgrep sshd > /tmp/sshd_pid.txt"
 
 # Task 4
-TASK_4_QUESTION="List all processes owned by the user postfix. Save the output to /tmp/postfix_procs.txt"
-TASK_4_HINT="Use ps -u postfix, or pgrep -u postfix"
-TASK_4_COMMAND_1="ps -u postfix > /tmp/postfix_procs.txt"
+TASK_4_QUESTION="List all processes owned by the user chrony. Save the output to /tmp/chrony_procs.txt"
+TASK_4_HINT="Use ps -u chrony, or pgrep -u chrony"
+TASK_4_COMMAND_1="ps -u chrony > /tmp/chrony_procs.txt"
 
 # Auto-generate HINT from commands
 HINT=$(_build_hint)
@@ -46,11 +45,7 @@ HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing old output files...${RESET}"
-    rm -f /tmp/top_cpu.txt /tmp/top_mem.txt /tmp/sshd_pid.txt /tmp/postfix_procs.txt 2>/dev/null
-    sleep 0.3
-
-    echo -e "  ${DIM}• Making sure postfix is running (needed for Task 4)...${RESET}"
-    systemctl start postfix 2>/dev/null || true
+    rm -f /tmp/top_cpu.txt /tmp/top_mem.txt /tmp/sshd_pid.txt /tmp/chrony_procs.txt 2>/dev/null
     sleep 0.3
 }
 
@@ -88,17 +83,17 @@ check_tasks() {
         TASK_STATUS[2]="false"
     fi
 
-    # Task 3: postfix processes - accepts either "ps -u postfix" or
-    # "pgrep -u postfix" output, matched against currently live postfix PIDs
-    local postfix_pids=$(pgrep -u postfix 2>/dev/null)
-    if [[ -f /tmp/postfix_procs.txt ]] && [[ -n "$postfix_pids" ]]; then
+    # Task 3: chrony processes - accepts either "ps -u chrony" or
+    # "pgrep -u chrony" output, matched against currently live chrony PIDs
+    local chrony_pids=$(pgrep -u chrony 2>/dev/null)
+    if [[ -f /tmp/chrony_procs.txt ]] && [[ -n "$chrony_pids" ]]; then
         local matched="false"
         while IFS= read -r pid; do
-            if [[ -n "$pid" ]] && grep -qw "$pid" /tmp/postfix_procs.txt 2>/dev/null; then
+            if [[ -n "$pid" ]] && grep -qw "$pid" /tmp/chrony_procs.txt 2>/dev/null; then
                 matched="true"
                 break
             fi
-        done <<< "$postfix_pids"
+        done <<< "$chrony_pids"
         TASK_STATUS[3]="$matched"
     else
         TASK_STATUS[3]="false"
@@ -108,7 +103,7 @@ check_tasks() {
 # Cleanup the lab environment before exit
 cleanup_lab() {
     echo -e "  ${DIM}• Cleaning up lab environment...${RESET}"
-    rm -f /tmp/top_cpu.txt /tmp/top_mem.txt /tmp/sshd_pid.txt /tmp/postfix_procs.txt 2>/dev/null
+    rm -f /tmp/top_cpu.txt /tmp/top_mem.txt /tmp/sshd_pid.txt /tmp/chrony_procs.txt 2>/dev/null
     echo -e "  ${GREEN}✓ Lab environment cleaned up${RESET}"
     sleep 1
 }

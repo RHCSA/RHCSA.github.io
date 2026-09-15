@@ -21,7 +21,7 @@ LAB_TASK_COUNT=4
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. Search for 'web server' using dnf, and redirect the output into /root/search_output.txt instead of the screen"
+TASK_1_QUESTION="Search for 'web server' using dnf, and redirect the output into /root/search_output.txt instead of the screen"
 TASK_1_HINT="dnf search 'web server' looks for that phrase in package names and summaries; the > operator redirects standard output to a file"
 TASK_1_COMMAND_1="dnf search 'web server' > /root/search_output.txt"
 

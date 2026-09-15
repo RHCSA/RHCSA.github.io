@@ -23,7 +23,7 @@ LAB_TASK_COUNT=2
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. Install the httpd package"
+TASK_1_QUESTION="Install the httpd package"
 TASK_1_HINT="dnf install -y httpd installs the package without pausing for a yes/no prompt"
 TASK_1_COMMAND_1="dnf install -y httpd"
 

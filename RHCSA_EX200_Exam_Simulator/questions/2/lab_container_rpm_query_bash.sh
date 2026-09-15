@@ -21,7 +21,7 @@ LAB_TASK_COUNT=1
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. Use rpm to list installed packages and filter for bash, redirecting the result into /root/bash_package.txt instead of the screen"
+TASK_1_QUESTION="Use rpm to list installed packages and filter for bash, redirecting the result into /root/bash_package.txt instead of the screen"
 TASK_1_HINT="rpm -qa lists every installed package; piping that into grep bash filters the list down to just the ones with bash in their name"
 TASK_1_COMMAND_1="rpm -qa | grep bash > /root/bash_package.txt"
 

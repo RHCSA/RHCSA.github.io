@@ -26,7 +26,7 @@ LAB_TASK_COUNT=8
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. Install Flatpak using dnf"
+TASK_1_QUESTION="Install Flatpak using dnf"
 TASK_1_HINT="dnf install flatpak -y installs the Flatpak package manager itself"
 TASK_1_COMMAND_1="dnf install flatpak -y"
 

@@ -21,7 +21,7 @@ LAB_TASK_COUNT=3
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. List the available package groups, and redirect the output into /root/group_list.txt instead of the screen"
+TASK_1_QUESTION="List the available package groups, and redirect the output into /root/group_list.txt instead of the screen"
 TASK_1_HINT="dnf group list shows every package group available from the enabled repositories"
 TASK_1_COMMAND_1="dnf group list > /root/group_list.txt"
 

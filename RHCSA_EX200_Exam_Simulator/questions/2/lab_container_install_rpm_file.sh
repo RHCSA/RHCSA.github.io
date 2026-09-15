@@ -24,7 +24,7 @@ LAB_TASK_COUNT=2
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. The EPEL release package for RHEL 10 has already been downloaded to /root/epel-release-latest-10.noarch.rpm. Install that local file using dnf"
+TASK_1_QUESTION="The EPEL release package for RHEL 10 has already been downloaded to /root/epel-release-latest-10.noarch.rpm. Install that local file using dnf"
 TASK_1_HINT="dnf install can install a local .rpm file directly by path, resolving any of its own dependencies from the enabled repositories"
 TASK_1_COMMAND_1="dnf install -y /root/epel-release-latest-10.noarch.rpm"
 

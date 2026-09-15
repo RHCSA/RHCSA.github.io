@@ -21,7 +21,7 @@ LAB_TASK_COUNT=2
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. Find which package provides the dig command, and redirect the result into /root/provides_output.txt instead of the screen"
+TASK_1_QUESTION="Find which package provides the dig command, and redirect the result into /root/provides_output.txt instead of the screen"
 TASK_1_HINT="dnf provides '*/dig' searches every enabled repository for a package that contains a file named dig; the leading */ matches it regardless of which directory it ends up in"
 TASK_1_COMMAND_1="dnf provides '*/dig' > /root/provides_output.txt"
 

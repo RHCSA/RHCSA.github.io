@@ -1,11 +1,13 @@
 #!/bin/bash
 # Objective 2: Manage software
 # LAB: Add the Kubernetes DNF Repository and Secure it with its GPG Key
-# NOTE: check_tasks is method-agnostic - it queries dnf's actual repo state
-# via `dnf repo info --json` (base_url, is_enabled, pkg_gpgcheck, gpg_key -
-# note this is `repo info`, not `repo list`; only `info` includes those
-# fields) rather than looking for one specific repo ID or file, so a manual
-# /etc/yum.repos.d/*.repo file OR `dnf config-manager` both pass equally.
+# NOTE: check_tasks is method-agnostic - it greps whichever .repo file under
+# /etc/yum.repos.d or /etc/dnf/repos.override.d has a baseurl containing
+# pkgs.k8s.io, rather than looking for one specific repo ID or filename, so
+# a manual .repo file OR `dnf config-manager` both pass equally. This reads
+# the file directly instead of `dnf repo info --json`, which has to sync
+# live metadata for every configured repo just to build its output - slow,
+# network-dependent, and unrelated to whether the file itself is correct.
 # NOTE: TASK_1 uses `dnf config-manager --add-repo <url>` (a single
 # positional URL, no --set=/--id= flags) - live-verified working on this
 # system. It auto-creates /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo
@@ -59,6 +61,16 @@ TASK_4_COMMAND_2="dnf repolist --enabled"
 # Auto-generate HINT from commands
 HINT=$(_build_hint)
 
+# Find whichever .repo file (any name) configures the pkgs.k8s.io repo
+_k8s_repo_file() {
+    local f
+    for f in /etc/yum.repos.d/*.repo /etc/dnf/repos.override.d/*.repo; do
+        [[ -f "$f" ]] || continue
+        grep -qE '^baseurl\s*=.*pkgs\.k8s\.io' "$f" 2>/dev/null && { echo "$f"; return 0; }
+    done
+    return 1
+}
+
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Resetting environment...${RESET}"
@@ -71,49 +83,22 @@ prepare_lab() {
 
 # Check task completion - sets TASK_STATUS array
 check_tasks() {
-    # Task 0: an enabled repo pointing at pkgs.k8s.io exists
-    local repo_added
-    repo_added=$(dnf repo info --all --json 2>/dev/null | python3 -c "
-import json, sys
-try:
-    repos = json.load(sys.stdin)
-except Exception:
-    print('no')
-    sys.exit()
-for r in repos:
-    urls = r.get('base_url') or []
-    if any('pkgs.k8s.io' in u for u in urls) and r.get('is_enabled'):
-        print('yes')
-        sys.exit()
-print('no')
-" 2>/dev/null)
-    if [[ "$repo_added" == "yes" ]]; then
+    local repo_file
+    repo_file=$(_k8s_repo_file)
+
+    # Task 0: an enabled repo pointing at pkgs.k8s.io exists, with GPG
+    # package checking off (accepts either an explicit gpgcheck=0 or no
+    # gpgcheck line at all, matching the hint's suggested command)
+    if [[ -n "$repo_file" ]] && grep -qE '^enabled\s*=\s*1' "$repo_file" \
+        && ! grep -qE '^gpgcheck\s*=\s*1' "$repo_file"; then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
     fi
 
     # Task 1: that repo now has gpgcheck on, with the matching key URL set
-    local gpg_ready
-    gpg_ready=$(dnf repo info --all --json 2>/dev/null | python3 -c "
-import json, sys
-try:
-    repos = json.load(sys.stdin)
-except Exception:
-    print('no')
-    sys.exit()
-for r in repos:
-    urls = r.get('base_url') or []
-    if any('pkgs.k8s.io' in u for u in urls):
-        keys = r.get('gpg_key') or []
-        if r.get('pkg_gpgcheck') and any('repomd.xml.key' in k for k in keys):
-            print('yes')
-        else:
-            print('no')
-        sys.exit()
-print('no')
-" 2>/dev/null)
-    if [[ "$gpg_ready" == "yes" ]]; then
+    if [[ -n "$repo_file" ]] && grep -qE '^gpgcheck\s*=\s*1' "$repo_file" \
+        && grep -q 'repomd\.xml\.key' "$repo_file"; then
         TASK_STATUS[1]="true"
     else
         TASK_STATUS[1]="false"
@@ -126,23 +111,9 @@ print('no')
         TASK_STATUS[2]="false"
     fi
 
-    # Task 3: the pkgs.k8s.io repo no longer shows up as enabled
-    local still_enabled
-    still_enabled=$(dnf repo info --enabled --json 2>/dev/null | python3 -c "
-import json, sys
-try:
-    repos = json.load(sys.stdin)
-except Exception:
-    print('no')
-    sys.exit()
-for r in repos:
-    urls = r.get('base_url') or []
-    if any('pkgs.k8s.io' in u for u in urls):
-        print('yes')
-        sys.exit()
-print('no')
-" 2>/dev/null)
-    if [[ "$still_enabled" == "no" ]]; then
+    # Task 3: the pkgs.k8s.io repo is disabled, or removed entirely - either
+    # way it won't show up in dnf repolist --enabled
+    if [[ -z "$repo_file" ]] || grep -qE '^enabled\s*=\s*0' "$repo_file"; then
         TASK_STATUS[3]="true"
     else
         TASK_STATUS[3]="false"
