@@ -69,14 +69,20 @@ check_tasks() {
         TASK_STATUS[1]="false"
     fi
 
-    # Task 2: password matches P@ssw0rd123 (recompute the hash using its own salt)
+    # Task 2: password matches P@ssw0rd123 - verified against the real shadow
+    # hash whatever its algorithm is (RHEL/Rocky 10 defaults to yescrypt
+    # $y$, not SHA-512 $6$, which openssl passwd can't recompute at all).
+    # python3's crypt.crypt() re-derives using the algorithm/salt/params
+    # already embedded in the stored hash, so this works for any of them.
     local shadow_hash
     shadow_hash=$(getent shadow examuser 2>/dev/null | cut -d: -f2)
-    local salt
-    salt=$(echo "$shadow_hash" | cut -d'$' -f3)
-    local computed_hash
-    computed_hash=$(openssl passwd -6 -salt "$salt" 'P@ssw0rd123' 2>/dev/null)
-    if [[ -n "$shadow_hash" ]] && [[ "$shadow_hash" == "$computed_hash" ]]; then
+    local match
+    match=$(SHADOW_HASH="$shadow_hash" python3 -c "
+import crypt, os
+h = os.environ.get('SHADOW_HASH', '')
+print('yes' if h and crypt.crypt('P@ssw0rd123', h) == h else 'no')
+" 2>/dev/null)
+    if [[ "$match" == "yes" ]]; then
         TASK_STATUS[2]="true"
     else
         TASK_STATUS[2]="false"

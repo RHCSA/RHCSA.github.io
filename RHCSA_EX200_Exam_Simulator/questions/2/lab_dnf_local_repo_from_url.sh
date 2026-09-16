@@ -12,9 +12,9 @@
 # positional URL, no --set=/--id= flags) - live-verified working on this
 # system. It auto-creates /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo
 # with an auto-generated repo ID/name, baseurl, and enabled=1, but no
-# gpgcheck line, so gpgcheck=0 is appended separately. The earlier
-# `addrepo --id=... --set=...` and `setopt` syntax both failed on this
-# system ("Command line error: ambiguous option").
+# gpgcheck line - Task 2 appends gpgcheck=1 and gpgkey= to turn GPG checking
+# on. The earlier `addrepo --id=... --set=...` and `setopt` syntax both
+# failed on this system ("Command line error: ambiguous option").
 # NOTE: this lab needs real internet access to pkgs.k8s.io - unlike the
 # ISO-based local repo lab, it is not self-contained offline.
 # NOTE: repo ID/URLs verified live against kubernetes.io on 2026-09-10. If a
@@ -36,15 +36,14 @@ LAB_TASK_COUNT=4
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="Add a new DNF repository for Kubernetes using this base URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/ - enable the repository, but leave GPG checking off for now"
-TASK_1_HINT="dnf config-manager --add-repo followed by just the URL creates and enables the repository in one command; it does not turn off gpgcheck by itself, so append gpgcheck=0 to the resulting repo file"
+TASK_1_QUESTION="Add a new DNF repository for Kubernetes using this base URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/ - enable the repository"
+TASK_1_HINT="dnf config-manager --add-repo followed by just the URL creates and enables the repository in one command"
 TASK_1_COMMAND_1="dnf config-manager --add-repo https://pkgs.k8s.io/core:/stable:/v1.37/rpm/"
-TASK_1_COMMAND_2="echo 'gpgcheck=0' >> /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo"
 
 # Task 2
-TASK_2_QUESTION="Using this GPG key URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key - turn gpgcheck on for the Kubernetes repository and point it at that key"
-TASK_2_HINT="Edit the repo file: change gpgcheck to 1, and add a gpgkey= line pointing at the key URL"
-TASK_2_COMMAND_1="sed -i 's/^gpgcheck=0/gpgcheck=1/' /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo"
+TASK_2_QUESTION="Using this GPG key URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key - turn on GPG checking for the Kubernetes repository and point it at that key"
+TASK_2_HINT="Append gpgcheck=1 and a gpgkey= line pointing at the key URL to the repo file"
+TASK_2_COMMAND_1="echo 'gpgcheck=1' >> /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo"
 TASK_2_COMMAND_2="echo 'gpgkey=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key' >> /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo"
 
 # Task 3
@@ -86,11 +85,9 @@ check_tasks() {
     local repo_file
     repo_file=$(_k8s_repo_file)
 
-    # Task 0: an enabled repo pointing at pkgs.k8s.io exists, with GPG
-    # package checking off (accepts either an explicit gpgcheck=0 or no
-    # gpgcheck line at all, matching the hint's suggested command)
-    if [[ -n "$repo_file" ]] && grep -qE '^enabled\s*=\s*1' "$repo_file" \
-        && ! grep -qE '^gpgcheck\s*=\s*1' "$repo_file"; then
+    # Task 0: an enabled repo pointing at pkgs.k8s.io exists (GPG state is
+    # not part of this task - that's Task 1)
+    if [[ -n "$repo_file" ]] && grep -qE '^enabled\s*=\s*1' "$repo_file"; then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
