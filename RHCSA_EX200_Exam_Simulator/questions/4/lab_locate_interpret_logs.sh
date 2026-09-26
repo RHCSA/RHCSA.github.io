@@ -79,7 +79,7 @@ prepare_lab() {
     sleep 0.3
 
     echo -e "  ${DIM}• Logging a postfix error to the system messages log...${RESET}"
-    logger "postfix error: user not found"
+    echo "postfix error: user not found" >> /var/log/messages
 
     echo -e "  ${DIM}• Writing a sample problem into each log file...${RESET}"
     echo "authentication error: invalid user detected from 10.0.0.99" >> /var/log/secure

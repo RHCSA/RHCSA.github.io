@@ -50,8 +50,8 @@ TASK_4_COMMAND_1="tuned-adm active > /tmp/tuned_active.txt"
 
 # Task 5
 TASK_5_QUESTION="Confirm that the current system settings match the active tuning profile"
-TASK_5_HINT="Use tuned-adm verify"
-TASK_5_COMMAND_1="tuned-adm verify"
+TASK_5_HINT="Use tuned-adm verify; add -i (--ignore-missing) to skip tunings this hardware doesn't support, common in VMs"
+TASK_5_COMMAND_1="tuned-adm verify -i"
 
 # Task 6
 TASK_6_QUESTION="Get tuned's recommended profile for this system. Save the output to /tmp/tuned_recommend.txt"
@@ -60,8 +60,8 @@ TASK_6_COMMAND_1="tuned-adm recommend > /tmp/tuned_recommend.txt"
 
 # Task 7
 TASK_7_QUESTION="Display the configuration of the throughput-performance profile. Save the output to /tmp/tuned_profile_conf.txt"
-TASK_7_HINT="The profile's configuration file is at /usr/lib/tuned/throughput-performance/tuned.conf"
-TASK_7_COMMAND_1="cat /usr/lib/tuned/throughput-performance/tuned.conf > /tmp/tuned_profile_conf.txt"
+TASK_7_HINT="The profile's configuration file is at /usr/lib/tuned/profiles/throughput-performance/tuned.conf"
+TASK_7_COMMAND_1="cat /usr/lib/tuned/profiles/throughput-performance/tuned.conf > /tmp/tuned_profile_conf.txt"
 
 # Auto-generate HINT from commands
 HINT=$(_build_hint)
@@ -124,8 +124,10 @@ check_tasks() {
         TASK_STATUS[3]="false"
     fi
 
-    # Task 4: tuned-adm verify currently succeeds (checked live)
-    if tuned-adm verify &>/dev/null; then
+    # Task 4: tuned-adm verify currently succeeds (checked live) - -i/--ignore-missing
+    # skips tunings this hardware doesn't support, e.g. plugins with no real
+    # effect in a VM, so a legitimate profile switch isn't marked as failed
+    if tuned-adm verify -i &>/dev/null; then
         TASK_STATUS[4]="true"
     else
         TASK_STATUS[4]="false"
@@ -147,8 +149,8 @@ check_tasks() {
 
     # Task 6: throughput-performance profile config captured, matches the
     # real file on disk (static content, unaffected by the active profile)
-    if [[ -f /tmp/tuned_profile_conf.txt ]] && [[ -f /usr/lib/tuned/throughput-performance/tuned.conf ]] \
-        && diff -q /tmp/tuned_profile_conf.txt /usr/lib/tuned/throughput-performance/tuned.conf &>/dev/null; then
+    if [[ -f /tmp/tuned_profile_conf.txt ]] && [[ -f /usr/lib/tuned/profiles/throughput-performance/tuned.conf ]] \
+        && diff -q /tmp/tuned_profile_conf.txt /usr/lib/tuned/profiles/throughput-performance/tuned.conf &>/dev/null; then
         TASK_STATUS[6]="true"
     else
         TASK_STATUS[6]="false"

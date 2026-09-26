@@ -7,18 +7,18 @@
 # systemd-logind reachable over D-Bus, which fails there ("Could not
 # activate remote peer 'org.freedesktop.login1'") even in a --privileged
 # systemd container - confirmed by testing.
-# NOTE: `shutdown --show` (systemd >= 250, confirmed present on RHEL 10) is
-# the official way to query a pending scheduled shutdown without waiting for
-# it. Because shutdown only ever tracks ONE pending action at a time, Task 2
-# rescheduling immediately overwrites Task 1's live state - Task 1 is
-# recorded with a one-time marker file the first time it is seen, so
-# completing Task 2 doesn't make Task 1 look incomplete again.
-# NOTE (limitation): exact "10 minutes remaining" arithmetic is not verified
-# for Task 1, since shutdown --show reports an absolute clock time that
-# depends on exactly when the student ran the command (unknowable to
-# check_tasks) - Task 1 only confirms some non-01:00 reboot was scheduled at
-# some point, which Task 2's own absolute time can't satisfy by coincidence
-# except in the sub-1-in-1440 case of running Task 1 at exactly 00:50.
+# NOTE: check_tasks reads /run/systemd/shutdown/scheduled directly (the
+# exact file systemd-logind itself writes/reads for a pending shutdown,
+# USEC=<epoch usec>) rather than parsing `shutdown --show` text, which is
+# less certain to match across systemd versions.
+# NOTE: since shutdown only ever tracks ONE pending action at a time, Task
+# 2's reschedule instantly overwrites Task 1's live state - if the student
+# runs both commands before ever checking (the normal workflow), Task 1's
+# evidence would be gone by the time check_tasks runs. prepare_lab starts a
+# background watcher that polls the state file and latches a marker file
+# the moment it ever sees a non-01:00 schedule, so Task 1 stays gradeable
+# regardless of when check_tasks is actually invoked. The watcher is killed
+# in cleanup_lab.
 
 IS_LAB=true
 LAB_ID="shutdown_schedule"
@@ -46,34 +46,52 @@ TASK_2_COMMAND_1="shutdown -r 01:00 'apply update'"
 # Auto-generate HINT from commands
 HINT=$(_build_hint)
 
+WATCHER_STOP_FILE="/tmp/.rhcsa_lab_shutdown_watcher_stop"
+MARKER_FILE="/root/.task1_seen"
+
+# HH:MM of the currently pending shutdown, if any (empty if none scheduled)
+_scheduled_hhmm() {
+    local f="/run/systemd/shutdown/scheduled"
+    [[ -f "$f" ]] || return
+    local usec
+    usec=$(sed -n 's/^USEC=//p' "$f" 2>/dev/null)
+    [[ -n "$usec" ]] || return
+    date -d "@$((usec / 1000000))" +%H:%M 2>/dev/null
+}
+
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Cancelling any previously scheduled shutdown...${RESET}"
     shutdown -c &>/dev/null
-    rm -f /root/.task1_seen
+    rm -f "$MARKER_FILE" "$WATCHER_STOP_FILE"
     sleep 0.3
+
+    echo -e "  ${DIM}• Starting a background watcher for Task 1 grading...${RESET}"
+    (
+        while [[ ! -f "$WATCHER_STOP_FILE" ]]; do
+            hhmm=$(_scheduled_hhmm)
+            if [[ -n "$hhmm" ]] && [[ "$hhmm" != "01:00" ]]; then
+                touch "$MARKER_FILE"
+            fi
+            sleep 0.5
+        done
+    ) &>/dev/null &
+    disown
 }
 
 # Check task completion - sets TASK_STATUS array
 check_tasks() {
-    # Task 0: a reboot was scheduled (via +10) at some point - latched with
-    # a marker file, since Task 2's later 01:00 reschedule overwrites this
-    # live state. Requiring "not 01:00" means this can't be satisfied by
-    # skipping straight to Task 2 instead of actually doing Task 1.
-    if [[ -f /root/.task1_seen ]]; then
-        TASK_STATUS[0]="true"
-    elif shutdown --show 2>/dev/null | grep -qi "scheduled" \
-        && ! shutdown --show 2>/dev/null | grep -q "01:00"; then
-        touch /root/.task1_seen
+    # Task 0: a non-01:00 reboot was scheduled at some point - latched by
+    # the background watcher, since Task 2's later 01:00 reschedule
+    # overwrites systemd's own live pending-shutdown state
+    if [[ -f "$MARKER_FILE" ]]; then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
     fi
 
-    # Task 1: a reboot is currently scheduled for 01:00 (checked live, since
-    # this is the final state after rescheduling - a fixed, known clock time
-    # so it can be matched directly, unlike Task 1's relative +10)
-    if shutdown --show 2>/dev/null | grep -q '01:00'; then
+    # Task 1: a reboot is currently scheduled for exactly 01:00
+    if [[ "$(_scheduled_hhmm)" == "01:00" ]]; then
         TASK_STATUS[1]="true"
     else
         TASK_STATUS[1]="false"
@@ -82,9 +100,14 @@ check_tasks() {
 
 # Cleanup the lab environment before exit
 cleanup_lab() {
+    echo -e "  ${DIM}• Stopping the background watcher...${RESET}"
+    touch "$WATCHER_STOP_FILE"
+    sleep 0.6
+    rm -f "$WATCHER_STOP_FILE"
+
     echo -e "  ${DIM}• Cancelling any scheduled shutdown...${RESET}"
     shutdown -c &>/dev/null
-    rm -f /root/.task1_seen
+    rm -f "$MARKER_FILE"
     echo -e "  ${GREEN}✓ Lab environment cleaned up${RESET}"
     sleep 1
 }

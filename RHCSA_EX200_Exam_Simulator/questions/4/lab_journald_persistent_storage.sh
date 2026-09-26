@@ -49,7 +49,13 @@ prepare_lab() {
     echo -e "  ${DIM}• Resetting Storage/SystemMaxUse to a known state...${RESET}"
     sed -i '/^Storage=/d; /^#Storage=/d; /^SystemMaxUse=/d; /^#SystemMaxUse=/d' /etc/systemd/journald.conf
     grep -q '^\[Journal\]' /etc/systemd/journald.conf || echo '[Journal]' >> /etc/systemd/journald.conf
-    sed -i '/^\[Journal\]/a Storage=volatile' /etc/systemd/journald.conf
+    # No Storage= line is (re-)added here on purpose: Task 1's own
+    # `sed -i '/^\[Journal\]/a ...'` insert must be the ONLY Storage= line
+    # afterward, since systemd config files use last-line-wins - a leftover
+    # line here would end up below it and silently override it. Leaving
+    # Storage unset (default "auto") plus no /var/log/journal already
+    # behaves as non-persistent, matching the same starting state.
+    rm -rf /var/log/journal
 
     echo -e "  ${DIM}• Restarting systemd-journald to apply the reset state...${RESET}"
     systemctl restart systemd-journald 2>/dev/null
