@@ -1,716 +1,298 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHCSA Exam Preparation - RHEL 9</title>
-    <style>
-        body {
-            font-family: "Helvetica Neue", Arial, sans-serif;
-            background-color: #121212;
-            color: #eaeaea;
-            margin: 0;
-            display: flex;
-            flex-direction: row;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="6;url=home.html">
+<title>RHCSA Exam Preparation - RHEL 9</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, #1a0000 0%, #000 70%);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+  /* full-screen scanline texture behind the stage, so the backdrop around
+     it (on any screen shape) matches the stage's own CRT look */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px,
+      transparent 2px, transparent 4px
+    );
+    pointer-events: none;
+  }
+  /* fixed 1280x720 design, scaled as one unit to fit the viewport (see
+     fitStage() in the script below) - keeps every element's relative size
+     and position identical to the original design at any screen size */
+  #stage {
+    position: relative;
+    width: 1280px; height: 720px;
+    flex-shrink: 0;
+    transform-origin: center center;
+    background: radial-gradient(circle at center, #1a0000 0%, #000 70%);
+    overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  /* CRT-style scanline texture */
+  #stage::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      to bottom, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px,
+      transparent 2px, transparent 4px
+    );
+    pointer-events: none;
+  }
+  /* boot-up flicker sweep, timed to the title's reveal (see delays below) */
+  #stage::after {
+    content: "";
+    position: absolute; left: 0; right: 0; top: -20%;
+    height: 20%;
+    background: linear-gradient(to bottom, rgba(238,0,0,0.35), transparent);
+  }
+  #stage.ready::after {
+    animation: sweep 0.5s ease-out 2.25s forwards;
+  }
+  @keyframes sweep { to { top: 120%; } }
 
-        /* Left Sidebar */
-        .sidebar {
-            background-color: #cc0000;
-            color: #fff;
-            width: 20%;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            position: fixed;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Center content vertically */
-            align-items: center;
-        }
+  /* Badge: pops in big below the logo, then shrinks down to its footer spot */
+  #badgeHero {
+    position: absolute;
+    left: 640px; top: 499px;
+    width: 10px; height: 10px;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    border-radius: 18px;
+    pointer-events: none;
+    filter: drop-shadow(0 0 0 rgba(238,0,0,0));
+  }
+  #stage.ready #badgeHero {
+    animation: heroBadge 1.6s 0.05s forwards;
+  }
+  @keyframes heroBadge {
+    0%   { left: 640px; top: 499px; width: 10px;  height: 10px;  opacity: 0; filter: drop-shadow(0 0 0 rgba(238,0,0,0)); animation-timing-function: cubic-bezier(.34,1.56,.64,1); }
+    44%  { left: 640px; top: 499px; width: 380px; height: 380px; opacity: 1; filter: drop-shadow(0 0 55px rgba(238,0,0,0.7)); animation-timing-function: ease-in-out; }
+    63%  { left: 640px; top: 499px; width: 380px; height: 380px; opacity: 1; filter: drop-shadow(0 0 55px rgba(238,0,0,0.7)); animation-timing-function: ease-in-out; }
+    90%  { left: 344px; top: 641px; width: 40px;  height: 40px;  opacity: 1; filter: drop-shadow(0 0 8px rgba(238,0,0,0.4)); }
+    100% { left: 344px; top: 641px; width: 40px;  height: 40px;  opacity: 0; filter: drop-shadow(0 0 8px rgba(238,0,0,0.4)); }
+  }
 
-        table {
-            width: 70%;
-            text-align: center;
-            border-collapse: collapse;
-        }
+  /* Logo: pops in at its normal centered spot, in sync with the badge below it */
+  #logo {
+    width: 220px; height: 220px;
+    opacity: 0; transform: scale(0.4) rotate(-25deg);
+    filter: drop-shadow(0 0 25px rgba(238,0,0,0.8));
+  }
+  #stage.ready #logo {
+    animation: pop 0.7s cubic-bezier(.34,1.56,.64,1) 0.05s forwards,
+               breathe 2.4s ease-in-out 1.65s infinite;
+  }
+  @keyframes pop { to { opacity: 1; transform: scale(1) rotate(0deg); } }
+  @keyframes breathe {
+    0%, 100% { filter: drop-shadow(0 0 22px rgba(238,0,0,0.75)); }
+    50% { filter: drop-shadow(0 0 42px rgba(238,0,0,1)); }
+  }
 
-        td {
-            font-weight: bold;
-            padding: 2px 0;
-            width: 70%;
-            color: white;
-        }
+  #titleWrap { position: relative; margin-top: 26px; }
+  #title {
+    font-size: 78px;
+    font-weight: 800;
+    letter-spacing: 22px;
+    color: #ee0000;
+    text-shadow: 0 0 10px rgba(238,0,0,0.9), 0 0 30px rgba(238,0,0,0.6);
+    opacity: 0;
+    transform: translateY(20px);
+    text-align: center;
+    line-height: 1.15;
+  }
+  #stage.ready #title {
+    animation: titleIn 0.75s cubic-bezier(.2,.8,.2,1) 2.25s forwards;
+  }
+  @keyframes titleIn {
+    to { opacity: 1; transform: translateY(0); letter-spacing: 6px; }
+  }
+  /* separate overlay so the sweep clips without cutting off the title's glow */
+  #shineOverlay {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  #shineOverlay::after {
+    content: "";
+    position: absolute; top: 0; left: -60%; width: 35%; height: 100%;
+    background: linear-gradient(75deg, transparent, rgba(255,255,255,0.6), transparent);
+    transform: skewX(-20deg);
+    opacity: 0;
+  }
+  #stage.ready #shineOverlay::after {
+    animation: shine 0.6s ease-in-out 3s forwards;
+  }
+  @keyframes shine {
+    0% { left: -60%; opacity: 0; }
+    15% { opacity: 1; }
+    100% { left: 130%; opacity: 0; }
+  }
 
-        .image-container img, .image-container-bottom img {
-            width: 100%;
-            height: auto;
-        }
+  #tagline {
+    margin-top: 18px;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 5px;
+    color: #ddd;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  #stage.ready #tagline {
+    animation: riseIn 0.55s ease-out 3.05s forwards;
+  }
+  @keyframes riseIn { to { opacity: 1; transform: translateY(0); } }
 
-        .redhat {
-            font-size: 3.3vw;
-            color: white;
-        }
+  #terminalLine {
+    margin-top: 16px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 22px;
+    color: #eee;
+    white-space: nowrap;
+  }
+  #subtitle {
+    display: inline-block;
+    overflow: hidden;
+    width: 0;
+    vertical-align: middle;
+  }
+  #stage.ready #subtitle {
+    animation: typing 0.6s steps(17, end) 3.65s forwards;
+  }
+  @keyframes typing { to { width: 17ch; } }
 
-        .line {
-            height: 0.2vw;
-            width: 100%;
-            background-color: white;
-            margin: 0;
-            padding: 0;
-        }
+  #cursor {
+    display: inline-block;
+    width: 12px; height: 24px;
+    background: #ee0000;
+    margin-left: 4px;
+    vertical-align: middle;
+    opacity: 0;
+  }
+  #stage.ready #cursor {
+    animation: blink 0.8s steps(1) 3.65s infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        .certified {
-            font-size: 2vw;
-            letter-spacing: 0.15em;
-            color: white;
-        }
+  #divider {
+    margin-top: 22px;
+    width: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, #ee0000, transparent);
+  }
+  #stage.ready #divider {
+    animation: drawLine 0.45s ease-out 4.3s forwards;
+  }
+  @keyframes drawLine { to { width: 260px; } }
 
-        .system {
-            font-size: 2.9vw;
-            letter-spacing: 0.1em;
-            font-weight: normal;
-            color: white;
-        }
+  #footer {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  #badge {
+    height: 40px;
+    width: auto;
+    opacity: 0;
+  }
+  #stage.ready #badge {
+    animation: fadeIn 0.35s ease-out 1.45s forwards;
+  }
+  #footer span {
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: #999;
+    text-transform: uppercase;
+    opacity: 0;
+  }
+  #stage.ready #footer span {
+    animation: fadeIn 0.4s ease-out 1.75s forwards;
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
 
-        .admin {
-            font-size: 1.35vw;
-            letter-spacing: 0.1em;
-            color: white;
-        }
-
-        /* Right Sidebar (Tabs) */
-        .objectives-sidebar {
-            background-color: #1a1a1a;
-            color: #fff;
-            width: 20%;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-            position: fixed;
-            right: 0;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Center content vertically */
-            align-items: center; /* Align items centrally */
-        }
-
-        .tabs {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            border-bottom: 1px solid #333;
-        }
-
-        .tabs div {
-            padding: 10px;
-            background-color: #1a1a1a;
-            text-align: left;
-            border-bottom: 1px solid #333;
-            color: #eaeaea;
-            cursor: pointer;
-        }
-
-        .tabs div:hover {
-            background-color: #333;
-        }
-
-        .tabs div.active {
-            background-color: #cc0000;
-        }
-
-        /* Main Content */
-        .main-content {
-            width: 60%;
-            margin-left: 20%;
-            margin-right: 20%;
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: #282424;
-        }
-
-        h2 {
-            color: #ffc107;
-        }
-
-        p {
-            line-height: 1.8;
-        }
-        h3, h4, strong {
-            color: #ffc107;
-        }
-        section {
-            padding: 20px 0;
-            border-bottom: 1px solid #333;
-        }
-
-        /* Tab Content */
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background-color: #383434;
-            color: #eaeaea;
-            margin-top: 10px;
-            border-radius: 15px; /* Curved corners */
-            overflow: hidden;
-            position: relative;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Profile-like Image */
-        .profile-image img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%; /* Circular shape */
-            position: absolute;
-            top: 10px; /* Moved image slightly upward */
-            left: 20px;
-        }
-
-        /* Gradual Button Appearance */
-        .gradual-buttons {
-            display: flex;
-            flex-direction: column; /* Arrange buttons in a column */
-            justify-content: flex-start; /* Align buttons to the left */
-            gap: 10px; /* Space between buttons */
-            margin-top: 20px;
-        }
-
-        .gradual-buttons button {
-            display: block; /* Ensure buttons behave like block elements */
-            text-align: left; /* Align text to the left */
-            background-color: #1a1a1a;
-            color: #ffffff;
-            border: 1px solid transparent; /* Optional: Makes the border more visible if needed */
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold; /* Make text bold */
-            transition: background-color 0.7s ease;
-        }
-
-        .gradual-buttons button:hover {
-            background-color: #cc0000;
-            color: #ffffff;
-        }
-
-        /* Markdown Container */
-        .markdown-container {
-            background-color: #2e2f34;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-            margin-top: 20px;
-        }
-
-        /* Code block styling */
-        pre, code {
-            background-color: #2d2d2d;
-            color: #00ff7f;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 5px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        pre {
-            padding: 15px;
-            white-space: pre-wrap;
-            line-height: 1.5;
-        }
-        code {
-            padding: 2px 4px;
-        }
-
-        /* Collapsible details/summary styling */
-        details {
-            background-color: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            margin: 15px 0;
-            padding: 0;
-            overflow: hidden;
-        }
-        details summary {
-            background-color: #cc0000;
-            color: #fff;
-            padding: 12px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            list-style: none;
-            display: flex;
-            align-items: center;
-            transition: background-color 0.3s ease;
-        }
-        details summary::-webkit-details-marker {
-            display: none;
-        }
-        details summary::before {
-            content: "▶ ";
-            margin-right: 8px;
-            transition: transform 0.3s ease;
-        }
-        details[open] summary::before {
-            content: "▼ ";
-        }
-        details summary:hover {
-            background-color: #aa0000;
-        }
-        details > *:not(summary) {
-            padding: 15px;
-        }
-        details pre {
-            margin: 0;
-            border-radius: 0;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar, .objectives-sidebar {
-                width: 100%;
-                position: relative;
-            }
-
-            .main-content {
-                width: 100%;
-                margin-left: 0;
-                margin-right: 0;
-                padding: 10px;
-            }
-
-            .tabs div {
-                font-size: 1.1em;
-            }
-
-            .tabs {
-                width: 100%;
-                flex-direction: row;
-                overflow-x: scroll;
-            }
-
-            .tab-content {
-                padding: 10px;
-            }
-
-            .line {
-                height: 1px;
-                width: 100%;
-            }
-
-            .redhat {
-                font-size: 14vw;
-            }
-
-            .certified {
-                font-size: 8.5vw;
-            }
-
-            .system {
-                font-size: 12vw;
-            }
-
-            .admin {
-                font-size: 5.5vw;
-            }
-        }
-
-        /* Lightbox Styles */
-        .lightbox-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-        .lightbox-overlay.active {
-            display: flex;
-        }
-        .lightbox-overlay img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 5px;
-            box-shadow: 0 0 30px rgba(255,255,255,0.3);
-        }
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 40px;
-            cursor: pointer;
-        }
-    </style>
+  @media (max-width: 768px) {
+    /* taller canvas on mobile so the relocated badge (below) has room */
+    #stage {
+      height: 1200px;
+      box-sizing: border-box;
+      justify-content: flex-start;
+      padding-top: 60px;
+    }
+    #logo {
+      width: 320px;
+      height: 320px;
+    }
+    /* stays at its full pop-in size and settles below the footer text,
+       instead of shrinking away into the small footer badge - peak sits
+       lower than on desktop so it clears the taller mobile logo above it */
+    @keyframes heroBadgeMobile {
+      0%   { left: 640px; top: 620px; width: 10px;  height: 10px;  opacity: 0; filter: drop-shadow(0 0 0 rgba(238,0,0,0)); animation-timing-function: cubic-bezier(.34,1.56,.64,1); }
+      44%  { left: 640px; top: 620px; width: 380px; height: 380px; opacity: 1; filter: drop-shadow(0 0 55px rgba(238,0,0,0.7)); animation-timing-function: ease-in-out; }
+      63%  { left: 640px; top: 620px; width: 380px; height: 380px; opacity: 1; filter: drop-shadow(0 0 55px rgba(238,0,0,0.7)); animation-timing-function: ease-in-out; }
+      100% { left: 640px; top: 966px; width: 380px; height: 380px; opacity: 1; filter: drop-shadow(0 0 55px rgba(238,0,0,0.7)); }
+    }
+    #stage.ready #badgeHero {
+      animation-name: heroBadgeMobile;
+    }
+    /* the big badge now permanently covers this role below the text */
+    #badge {
+      display: none;
+    }
+  }
+</style>
 </head>
 <body>
-    <!-- Left Sidebar -->
-    <div class="sidebar">
-        <table>
-            <tr class="image-container">
-                <td><img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/redhat.png?raw=true" alt="RedHat Logo"></td>
-            </tr>
-            <tr>
-                <td class="redhat">Red Hat</td>
-            </tr>
-            <tr>
-                <td><div class="line"></div></td>
-            </tr>
-            <tr>
-                <td class="certified">CERTIFIED</td>
-            </tr>
-            <tr>
-                <td class="system">SYSTEM</td>
-            </tr>
-            <tr>
-                <td class="admin">ADMINISTRATOR</td>
-            </tr>
-            <tr class="image-container-bottom">
-                <td>
-                    <a href="https://www.credly.com/badges/fff62969-d5cf-4e57-b4a3-856c2a0b12a9" target="_blank">
-                        <img src="https://images.credly.com/size/340x340/images/572de0ba-2c59-4816-a59d-b0e1687e45ee/image.png" alt="RHCSA Badge">
-                    </a>
-                </td>
-            </tr>
-            
-            <tr class="image-container-bottom">
-                <td>
-                    <a href="https://www.youtube.com/@RHCSA_EX200" target="_blank">
-                        <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/youtube-button.png?raw=true" alt="Youtube Channel">
-                    </a>
-                </td>
-            </tr>
-        </table>
+  <div id="stage">
+    <img id="badgeHero" src="photos/badge.png" alt="">
+    <img id="logo" src="photos/redhat.png" alt="logo">
+    <div id="titleWrap">
+      <div id="title">FREE RHCSA<br>EXAM SIMULATOR</div>
+      <div id="shineOverlay"></div>
     </div>
-
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <h1 style="text-align: center;">RHCSA (EX200) Exam Preparation Full Course<br><span style="font-size: 0.7em;">+ FREE Exam Simulator & Mock Exam & Hands-on Labs</span></h1>
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="Introduction" class="tab-content">
-            <h3>Everything You Need to Pass the RHCSA EX200 Exam</h3>
-            
-            <p>On the right menu, you'll find all <strong>updated exam topics based on RHEL 10</strong>, fully explained with practice questions and answers. You can also install the <strong>FREE Exam Simulator</strong> below.</p>
-           
-            <!-- Demo GIF -->
-            <div style="text-align: center; margin: 20px 0;">
-                <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/demo.gif?raw=true" 
-                     alt="RHCSA Exam Simulator Demo" 
-                     style="max-width: 100%; max-height: 400px; cursor: pointer; border: 2px solid #cc0000; border-radius: 8px; box-shadow: 0 4px 15px rgba(204, 0, 0, 0.3);" 
-                     onclick="openLightbox(this.src)"
-                     title="Click to enlarge">
-            </div>
-
-            <hr style="border: 1px solid #444; margin: 20px 0;">
-            
-            <p><strong>Install RHCSA Exam Simulator:</strong></p>
-            <p>Requirements: CentOS Stream 10, 2 NICs (Bridge mode), 20GB for / + 4 additional 5GB disks</p>
-            
-            <div style="display: flex; align-items: center; gap: 15px; margin: 15px 0;">
-                <pre style="background: #1e1e1e; color: #dcdcdc; padding: 15px; border-radius: 5px; margin: 0; flex-grow: 1; white-space: nowrap; overflow-x: auto;"><code id="install-cmd">curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh | sudo bash</code></pre>
-                <button onclick="copyToClipboard()" style="background: #cc0000; color: white; border: none; padding: 15px 25px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 16px; font-weight: bold;">📋 Copy</button>
-            </div>
-            
-            <hr style="border: 1px solid #444; margin: 20px 0;">
-            
-            <div style="display: flex; gap: 30px; margin-top: 20px;">
-                <!-- Left column - Donate -->
-                <div style="flex: 1; text-align: center;">
-                    <a href="https://www.paypal.com/donate/?business=GT533LD7M3694&no_recurring=1&item_name=Founder+of+RHCSA.GitHub.io&currency_code=CAD" target="_blank" style="display: inline-block;">
-                        <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/DonateLogo.png?raw=true" alt="Donate" style="max-width: 200px; border-radius: 5px; display: block;">
-                        <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/DonateQRCode.png?raw=true" alt="Donate QR Code" style="max-width: 200px; border-radius: 5px; display: block;">
-                    </a>
-                </div>
-                <!-- Right column - Certificate -->
-                <div style="flex: 1; text-align: center;">
-                    <p style="margin-top: 10px; font-weight: bold; color: #ffc107;">Official RHCSA Certificate</p>
-                    <img src="https://github.com/RHCSA/RHCSA.github.io/blob/main/photos/Red_Hat_Certified_System_Administrator_RHCSA.jpg?raw=true" alt="RHCSA Certificate" style="max-width: 200px; cursor: pointer; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); border-radius: 5px;" onclick="openLightbox(this.src)">
-                    <p><a href="#" onclick="openContributePopup(); return false;" style="color: #ffc107; font-weight: bold;">Want to contribute?</a></p>
-                </div>
-            </div>
-            
-            <hr style="border: 1px solid #444; margin: 20px 0;">
-                        
-            <script src="https://giscus.app/client.js"
-                    data-repo="RHCSA/RHCSA.github.io"
-                    data-repo-id="R_kgDONAJnuw"
-                    data-category="Announcements"
-                    data-category-id="DIC_kwDONAJnu84C27tX"
-                    data-mapping="pathname"
-                    data-strict="0"
-                    data-reactions-enabled="0"
-                    data-emit-metadata="0"
-                    data-input-position="bottom"
-                    data-theme="dark_high_contrast"
-                    data-lang="en"
-                    crossorigin="anonymous"
-                    async>
-            </script>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter1" class="tab-content">
-            <h2>Chapter 01: Understand and use essential tools:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/01-Access-Shell-Prompt-Issue-Commands.md', 'chapter1')">01- Access a shell prompt and issue commands with correct syntax</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/02-Input-Output-Redirection.md', 'chapter1')">02- Use input-output redirection</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/03-Grep-Regular-Expressions.md', 'chapter1')">03- Use grep and regular expressions to analyze text</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/04-Access-Remote-Systems-SSH.md', 'chapter1')">04- Access remote systems using SSH</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/05-Login-Switch-Users-Multiuser-Targets.md', 'chapter1')">05- Log in and switch users in multiuser targets</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/06-Archive-Compress-Unpack-Files.md', 'chapter1')">06- Archive, compress, unpack, and uncompress files using tar, gzip, and bzip2</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/07-Create-Edit-Text-Files.md', 'chapter1')">07- Create and edit text files</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/08-Create-Delete-Copy-Move-Files-Directories.md', 'chapter1')">08- Create, delete, copy, and move files and directories</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/09-Create-Hard-Soft-Links.md', 'chapter1')">09- Create hard and soft links</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/10-List-Set-Change-Permissions.md', 'chapter1')">10- List, set, and change standard ugo rwx permissions</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/01-%20Understand%20and%20use%20essential%20tools/11-Locate-Read-Use-System-Documentation.md', 'chapter1')">11- Locate, read, and use system documentation including man, info, and files in usr share doc</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter2" class="tab-content">
-            <h2>Chapter 02: Manage software:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/02-%20Manage%20software/01-Configure-Access-RPM-Repositories.md', 'chapter2')">01- Configure and manage access to RPM repositories</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/02-%20Manage%20software/02-Install-Remove-RPM-Packages.md', 'chapter2')">02- Install and remove RPM packages using DNF</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/02-%20Manage%20software/03-Configure-Access-Flatpak-Repositories.md', 'chapter2')">03- Configure and manage access to Flatpak repositories</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/02-%20Manage%20software/04-Install-Remove-Flatpak-Packages.md', 'chapter2')">04- Install and remove Flatpak packages</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter3" class="tab-content">
-            <h2>Chapter 03: Create simple shell scripts:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/03-%20Create%20simple%20shell%20scripts/01-Conditionally-Execute-Code.md', 'chapter3')">01- Conditionally execute code (use of if, test, [], etc.)</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/03-%20Create%20simple%20shell%20scripts/02-Use-Looping-Constructs.md', 'chapter3')">02- Use looping constructs (for, etc.) to process file and command line input</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/03-%20Create%20simple%20shell%20scripts/03-Process-Script-Inputs.md', 'chapter3')">03- Process script inputs ($1, $2, etc.)</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/03-%20Create%20simple%20shell%20scripts/04-Process-Command-Output.md', 'chapter3')">04- Processing output of shell commands within a script</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter4" class="tab-content">
-            <h2>Chapter 04: Operate running systems:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/01-Boot-Reboot-Shutdown-System.md', 'chapter4')">01- Boot, reboot, and shut down a system normally</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/02-Boot-Systems-Different-Targets.md', 'chapter4')">02- Boot systems into different targets manually</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/03-Interrupt-Boot-Process-Gain-Access.md', 'chapter4')">03- Interrupt the boot process in order to gain access to a system</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/04-Identify-Kill-Processes.md', 'chapter4')">04- Identify CPU and memory intensive processes and kill processes</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/05-Adjust-Process-Scheduling.md', 'chapter4')">05- Adjust process scheduling</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/06-Manage-Tuning-Profiles.md', 'chapter4')">06- Manage tuning profiles</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/07-Locate-Interpret-Logs-Journals.md', 'chapter4')">07- Locate and interpret system log files and journals</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/08-Preserve-System-Journals.md', 'chapter4')">08- Preserve system journals</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/09-Start-Stop-Check-Network-Services.md', 'chapter4')">09- Start, stop, and check the status of network services</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/04-%20Operate%20running%20systems/10-Securely-Transfer-Files.md', 'chapter4')">10- Securely transfer files between systems</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter5" class="tab-content">
-            <h2>Chapter 05: Configure local storage:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/05-%20Configure%20local%20storage/01-GPT-Partitions.md', 'chapter5')">01- List, create, delete partitions on MBR and GPT disks</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/05-%20Configure%20local%20storage/02-Physical-Volumes.md', 'chapter5')">02- Create and remove physical volumes</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/05-%20Configure%20local%20storage/03-Volume-Groups.md', 'chapter5')">03- Assign physical volumes to volume groups</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/05-%20Configure%20local%20storage/04-Logical-Volumes.md', 'chapter5')">04- Create and delete logical volumes</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/05-%20Configure%20local%20storage/05-Mount-UUID-Label.md', 'chapter5')">05- Configure systems to mount file systems at boot by UUID or label</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/05-%20Configure%20local%20storage/06-Add-Partitions-LV-Swap.md', 'chapter5')">06- Add new partitions, logical volumes, and swap non-destructively</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter6" class="tab-content">
-            <h2>Chapter 06: Create and configure file systems:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/06-%20Create%20and%20configure%20file%20systems/01-VFAT-ext4-XFS-Filesystems.md', 'chapter6')">01- Create, mount, unmount, and use vfat, ext4, and xfs file systems</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/06-%20Create%20and%20configure%20file%20systems/02-NFS-Mount.md', 'chapter6')">02- Mount and unmount network file systems using NFS</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/06-%20Create%20and%20configure%20file%20systems/03-Configure-Autofs.md', 'chapter6')">03- Configure autofs</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/06-%20Create%20and%20configure%20file%20systems/04-Extend-Logical-Volumes.md', 'chapter6')">04- Extend existing logical volumes</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/06-%20Create%20and%20configure%20file%20systems/05-File-Permission-Problems.md', 'chapter6')">05- Diagnose and correct file permission problems</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter7" class="tab-content">
-            <h2>Chapter 07: Deploy, configure, and maintain systems:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/07-%20Deploy%2C%20configure%2C%20and%20maintain%20systems/01-Schedule-Tasks.md', 'chapter7')">01- Schedule tasks using at and cron</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/07-%20Deploy%2C%20configure%2C%20and%20maintain%20systems/02-Start-Stop-Services.md', 'chapter7')">02- Start and stop services and configure services to start automatically at boot</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/07-%20Deploy%2C%20configure%2C%20and%20maintain%20systems/03-Boot-Target.md', 'chapter7')">03- Configure systems to boot into a specific target automatically</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/07-%20Deploy%2C%20configure%2C%20and%20maintain%20systems/04-Time-Service-Clients.md', 'chapter7')">04- Configure time service clients</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/07-%20Deploy%2C%20configure%2C%20and%20maintain%20systems/05-Software-Packages.md', 'chapter7')">05- Install and update software packages from Red Hat Network or remote repository</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/07-%20Deploy%2C%20configure%2C%20and%20maintain%20systems/06-System-Bootloader.md', 'chapter7')">06- Modify the system bootloader</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter8" class="tab-content">
-            <h2>Chapter 08: Manage basic networking:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/08-%20Manage%20basic%20networking/01-Configure-IPv4-IPv6-Addresses.md', 'chapter8')">01- Configure IPv4 and IPv6 addresses</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/08-%20Manage%20basic%20networking/02-Configure-Hostname-Resolution.md', 'chapter8')">02- Configure hostname resolution</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/08-%20Manage%20basic%20networking/03-Configure-Network-Services-Boot.md', 'chapter8')">03- Configure network services to start automatically at boot</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/08-%20Manage%20basic%20networking/04-Restrict-Network-Access-Firewalld.md', 'chapter8')">04- Restrict network access using firewall-cmd/firewalld</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter9" class="tab-content">
-            <h2>Chapter 09: Manage users and groups:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/09-%20Manage%20users%20and%20groups/01-Create-Delete-Modify-Users.md', 'chapter9')">01- Create, delete, and modify local user accounts</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/09-%20Manage%20users%20and%20groups/02-Password-Aging.md', 'chapter9')">02- Change passwords and adjust password aging for local user accounts</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/09-%20Manage%20users%20and%20groups/03-Groups-Memberships.md', 'chapter9')">03- Create, delete, and modify local groups and group memberships</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/09-%20Manage%20users%20and%20groups/04-Configure-Privileged-Access.md', 'chapter9')">04- Configure superuser access</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Tab Content with Gradual Buttons -->
-        <div id="chapter10" class="tab-content">
-            <h2>Chapter 10: Manage security:</h2>
-            <div class="gradual-buttons">
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/01-Configure-Firewall-Settings.md', 'chapter10')">01- Configure firewall settings using firewall-cmd/firewalld</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/02-Default-File-Permissions.md', 'chapter10')">02- Manage default file permissions</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/03-SSH-Key-Authentication.md', 'chapter10')">03- Configure key-based authentication for SSH</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/04-SELinux-Modes.md', 'chapter10')">04- Set enforcing and permissive modes for SELinux</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/05-SELinux-Context.md', 'chapter10')">05- List and identify SELinux file and process context</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/06-Restore-File-Contexts.md', 'chapter10')">06- Restore default file contexts</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/07-SELinux-Port-Labels.md', 'chapter10')">07- Manage SELinux port labels</button>
-                <button onclick="loadMarkdown('https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/refs/heads/main/contents/10-%20Manage%20security/08-SELinux-Booleans.md', 'chapter10')">08- Use boolean settings to modify system SELinux settings</button>
-            </div>
-            <div class="markdown-container">
-                <div class="text-content"></div>
-            </div>
-        </div>
-
-        <!-- Add other chapters and contents as needed -->
-
+    <div id="tagline">Mock Exams &amp; Hands-on Labs</div>
+    <div id="terminalLine"><span id="subtitle">$ rhcsa.github.io</span><span id="cursor"></span></div>
+    <div id="divider"></div>
+    <div id="footer">
+      <img id="badge" src="photos/badge.png" alt="badge">
+      <span>RedHat Certified System Administrator (RHCSA) - EX200 exam</span>
     </div>
+  </div>
+<script>
+// Scale the fixed 1280x720 stage to fit the viewport (letterboxed onto the
+// full-screen background on mismatched aspect ratios) - keeps every
+// element's relative size and position identical to the original design,
+// just displayed larger or smaller as a single unit.
+const stage = document.getElementById('stage');
 
-    <!-- Right Sidebar for Tabs -->
-    <div class="objectives-sidebar">
-        <div class="tabs">
-            <div class="tab" onclick="openTab(event, 'Introduction')">Introduction</div>
-            <div class="tab" onclick="openTab(event, 'chapter1')">Chapter 01: Understand and use essential tools</div>
-            <div class="tab" onclick="openTab(event, 'chapter2')">Chapter 02: Manage software</div>
-            <div class="tab" onclick="openTab(event, 'chapter3')">Chapter 03: Create simple shell scripts</div>
-            <div class="tab" onclick="openTab(event, 'chapter4')">Chapter 04: Operate running systems</div>
-            <div class="tab" onclick="openTab(event, 'chapter5')">Chapter 05: Configure local storage</div>
-            <div class="tab" onclick="openTab(event, 'chapter6')">Chapter 06: Create and configure file systems</div>
-            <div class="tab" onclick="openTab(event, 'chapter7')">Chapter 07: Deploy, configure, and maintain systems</div>
-            <div class="tab" onclick="openTab(event, 'chapter8')">Chapter 08: Manage basic networking</div>
-            <div class="tab" onclick="openTab(event, 'chapter9')">Chapter 09: Manage users and groups</div>
-            <div class="tab" onclick="openTab(event, 'chapter10')">Chapter 10: Manage security</div>
-        </div>
-    </div>
+// Scale the stage to fit the viewport, using its own current design size
+// (1280x720 on desktop, taller on mobile - see the media query above).
+function fitStage() {
+  const scale = Math.min(window.innerWidth / stage.offsetWidth, window.innerHeight / stage.offsetHeight);
+  stage.style.transform = `scale(${scale})`;
+}
+fitStage();
+window.addEventListener('resize', fitStage);
+window.addEventListener('orientationchange', fitStage);
 
-    <!-- JavaScript for Tab Navigation and Typing Effect -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        // Lightbox function for certificate image
-        function openLightbox(src) {
-            const overlay = document.createElement('div');
-            overlay.className = 'lightbox-overlay active';
-            overlay.innerHTML = '<span class="lightbox-close">&times;</span><img src="' + src + '" alt="RHCSA Certificate">';
-            overlay.onclick = function() { document.body.removeChild(overlay); };
-            document.body.appendChild(overlay);
-        }
+// Hold the animation start until every photo has actually finished loading.
+const photos = Array.from(stage.querySelectorAll('img'));
+Promise.all(photos.map((img) => img.complete ? Promise.resolve() : new Promise((resolve) => {
+  img.addEventListener('load', resolve, { once: true });
+  img.addEventListener('error', resolve, { once: true });
+}))).then(() => stage.classList.add('ready'));
 
-        // Copy to clipboard function
-        function copyToClipboard() {
-            const cmd = document.getElementById('install-cmd').textContent;
-            navigator.clipboard.writeText(cmd).then(function() {
-                const btn = event.target;
-                btn.textContent = 'Copied!';
-                setTimeout(function() { btn.textContent = '📋 Copy'; }, 2000);
-            });
-        }
-
-        // Contribute popup function
-        function openContributePopup() {
-            const overlay = document.createElement('div');
-            overlay.className = 'lightbox-overlay active';
-            overlay.innerHTML = '<span class="lightbox-close">&times;</span><div style="background: #1a1a1a; padding: 30px; border-radius: 10px; max-width: 500px; text-align: center;"><h3 style="color: #ffc107; margin-bottom: 15px;">Want to Contribute?</h3><p style="color: #eaeaea;">You can do your contribution in a feature branch and make a Pull Request to this repo:</p><p><a href="https://github.com/RHCSA/RHCSA.github.io" target="_blank" style="color: #cc0000; font-weight: bold;">https://github.com/RHCSA/RHCSA.github.io</a></p></div>';
-            overlay.onclick = function(e) { if (e.target === overlay || e.target.className === 'lightbox-close') document.body.removeChild(overlay); };
-            document.body.appendChild(overlay);
-        }
-
-        function openTab(evt, tabName) {
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => content.classList.remove('active'));
-
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
-
-            const contentElement = document.getElementById(tabName);
-            contentElement.classList.add('active');
-            evt.currentTarget.classList.add('active');
-        }
-
-        function loadMarkdown(url, tabId) {
-            const contentDiv = document.querySelector(`#${tabId} .text-content`);
-            contentDiv.innerHTML = "<p>Loading...</p>";
-
-            // Configure marked to allow HTML passthrough
-            marked.setOptions({
-                breaks: true,
-                gfm: true
-            });
-
-            fetch(url)
-                .then(response => response.text())
-                .then(data => {
-                    const htmlContent = marked.parse(data);
-                    // Render full content immediately to preserve HTML tags like <details>
-                    contentDiv.innerHTML = htmlContent;
-                })
-                .catch(error => {
-                    console.error('Error fetching content:', error);
-                    contentDiv.innerHTML = "<p>Error loading content.</p>";
-                });
-        }
-
-        // Set default active tab on page load
-        document.querySelector('.tabs .tab').click();
-    </script>
+// Redirect to the real site after the intro; the meta refresh above covers
+// this too when JS is disabled.
+setTimeout(() => { window.location.replace('home.html'); }, 6000);
+</script>
 </body>
 </html>
-
-
