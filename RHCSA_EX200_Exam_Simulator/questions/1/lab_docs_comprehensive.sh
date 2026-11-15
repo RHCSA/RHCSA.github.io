@@ -35,9 +35,9 @@ TASK_4_HINT="Use help command for shell builtins"
 TASK_4_COMMAND_1="help alias > /tmp/exam/alias_help.txt"
 
 # Task 5
-TASK_5_QUESTION="List first 10 doc files for coreutils, save to /tmp/exam/coreutils_docs.txt"
-TASK_5_HINT="rpm -qd lists doc files, pipe to head for first 10"
-TASK_5_COMMAND_1="rpm -qd coreutils | head -10 > /tmp/exam/coreutils_docs.txt"
+TASK_5_QUESTION="List first 10 doc files of the coreutils documentation package (coreutils-common), save to /tmp/exam/coreutils_docs.txt"
+TASK_5_HINT="On RHEL 8/9 the coreutils docs ship in coreutils-common; rpm -qd lists doc files, pipe to head for first 10"
+TASK_5_COMMAND_1="rpm -qd coreutils-common | head -10 > /tmp/exam/coreutils_docs.txt"
 
 
 # Auto-generate HINT from commands
