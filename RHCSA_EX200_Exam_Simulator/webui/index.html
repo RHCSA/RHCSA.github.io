@@ -298,10 +298,10 @@
             display: flex;
         }
 
-        /* Scrollable content area */
+        /* Content area (header + task pager) */
         .lab-content {
             flex: 1;
-            overflow-y: auto;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             min-height: 0;
@@ -321,61 +321,425 @@
             line-height: 1.4;
         }
 
-        /* Tasks Section */
-        .lab-tasks {
-            padding: 15px;
-            background-color: #1a1a1a;
-            flex: 1;
+        /* Real labs: the header shrinks to a short lab title above the task pager */
+        .lab-view:not(.non-lab-mode) .lab-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #333;
         }
 
-        .tasks-title {
-            color: #888;
+        .lab-view:not(.non-lab-mode) .lab-question {
             font-size: 0.85em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            font-weight: 500;
+            line-height: 1.35;
         }
 
-        .task-item {
-            background-color: #252525;
+        /* ==================== TASK PAGER (one task per slide) ==================== */
+        .task-pager {
+            --seg-pending: #ffffff;
+            --seg-passed: #2fc760;
+            --seg-failed: #e5393b;
+            --seg-skipped: #9a9ea6;
+            --seg-current: #1aa6ff;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background-color: #171717;
+        }
+
+        .lab-view.non-lab-mode .task-pager {
+            display: none;
+        }
+
+        .pager-top {
+            flex-shrink: 0;
+            padding: 18px 20px 14px;
+            text-align: center;
+        }
+
+        .task-counter {
+            font-size: 1.3em;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        /* Segmented progress bar: one segment per task, colored by task state */
+        .task-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 12px;
+            margin-top: 16px;
+        }
+
+        .task-seg {
+            position: relative;
+            flex: 1 1 0;
+            max-width: 46px;
+            height: 6px;
+            padding: 0;
+            border: none;
             border-radius: 6px;
-            margin-bottom: 10px;
+            background-color: var(--seg-pending);
+            cursor: pointer;
+            transition: background-color 0.3s, height 0.2s;
+        }
+
+        /* Invisible larger click area around the thin bar, reaching halfway into the gaps */
+        .task-seg::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: -4px;
+            bottom: -10px;
+            left: -4px;
+        }
+
+        .task-seg:not(.current):hover { height: 9px; }
+        .task-seg:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+        .task-seg.passed { background-color: var(--seg-passed); }
+        .task-seg.failed { background-color: var(--seg-failed); }
+        .task-seg.skipped { background-color: var(--seg-skipped); }
+
+        .task-seg.current {
+            height: 12px;
+            background-color: var(--seg-current);
+            border: 2px solid #fff;
+        }
+
+        /* Slides sit side by side; the track slides left or right between them */
+        .task-viewport {
+            position: relative;
+            flex: 1;
+            min-height: 0;
             overflow: hidden;
         }
 
-        .task-main {
+        .task-track {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
             display: flex;
-            align-items: flex-start;
-            padding: 10px;
+            transition: transform 0.45s cubic-bezier(0.65, 0.05, 0.25, 1);
         }
 
-        .task-status-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
+        .task-slide {
+            flex: 0 0 100%;
+            min-width: 0;
+            height: 100%;
+            overflow-y: auto;
+            padding: 8px 24px 20px;
+        }
+
+        .task-info-icon {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 12px;
+            border-radius: 50%;
+            background-color: #d9d9d9;
+            color: #171717;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font: italic 700 17px Georgia, serif;
+        }
+
+        .task-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #e8e8e8;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .task-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 16px;
+            border: none;
+            border-radius: 999px;
+            font-family: inherit;
+            font-size: 0.95em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.25s, transform 0.15s;
+        }
+
+        .task-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
             flex-shrink: 0;
         }
 
-        .task-status-icon.pending { fill: #555; }
-        .task-status-icon.complete { fill: #28a745; }
-        .task-status-icon.failed { fill: #dc3545; }
+        .task-btn:hover:not(:disabled) { transform: translateY(-1px); }
+        .task-btn:active:not(:disabled) { transform: scale(0.98); }
+        .task-btn:disabled { cursor: default; }
 
-        .task-text {
-            flex: 1;
-            font-size: 0.9em;
-            line-height: 1.5;
+        .task-btn-hint { background-color: #ffc107; color: #000; }
+        .task-btn-hint:hover:not(:disabled),
+        .task-btn-hint.active { background-color: #e0a800; }
+
+        .task-btn-verify { background-color: #0d6efd; color: #fff; }
+        .task-btn-verify:hover:not(:disabled) { background-color: #0b5ed7; }
+        .task-btn-verify.verifying { background-color: #0b5ed7; }
+        .task-btn-verify.passed { background-color: #28a745; }
+        .task-btn-verify.passed:hover:not(:disabled) { background-color: #218838; }
+        .task-btn-verify.failed { background-color: #dc3545; animation: btnShake 0.45s; }
+        .task-btn-verify.pop { animation: btnPop 0.5s; }
+
+        .btn-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        /* Task Hint (inline under task) */
+        @keyframes btnPop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes btnShake {
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .verify-msg {
+            min-height: 1.3em;
+            margin-top: 10px;
+            font-size: 0.85em;
+            text-align: center;
+            color: #ff7b7b;
+        }
+
+        /* Previous / Skip links, bottom right */
+        .task-nav {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 22px;
+            padding: 8px 24px 14px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 2px;
+            background: none;
+            border: none;
+            color: #1aa6ff;
+            font-family: inherit;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover { color: #6cc4ff; }
+        .nav-link[hidden] { display: none; }
+
+        .nav-link svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Last slide: results and the End Lab button. The button stays in view
+           while a long list of unfinished tasks scrolls above it. */
+        #taskSummary {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-card {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            padding-top: 16px;
+            text-align: center;
+        }
+
+        .summary-emoji {
+            font-size: 2.6em;
+            line-height: 1.2;
+            animation: btnPop 0.7s;
+        }
+
+        .summary-title {
+            margin-top: 6px;
+            font-size: 1.25em;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .summary-sub {
+            margin-top: 6px;
+            font-size: 0.95em;
+            color: #aaa;
+        }
+
+        .summary-list {
+            flex: 0 1 auto;
+            min-height: 0;
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .summary-row {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background-color: #222;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #ddd;
+            font-family: inherit;
+            font-size: 0.9em;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .summary-row:hover {
+            background-color: #2b2b2b;
+            border-color: #555;
+        }
+
+        .summary-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background-color: var(--seg-pending);
+        }
+
+        .summary-dot.failed { background-color: var(--seg-failed); }
+        .summary-dot.skipped { background-color: var(--seg-skipped); }
+
+        .summary-label {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .summary-state {
+            color: #888;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* End Lab: red outline while tasks are unfinished, solid green once all passed */
+        .task-btn-end {
+            flex: none;
+            width: 100%;
+            margin-top: 20px;
+            background-color: transparent;
+            color: #ff8a8a;
+            border: 1px solid #cc0000;
+        }
+        .task-btn-end:hover:not(:disabled) { background-color: #cc0000; color: #fff; }
+        .task-btn-end.done { background-color: #28a745; border-color: #28a745; color: #fff; }
+        .task-btn-end.done:hover:not(:disabled) { background-color: #218838; border-color: #218838; }
+
+        /* Firework burst when a task passes. It lives on <body> so the card's
+           clipping and the sliding track's transform never affect it. */
+        .fw-layer {
+            position: fixed;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+            z-index: 3000;
+        }
+
+        .fw-particle {
+            position: absolute;
+            left: -3.5px;
+            top: -3.5px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--c);
+            box-shadow: 0 0 6px var(--c);
+            animation: fwBurst var(--t) cubic-bezier(0.12, 0.75, 0.3, 1) var(--d) both;
+        }
+
+        @keyframes fwBurst {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            70% { opacity: 1; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0.3); opacity: 0; }
+        }
+
+        .fw-ring {
+            position: absolute;
+            left: -10px;
+            top: -10px;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ffc107;
+            border-radius: 50%;
+            animation: fwRing 0.6s ease-out both;
+        }
+
+        @keyframes fwRing {
+            from { transform: scale(0.3); opacity: 0.9; }
+            to { transform: scale(6); opacity: 0; }
+        }
+
+        /* Task Hint (inline under the task's buttons) */
         .task-hint {
             display: none;
-            padding: 10px;
+            margin-top: 14px;
+            padding: 12px;
             background-color: #1c2128;
-            border-top: 1px solid #333;
+            border: 1px solid #333;
+            border-radius: 10px;
         }
 
         .task-hint.show {
             display: block;
+            animation: hintIn 0.25s ease-out;
+        }
+
+        @keyframes hintIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .task-track { transition: none !important; }
+            .task-btn, .task-seg { transition: none; }
+            .task-btn-verify.failed, .task-btn-verify.pop, .task-hint.show, .summary-emoji { animation: none; }
+            .fw-layer { display: none; }
         }
 
         .hint-text {
@@ -455,25 +819,10 @@
             line-height: 1.4;
         }
 
-        /* Success Message (shows below Finish Lab button) */
-        .success-message {
-            display: none;
-            background-color: #28a745;
-            color: white;
-            padding: 12px 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.95em;
-            flex-shrink: 0;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        /* Fixed Control Buttons at bottom */
+        /* Bottom bar with the Back button - plain Q&A questions only. Real labs use
+           the task pager's own buttons and the Stop Lab button in the terminal tab bar. */
         .lab-controls {
-            display: flex;
+            display: none;
             justify-content: space-between;
             padding: 15px;
             background-color: #282424;
@@ -481,28 +830,8 @@
             flex-shrink: 0;
         }
 
-        .lab-controls.finish-mode {
-            justify-content: center;
-        }
-
-        .lab-controls.finish-mode .btn-back,
-        .lab-controls.finish-mode .btn-hint,
-        .lab-controls.finish-mode .btn-check {
-            display: none !important;
-        }
-
-        /* Finish Lab button - hidden by default, shown only when all tasks complete */
-        button.lab-btn.btn-finish {
-            display: none !important;
-            background-color: #28a745;
-            color: white;
-            padding: 12px 40px;
-            font-size: 1em;
-        }
-        button.lab-btn.btn-finish:hover { background-color: #218838; }
-
-        .lab-controls.finish-mode button.lab-btn.btn-finish {
-            display: flex !important;
+        .lab-view.non-lab-mode .lab-controls {
+            display: flex;
         }
 
         .lab-btn {
@@ -525,19 +854,6 @@
             height: 16px;
         }
 
-        .btn-check {
-            background-color: #0d6efd;
-            color: white;
-        }
-        .btn-check:hover { background-color: #0b5ed7; }
-
-        .btn-hint {
-            background-color: #ffc107;
-            color: #000;
-        }
-        .btn-hint:hover { background-color: #e0a800; }
-        .btn-hint.active { background-color: #e0a800; }
-
         .btn-back {
             background-color: #6c757d;
             color: white;
@@ -548,14 +864,6 @@
             background-color: #28a745;
         }
         .btn-back.success:hover { background-color: #218838; }
-
-        /* Non-lab (plain Q&A) mode: hide lab-specific chrome, keep only the
-           question header and the Back button */
-        .lab-view.non-lab-mode .lab-tasks,
-        .lab-view.non-lab-mode .btn-hint,
-        .lab-view.non-lab-mode .btn-check {
-            display: none;
-        }
 
         /* ==================== WELCOME VIEW ==================== */
         .welcome-view {
@@ -641,17 +949,76 @@
             white-space: pre-wrap;
         }
 
-        /* Tab bar - always shown while a lab/terminal is active (terminal tab(s) + video tab) */
+        /* Practice video under the answer (only when the question file has a YOUTUBE_VIDEO link) */
+        .answer-video {
+            display: none;
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 24px;
+        }
+
+        .answer-video.show {
+            display: block;
+        }
+
+        .answer-video-box {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .answer-video-box iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Tab bar - always shown while a lab/terminal is active (terminal tab(s) + video tab + Stop Lab) */
         .terminal-tabs {
             display: none;
             flex-shrink: 0;
+            align-items: center;
             background-color: #1a1a1a;
             border-bottom: 2px solid #cc0000;
-            overflow-x: auto;
         }
 
         .terminal-tabs.show {
             display: flex;
+        }
+
+        .terminal-tab-list {
+            display: flex;
+            flex: 1;
+            min-width: 0;
+            overflow-x: auto;
+        }
+
+        .stop-lab-btn {
+            flex-shrink: 0;
+            margin: 0 10px;
+            padding: 6px 14px;
+            background-color: transparent;
+            color: #ff8a8a;
+            border: 1px solid #cc0000;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85em;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .stop-lab-btn:hover {
+            background-color: #cc0000;
+            color: #fff;
         }
 
         .terminal-tab {
@@ -903,22 +1270,36 @@
                 <!-- Objectives will be loaded here -->
             </div>
 
-            <!-- Lab View (Question, Tasks with inline hints, Fixed Controls) -->
+            <!-- Lab View (lab title + task pager; plain Q&A questions only use the title and Back button) -->
             <div class="lab-view" id="labView">
-                <!-- Scrollable content -->
                 <div class="lab-content">
                     <div class="lab-header">
                         <div class="lab-question" id="labQuestion">Question</div>
                     </div>
-                    <div class="lab-tasks">
-                        <div class="tasks-title">Tasks</div>
-                        <div id="labTasks">
-                            <!-- Tasks will be loaded here -->
+
+                    <!-- Task pager: counter + progress segments, one slide per task, Previous/Skip links -->
+                    <div class="task-pager" id="taskPager">
+                        <div class="pager-top">
+                            <div class="task-counter" id="taskCounter">Task 1 of 1</div>
+                            <div class="task-progress" id="taskProgress"></div>
+                        </div>
+                        <div class="task-viewport">
+                            <div class="task-track" id="taskTrack"></div>
+                        </div>
+                        <div class="task-nav">
+                            <button class="nav-link" id="prevTaskBtn" onclick="prevTask()" hidden>
+                                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                                Previous
+                            </button>
+                            <button class="nav-link" id="skipTaskBtn" onclick="skipTask()">
+                                Skip
+                                <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Fixed Control Buttons -->
+
+                <!-- Back button - plain Q&A questions only (labs use Stop Lab in the terminal tab bar) -->
                 <div class="lab-controls" id="labControls">
                     <button class="lab-btn btn-back" id="backBtn" onclick="handleBackClick()">
                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -926,29 +1307,6 @@
                         </svg>
                         <span id="backBtnText">Back</span>
                     </button>
-                    <button class="lab-btn btn-hint" id="hintBtn" onclick="toggleHint()">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/>
-                        </svg>
-                        Hint
-                    </button>
-                    <button class="lab-btn btn-check" onclick="checkTasks()">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                        </svg>
-                        Check
-                    </button>
-                    <button class="lab-btn btn-finish" onclick="exitLab()">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                        </svg>
-                        Finish Lab
-                    </button>
-                </div>
-                
-                <!-- Success Message (below buttons when all tasks complete) -->
-                <div class="success-message" id="successMessage">
-                    Congratulations! All tasks completed successfully!
                 </div>
             </div>
         </div>
@@ -971,7 +1329,10 @@
 
             <!-- Terminal View (Full Panel when Lab Active) -->
             <div class="terminal-view" id="terminalView">
-                <div class="terminal-tabs" id="terminalTabs"></div>
+                <div class="terminal-tabs" id="terminalTabs">
+                    <div class="terminal-tab-list" id="terminalTabList"></div>
+                    <button class="stop-lab-btn" onclick="exitLab()" title="Stop the lab, run the cleanup and go back to the list">🟥 Stop Lab</button>
+                </div>
                 <iframe id="terminalFrame" src=""></iframe>
                 <iframe id="videoFrame" class="video-frame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
@@ -981,6 +1342,12 @@
                 <div class="answer-label">Answer</div>
                 <button class="lab-btn btn-reveal-answer" id="revealAnswerBtn" onclick="revealAnswer()">Show Answer</button>
                 <div class="answer-text" id="answerText"></div>
+                <div class="answer-video" id="answerVideo">
+                    <div class="answer-label">Video</div>
+                    <div class="answer-video-box">
+                        <iframe id="answerVideoFrame" src="" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -998,19 +1365,28 @@
         // State
         let currentLab = null;
         let completedLabs = new Set();
-        let hintVisible = false;
         let labHints = [];  // Stores hint data for each task
-        let allTasksComplete = false;
         let questionsData = {};  // Cached question metadata (incl. answer/is_lab), keyed by file
+
+        // Task pager state (a real lab shows one task at a time)
+        let taskTexts = [];       // task descriptions, one per slide
+        let taskStates = [];      // 'pending' | 'passed' | 'failed' | 'skipped', one per task
+        let currentTaskIdx = 0;   // visible slide; taskTexts.length is the summary slide
+        let advanceTimer = null;  // pending "go to the next task" timer after a pass
+        let pagerSession = 0;     // bumped on every rebuild/reset so late async results are ignored
+        let tabBeforeSummary = null;  // terminal tab to bring back when the student leaves the summary slide
+        const verifying = new Set();  // task indexes with a check in flight
+        const STATE_LABELS = { pending: 'Not started', passed: 'Passed', failed: 'Failed', skipped: 'Skipped' };
 
         // SVG Icons
         const icons = {
             terminal: `<svg class="terminal-icon" viewBox="0 0 24 24"><path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z"/><path d="m9.293 9.293-3 3a.999.999 0 0 0 0 1.414l3 3 1.414-1.414L8.414 13l2.293-2.293-1.414-1.414zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414 3-3a.999.999 0 0 0 0-1.414l-3-3z"/></svg>`,
             incomplete: `<svg class="status-icon status-incomplete" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
             complete: `<svg class="status-icon status-complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
-            taskPending: `<svg class="task-status-icon pending" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
-            taskComplete: `<svg class="task-status-icon complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
-            taskFailed: `<svg class="task-status-icon failed" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>`,
+            bulb: `<svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>`,
+            check: `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`,
+            cross: `<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`,
+            stop: `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`,
             arrow: `<span class="objective-arrow">▶</span>`,
             copy: `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`,
             send: `<svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`
@@ -1301,10 +1677,11 @@
             return [];
         }
 
-        // Load completed labs from server
+        // Load completed labs from server. The server reads the .progress file on every
+        // call; no-store makes sure the browser never answers from its own cache.
         async function loadCompletedLabs() {
             try {
-                const response = await fetch(`${API_BASE}/progress`);
+                const response = await fetch(`${API_BASE}/progress`, { cache: 'no-store' });
                 if (response.ok) {
                     const data = await response.json();
                     completedLabs = new Set(data.completed || []);
@@ -1354,7 +1731,7 @@
                         <div class="question-item" data-obj="${obj.id}" data-idx="${idx}" data-file="${q.file}" onclick="selectQuestion(${obj.id}, ${idx}, '${q.file}')">
                             ${icons.terminal}
                             <span class="question-text">${q.question}</span>
-                            <span class="completion-status" data-file="${q.file}">${icons.incomplete}</span>
+                            <span class="completion-status" data-file="${q.file}">${completedLabs.has(q.file) ? icons.complete : icons.incomplete}</span>
                         </div>
                     `).join('')}
                 </div>
@@ -1429,6 +1806,8 @@
                     }
                     currentLab = null;
                 }
+                // Re-read the progress file: whether the answer is already shown depends on it
+                await loadCompletedLabs();
                 showAnswerInterface(qData, objId, file);
                 return;
             }
@@ -1526,51 +1905,10 @@
             
             // Populate lab content
             document.getElementById('labQuestion').textContent = labData.question;
-            
-            // Build tasks list with inline hint areas
-            const tasksContainer = document.getElementById('labTasks');
-            tasksContainer.innerHTML = labData.tasks.map((task, idx) => {
-                // Find hints for this task
-                const taskHints = labHints.filter(h => h.task === idx + 1);
-                
-                return `
-                    <div class="task-item" id="task-${idx}">
-                        <div class="task-main">
-                            <span class="task-icon">${icons.taskPending}</span>
-                            <span class="task-text">${task}</span>
-                        </div>
-                        <div class="task-hint" id="task-hint-${idx}">
-                            ${taskHints.length > 0 ? taskHints.map((hint, hIdx) => `
-                                ${hint.hint ? `<div class="hint-text">${escapeHtml(hint.hint)}</div>` : ''}
-                                <div class="command-box">
-                                    <div class="command-header">
-                                        <span class="command-label">Command${taskHints.length > 1 ? ' ' + (hIdx + 1) : ''}</span>
-                                        <div class="command-actions">
-                                            <button class="cmd-action-btn" onclick="copyCommand(${idx}, ${hIdx})" id="copyBtn-${idx}-${hIdx}">
-                                                ${icons.copy}
-                                                <span>Copy</span>
-                                            </button>
-                                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx}, ${hIdx})" id="sendBtn-${idx}-${hIdx}">
-                                                ${icons.send}
-                                                <span>Send</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="command-text">${escapeHtml(unescapeCommand(hint.command))}</div>
-                                </div>
-                            `).join('') : '<div class="hint-text">No hint available for this task.</div>'}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            // Reset state
-            document.getElementById('successMessage').classList.remove('show');
-            document.getElementById('labControls').classList.remove('finish-mode');
-            document.getElementById('hintBtn').classList.remove('active');
-            hintVisible = false;
-            allTasksComplete = false;
-            
+
+            // One slide per task (each with its own hint), plus a summary slide
+            buildTaskPager(labData.tasks);
+
             // Load terminal
             const terminalFrame = document.getElementById('terminalFrame');
             terminalFrame.src = `http://${window.location.hostname}:${TERMINAL_PORT}`;
@@ -1586,8 +1924,8 @@
             renderTerminalTabs(labData.terminals);
         }
 
-        // Convert a YouTube "watch" or "youtu.be" URL into an autoplay+muted embed URL
-        function getYoutubeEmbedUrl(url) {
+        // Convert a YouTube "watch" or "youtu.be" URL into an embed URL (autoplay + muted unless autoplay is false)
+        function getYoutubeEmbedUrl(url, autoplay = true) {
             if (!url) return '';
             let videoId = '';
             const watchMatch = url.match(/[?&]v=([^&]+)/);
@@ -1597,28 +1935,30 @@
             else if (shortMatch) videoId = shortMatch[1];
             else if (embedMatch) videoId = embedMatch[1];
             if (!videoId) return '';
-            return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+            return `https://www.youtube.com/embed/${videoId}${autoplay ? '?autoplay=1&mute=1' : ''}`;
         }
 
         // Build the terminal tab bar for the current lab: terminal tab(s) + a permanent video tab
         function renderTerminalTabs(terminals) {
             const tabsContainer = document.getElementById('terminalTabs');
-            tabsContainer.innerHTML = '';
+            const tabList = document.getElementById('terminalTabList');
+            tabList.innerHTML = '';
 
             (terminals || []).forEach((t, i) => {
                 const tab = document.createElement('div');
                 tab.className = 'terminal-tab' + (i === 0 ? ' active' : '');
                 tab.textContent = t.name;
                 tab.onclick = () => selectTerminalTab(tab, t.window);
-                tabsContainer.appendChild(tab);
+                tabList.appendChild(tab);
             });
 
             // Permanent "Lab Video Practice" tab, present even for single-terminal labs
             const videoTab = document.createElement('div');
+            videoTab.id = 'videoTab';
             videoTab.className = 'terminal-tab';
             videoTab.textContent = 'Lab Video Practice';
             videoTab.onclick = () => selectVideoTab(videoTab);
-            tabsContainer.appendChild(videoTab);
+            tabList.appendChild(videoTab);
 
             tabsContainer.classList.add('show');
         }
@@ -1652,70 +1992,351 @@
         }
 
 
-        // Check tasks
-        async function checkTasks() {
-            if (!currentLab) return;
-            
-            showLoading();
-            
+        // ==================== TASK PAGER (one task per slide) ====================
+
+        // Build one slide per task plus a summary slide, and show the first task
+        function buildTaskPager(tasks) {
+            clearTimeout(advanceTimer);
+            advanceTimer = null;
+            verifying.clear();
+            pagerSession++;
+
+            taskTexts = tasks;
+            taskStates = tasks.map(() => 'pending');
+            currentTaskIdx = 0;
+            tabBeforeSummary = null;
+
+            document.getElementById('taskTrack').innerHTML =
+                tasks.map((task, idx) => buildTaskSlide(task, idx)).join('') +
+                '<section class="task-slide" id="taskSummary"></section>';
+            document.getElementById('taskProgress').innerHTML =
+                tasks.map((_, idx) => `<button type="button" class="task-seg" onclick="goToTask(${idx})"></button>`).join('');
+            tasks.forEach((_, idx) => setVerifyButton(idx, 'idle'));
+
+            goToTask(0, { instant: true });
+        }
+
+        // Clear the pager when a lab ends
+        function resetTaskPager() {
+            clearTimeout(advanceTimer);
+            advanceTimer = null;
+            verifying.clear();
+            pagerSession++;
+
+            taskTexts = [];
+            taskStates = [];
+            currentTaskIdx = 0;
+            tabBeforeSummary = null;
+            document.getElementById('taskTrack').innerHTML = '';
+            document.getElementById('taskProgress').innerHTML = '';
+        }
+
+        // One slide: task text, Hint and Verify buttons, and this task's own hint panel
+        function buildTaskSlide(task, idx) {
+            const taskHints = labHints.filter(h => h.task === idx + 1);
+            const hintHtml = taskHints.length > 0 ? taskHints.map((hint, hIdx) => `
+                ${hint.hint ? `<div class="hint-text">${escapeHtml(hint.hint)}</div>` : ''}
+                <div class="command-box">
+                    <div class="command-header">
+                        <span class="command-label">Command${taskHints.length > 1 ? ' ' + (hIdx + 1) : ''}</span>
+                        <div class="command-actions">
+                            <button class="cmd-action-btn" onclick="copyCommand(${idx}, ${hIdx})" id="copyBtn-${idx}-${hIdx}">
+                                ${icons.copy}
+                                <span>Copy</span>
+                            </button>
+                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx}, ${hIdx})" id="sendBtn-${idx}-${hIdx}">
+                                ${icons.send}
+                                <span>Send</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="command-text">${escapeHtml(unescapeCommand(hint.command))}</div>
+                </div>
+            `).join('') : '<div class="hint-text">No hint available for this task.</div>';
+
+            return `
+                <section class="task-slide" id="task-${idx}">
+                    <div class="task-info-icon" aria-hidden="true">i</div>
+                    <div class="task-text">${escapeHtml(task)}</div>
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-hint" id="hintBtn-${idx}" aria-expanded="false" onclick="toggleHint(${idx})">
+                            ${icons.bulb}<span>Hint</span>
+                        </button>
+                        <button class="task-btn task-btn-verify" id="verifyBtn-${idx}" onclick="verifyTask(${idx})"></button>
+                    </div>
+                    <div class="verify-msg" id="verifyMsg-${idx}" role="status" aria-live="polite"></div>
+                    <div class="task-hint" id="task-hint-${idx}">${hintHtml}</div>
+                </section>
+            `;
+        }
+
+        // Slide to a task, or to the summary slide (index = number of tasks).
+        // Going forward scrolls to the right, going back scrolls to the left.
+        function goToTask(idx, { instant = false, ms = 0 } = {}) {
+            const summaryIdx = taskTexts.length;
+            idx = Math.max(0, Math.min(summaryIdx, idx));
+            if (idx === currentTaskIdx && !instant) return;  // same slide: keep any pending auto-advance
+
+            clearTimeout(advanceTimer);
+            advanceTimer = null;
+
+            // Longer jumps (e.g. from the summary back to an early task) scroll a little slower
+            const distance = Math.abs(idx - currentTaskIdx);
+            const seconds = instant ? 0 : (ms || Math.min(0.45 + 0.1 * (distance - 1), 0.9));
+            currentTaskIdx = idx;
+            if (idx === summaryIdx) renderSummary();
+            syncRightPanelTab(idx === summaryIdx);
+
+            const track = document.getElementById('taskTrack');
+            track.style.transitionDuration = `${seconds}s`;
+            track.style.transform = `translateX(-${idx * 100}%)`;
+            updatePagerChrome();
+        }
+
+        // The summary slide shows the practice video; leaving it brings the previous tab back
+        function syncRightPanelTab(onSummary) {
+            const videoTab = document.getElementById('videoTab');
+            if (!videoTab) return;
+
+            if (onSummary) {
+                const active = document.querySelector('#terminalTabList .terminal-tab.active');
+                // Without a video that tab would be blank, so the terminal stays
+                if (active && active !== videoTab && currentLab && getYoutubeEmbedUrl(currentLab.youtube_video)) {
+                    tabBeforeSummary = active;
+                    videoTab.click();
+                }
+            } else if (tabBeforeSummary) {
+                const previous = tabBeforeSummary;
+                tabBeforeSummary = null;
+                // Leave it alone if the student picked another tab meanwhile
+                if (videoTab.classList.contains('active')) previous.click();
+            }
+        }
+
+        // Counter text, Previous/Skip visibility, and which slide can take focus
+        function updatePagerChrome() {
+            const total = taskTexts.length;
+            const onSummary = currentTaskIdx === total;
+
+            document.getElementById('taskCounter').textContent = onSummary ? 'Summary' : `Task ${currentTaskIdx + 1} of ${total}`;
+            document.getElementById('prevTaskBtn').hidden = currentTaskIdx === 0;
+            document.getElementById('skipTaskBtn').hidden = onSummary;
+            document.querySelectorAll('#taskTrack > .task-slide').forEach((slide, i) => {
+                slide.inert = i !== currentTaskIdx;
+            });
+            renderProgress();
+        }
+
+        // Color each progress segment by its task's state; the visible task gets the ring
+        function renderProgress() {
+            document.querySelectorAll('#taskProgress .task-seg').forEach((seg, i) => {
+                seg.className = `task-seg ${i === currentTaskIdx ? 'current' : taskStates[i]}`;
+                seg.title = `Task ${i + 1}: ${STATE_LABELS[taskStates[i]]}`;
+            });
+        }
+
+        function prevTask() {
+            goToTask(currentTaskIdx - 1);
+        }
+
+        // Skip always moves forward; a task that was never verified turns gray
+        function skipTask() {
+            if (taskStates[currentTaskIdx] === 'pending') {
+                taskStates[currentTaskIdx] = 'skipped';
+            }
+            goToTask(currentTaskIdx + 1);
+        }
+
+        // First task after idx that has not passed yet, or the summary slide if none is left
+        function nextOpenTask(idx) {
+            for (let i = idx + 1; i < taskStates.length; i++) {
+                if (taskStates[i] !== 'passed') return i;
+            }
+            return taskStates.length;
+        }
+
+        // The Verify button has four looks: idle, verifying, passed and failed
+        function setVerifyButton(idx, state) {
+            const btn = document.getElementById(`verifyBtn-${idx}`);
+            if (!btn) return;
+
+            const view = {
+                idle: { icon: icons.check, label: 'Verify' },
+                verifying: { icon: '<span class="btn-spinner"></span>', label: 'Verifying...' },
+                passed: { icon: icons.check, label: 'Passed' },
+                failed: { icon: icons.cross, label: 'Try again' }
+            }[state];
+
+            btn.className = state === 'idle' ? 'task-btn task-btn-verify' : `task-btn task-btn-verify ${state}`;
+            btn.innerHTML = `${view.icon}<span>${view.label}</span>`;
+            btn.disabled = state === 'verifying';
+        }
+
+        // Verify one task. The lab check runs for the whole lab, but only this task's result is used.
+        async function verifyTask(idx) {
+            if (!currentLab || verifying.has(idx)) return;
+            if (advanceTimer && currentTaskIdx === idx) return;  // already passed, about to move on
+
+            const lab = currentLab;
+            const session = pagerSession;
+            const msg = document.getElementById(`verifyMsg-${idx}`);
+
+            verifying.add(idx);
+            msg.textContent = '';
+            setVerifyButton(idx, 'verifying');
+
+            let status = null;
+            let allComplete = false;
             try {
                 const response = await fetch(`${API_BASE}/lab/check`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        objective: currentLab.objId, 
-                        index: currentLab.idx,
-                        file: currentLab.file 
+                    body: JSON.stringify({
+                        objective: lab.objId,
+                        index: lab.idx,
+                        file: lab.file
                     })
                 });
-                
                 if (response.ok) {
                     const result = await response.json();
-                    updateTaskStatus(result.status);
-                    
-                    if (result.allComplete) {
-                        document.getElementById('successMessage').classList.add('show');
-                        document.getElementById('labControls').classList.add('finish-mode');
-                        completedLabs.add(currentLab.file);
-                        updateCompletionStatus();
-                        allTasksComplete = true;
+                    if (Array.isArray(result.status)) {
+                        status = result.status;
+                        allComplete = !!result.allComplete;
                     }
                 }
             } catch (e) {
-                console.error('Error checking tasks:', e);
+                console.error('Error verifying task:', e);
             }
-            
-            hideLoading();
-        }
 
-        // Update task status display
-        function updateTaskStatus(status) {
-            status.forEach((complete, idx) => {
-                const taskEl = document.querySelector(`#task-${idx} .task-icon`);
-                if (taskEl) {
-                    taskEl.innerHTML = complete ? icons.taskComplete : icons.taskFailed;
+            // The server marks the lab complete once every task passes in one run
+            if (allComplete) {
+                completedLabs.add(lab.file);
+                updateCompletionStatus();
+            }
+            if (session !== pagerSession) return;  // the lab was stopped or restarted meanwhile
+
+            verifying.delete(idx);
+            if (!status) {
+                setVerifyButton(idx, 'idle');
+                msg.textContent = 'Could not verify. Try again.';
+                return;
+            }
+
+            if (status[idx]) {
+                taskStates[idx] = 'passed';
+                setVerifyButton(idx, 'passed');
+                const btn = document.getElementById(`verifyBtn-${idx}`);
+                btn.classList.add('pop');
+                if (idx === currentTaskIdx) {
+                    launchFirework(btn);
+                    advanceTimer = setTimeout(() => {
+                        advanceTimer = null;
+                        if (currentTaskIdx === idx) goToTask(nextOpenTask(idx), { ms: 0.6 });
+                    }, 1000);
                 }
-            });
+            } else {
+                taskStates[idx] = 'failed';
+                setVerifyButton(idx, 'failed');
+                msg.textContent = 'Not complete yet. Check the task and try again.';
+                setTimeout(() => {
+                    const btn = document.getElementById(`verifyBtn-${idx}`);
+                    if (btn && btn.classList.contains('failed')) setVerifyButton(idx, 'idle');
+                }, 1800);
+            }
+
+            renderProgress();
+            if (currentTaskIdx === taskTexts.length) renderSummary();
         }
 
-        // Toggle hint visibility for all tasks
-        function toggleHint() {
-            const hintBtn = document.getElementById('hintBtn');
-            
-            if (hintVisible) {
-                // Hide all hints
-                document.querySelectorAll('.task-hint').forEach(el => {
-                    el.classList.remove('show');
-                });
-                hintBtn.classList.remove('active');
-                hintVisible = false;
-            } else {
-                // Show all hints
-                document.querySelectorAll('.task-hint').forEach(el => {
-                    el.classList.add('show');
-                });
-                hintBtn.classList.add('active');
-                hintVisible = true;
+        // Small firework burst from the center of an element
+        function launchFirework(anchor) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            const rect = anchor.getBoundingClientRect();
+            const layer = document.createElement('div');
+            layer.className = 'fw-layer';
+            layer.style.left = `${rect.left + rect.width / 2}px`;
+            layer.style.top = `${rect.top + rect.height / 2}px`;
+
+            const colors = ['#ffc107', '#ff5a5f', '#2fc760', '#1aa6ff', '#ffffff', '#ff9f1c'];
+            const burst = (count, reach, delay) => {
+                for (let i = 0; i < count; i++) {
+                    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                    const dist = reach * (0.55 + Math.random() * 0.45);
+                    const p = document.createElement('span');
+                    p.className = 'fw-particle';
+                    p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+                    p.style.setProperty('--dy', `${Math.sin(angle) * dist + 18}px`);  // slight fall
+                    p.style.setProperty('--c', colors[Math.floor(Math.random() * colors.length)]);
+                    p.style.setProperty('--t', `${0.7 + Math.random() * 0.4}s`);
+                    p.style.setProperty('--d', `${delay}s`);
+                    layer.appendChild(p);
+                }
+            };
+            burst(28, 105, 0);
+            burst(14, 66, 0.18);
+
+            const ring = document.createElement('span');
+            ring.className = 'fw-ring';
+            layer.appendChild(ring);
+
+            document.body.appendChild(layer);
+            setTimeout(() => layer.remove(), 1600);
+        }
+
+        // Summary slide: the tasks that still need work (if any) and the End Lab button
+        function renderSummary() {
+            const el = document.getElementById('taskSummary');
+            if (!el) return;
+
+            const total = taskStates.length;
+            const passed = taskStates.filter(s => s === 'passed').length;
+            const allPassed = total > 0 && passed === total;
+
+            const open = taskStates
+                .map((state, i) => ({ state, i }))
+                .filter(t => t.state !== 'passed');
+            const details = allPassed ? `
+                <div class="summary-emoji">🎉</div>
+                <div class="summary-title">All tasks complete!</div>
+                <div class="summary-sub">${passed} of ${total} tasks passed.</div>
+            ` : `
+                <div class="summary-title">${passed} of ${total} tasks passed</div>
+                <div class="summary-sub">Open a task to finish it, or end the lab.</div>
+                <div class="summary-list">
+                    ${open.map(t => `
+                        <button class="summary-row" onclick="goToTask(${t.i})">
+                            <span class="summary-dot ${t.state}"></span>
+                            <span class="summary-label">Task ${t.i + 1}: ${escapeHtml(taskTexts[t.i])}</span>
+                            <span class="summary-state">${STATE_LABELS[t.state]}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+
+            el.innerHTML = `
+                <div class="summary-card">
+                    ${details}
+                    <button class="task-btn task-btn-end${allPassed ? ' done' : ''}" onclick="exitLab()">${allPassed ? icons.check : icons.stop}<span>End Lab</span></button>
+                </div>
+            `;
+        }
+
+        // Show or hide the hint of one task
+        function toggleHint(idx) {
+            const panel = document.getElementById(`task-hint-${idx}`);
+            const btn = document.getElementById(`hintBtn-${idx}`);
+            if (!panel || !btn) return;
+
+            const show = !panel.classList.contains('show');
+            panel.classList.toggle('show', show);
+            btn.classList.toggle('active', show);
+            btn.setAttribute('aria-expanded', String(show));
+
+            // Scroll only the slide itself - scrollIntoView could also shift the clipped track
+            if (show) {
+                const slide = document.getElementById(`task-${idx}`);
+                slide.scrollTo({ top: slide.scrollHeight, behavior: 'smooth' });
             }
         }
 
@@ -1832,6 +2453,20 @@
         // terminal, no prepare_lab/check_tasks calls at all
         let currentAnswerFile = null;
         let currentAnswerObjId = null;
+        let currentAnswerVideo = '';  // embed URL of the open question's video ('' = it has none)
+
+        // The video sits under the answer, so it only loads once the answer is shown
+        function showAnswerVideo() {
+            if (!currentAnswerVideo) return;
+            document.getElementById('answerVideoFrame').src = currentAnswerVideo;
+            document.getElementById('answerVideo').classList.add('show');
+        }
+
+        // Clearing src stops the sound too (a hidden iframe keeps playing)
+        function hideAnswerVideo() {
+            document.getElementById('answerVideoFrame').src = '';
+            document.getElementById('answerVideo').classList.remove('show');
+        }
 
         function showAnswerInterface(qData, objId, file) {
             document.getElementById('menuView').classList.add('hidden');
@@ -1846,6 +2481,8 @@
 
             currentAnswerFile = file;
             currentAnswerObjId = objId;
+            hideAnswerVideo();
+            currentAnswerVideo = getYoutubeEmbedUrl(qData.youtube_video, false);
 
             const btn = document.getElementById('revealAnswerBtn');
             const text = document.getElementById('answerText');
@@ -1853,6 +2490,7 @@
                 // Already revealed in a previous visit - just show it
                 btn.style.display = 'none';
                 text.style.display = 'block';
+                showAnswerVideo();
             } else {
                 btn.style.display = 'flex';
                 text.style.display = 'none';
@@ -1863,6 +2501,7 @@
         async function revealAnswer() {
             document.getElementById('revealAnswerBtn').style.display = 'none';
             document.getElementById('answerText').style.display = 'block';
+            showAnswerVideo();
 
             if (!currentAnswerFile) return;
             try {
@@ -1881,6 +2520,8 @@
         // Back button behavior for the plain-answer view (currentLab is
         // never set for these, so exitLab() would just no-op if reused here)
         function backToMenuFromAnswer() {
+            hideAnswerVideo();
+            loadCompletedLabs();  // re-read the progress file so the list is up to date
             document.getElementById('labView').classList.remove('active');
             document.getElementById('labView').classList.remove('non-lab-mode');
             document.getElementById('menuView').classList.remove('hidden');
@@ -1928,9 +2569,8 @@
             videoFrame.classList.remove('active');
 
             // Hide/clear terminal tabs
-            const tabsContainer = document.getElementById('terminalTabs');
-            tabsContainer.innerHTML = '';
-            tabsContainer.classList.remove('show');
+            document.getElementById('terminalTabList').innerHTML = '';
+            document.getElementById('terminalTabs').classList.remove('show');
 
             
             showLoading();
@@ -1951,9 +2591,11 @@
             
             currentLab = null;
             labHints = [];
-            hintVisible = false;
-            allTasksComplete = false;
+            resetTaskPager();
             
+            // Re-read the progress file before the list shows again
+            await loadCompletedLabs();
+
             // Switch back to menu view
             document.getElementById('labView').classList.remove('active');
             document.getElementById('menuView').classList.remove('hidden');
