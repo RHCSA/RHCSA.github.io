@@ -3,9 +3,7 @@
 # LAB: Remove httpd Inside a Container (container-only terminal, no host tab)
 # NOTE: same pattern as lab_container_install_httpd.sh - prepare_lab attaches
 # the single default terminal straight into the container via `tmux
-# send-keys`, so no host shell is ever shown or reachable. Web UI only;
-# harmless no-op on the CLI simulator - CLI users would need to run
-# `docker exec -it rhcsa_lab_container_remove_httpd bash` themselves.
+# send-keys`, so no host shell is ever shown or reachable.
 
 IS_LAB=true
 LAB_ID="container_remove_httpd"
@@ -17,16 +15,13 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Remove the httpd package"
-TASK_1_HINT="dnf remove -y httpd removes the package without pausing for a yes/no prompt"
+TASK_1_ANSWER="dnf remove -y httpd removes the package without pausing for a yes/no prompt"
 TASK_1_COMMAND_1="dnf remove -y httpd"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 CONTAINER_NAME="rhcsa_lab_container_remove_httpd"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
@@ -45,7 +40,7 @@ prepare_lab() {
         -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$CONTAINER_IMAGE" /usr/sbin/init &>/dev/null
     sleep 2
 
-    # Web UI only: attach the single visible terminal straight into the
+    # Attach the single visible terminal straight into the
     # container immediately, before the slower provisioning below - so a
     # slow dnf install can never leave the terminal stuck on the host shell
     tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null

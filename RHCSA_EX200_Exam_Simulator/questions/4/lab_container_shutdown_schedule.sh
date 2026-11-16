@@ -4,9 +4,7 @@
 # NOTE: same pattern as questions/2/lab_container_install_httpd.sh -
 # prepare_lab attaches the single default terminal straight into the
 # container via `tmux send-keys`, so no host shell is ever shown or
-# reachable. Web UI only; harmless no-op on the CLI simulator - CLI users
-# would need to run `docker exec -it rhcsa_lab_container_shutdown bash`
-# themselves.
+# reachable.
 # NOTE: verified against systemd's own shutdown.c source - inside a
 # container, if the scheduled reboot ever actually fired, the kernel's
 # reboot() syscall from a non-init PID namespace only tears down that PID
@@ -39,21 +37,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="This terminal is inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this machine. Schedule a reboot for 10 minutes from now, with the wall message 'reboot in 10 minutes'"
-TASK_1_HINT="shutdown -r +N 'message' schedules a reboot N minutes from now and broadcasts the message to logged-in users beforehand"
+TASK_1_ANSWER="shutdown -r +N 'message' schedules a reboot N minutes from now and broadcasts the message to logged-in users beforehand"
 TASK_1_COMMAND_1="shutdown -r +10 'reboot in 10 minutes'"
 
 # Task 2
 TASK_2_QUESTION="Reschedule the reboot to happen at 01:00 instead, with the wall message 'apply update'"
-TASK_2_HINT="Running shutdown again with a new time replaces the previously scheduled one; an hh:mm time schedules it for that clock time"
+TASK_2_ANSWER="Running shutdown again with a new time replaces the previously scheduled one; an hh:mm time schedules it for that clock time"
 TASK_2_COMMAND_1="shutdown -r 01:00 'apply update'"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 CONTAINER_NAME="rhcsa_lab_container_shutdown"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
@@ -71,7 +66,7 @@ prepare_lab() {
         -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$CONTAINER_IMAGE" /usr/sbin/init &>/dev/null
     sleep 2
 
-    # Web UI only: attach the single visible terminal straight into the
+    # Attach the single visible terminal straight into the
     # container so no host shell is ever shown for this lab
     tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null
 }

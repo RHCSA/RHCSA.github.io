@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Print the First Argument ($1)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $1, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_first_argument"
@@ -17,25 +12,22 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/first_arg.sh. Have it print only its first command-line argument, ignoring any other arguments it may receive"
-TASK_1_HINT="The first command-line argument is available directly as its own variable. This is different from the variable that holds the script's own name, so echo the argument variable, not the name variable"
+TASK_1_ANSWER="The first command-line argument is available directly as its own variable. This is different from the variable that holds the script's own name, so echo the argument variable, not the name variable"
 TASK_1_COMMAND_1="cat > /root/first_arg.sh << 'SCRIPT_END'
 #!/bin/bash
-echo $1
+echo \$1
 SCRIPT_END
 chmod +x /root/first_arg.sh"
 
 # Task 2
 TASK_2_QUESTION="Run the script with three arguments: first, second, and third. It should print only 'first'"
-TASK_2_HINT="Pass several arguments and confirm only the first one is printed, with the rest ignored"
+TASK_2_ANSWER="Pass several arguments and confirm only the first one is printed, with the rest ignored"
 TASK_2_COMMAND_1="/root/first_arg.sh first second third"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Set the system hostname to server1.rhcsa.github.io"
-TASK_1_HINT="Use hostnamectl to set the hostname persistently"
+TASK_1_ANSWER="Use hostnamectl to set the hostname persistently"
 TASK_1_COMMAND_1="hostnamectl set-hostname server1.rhcsa.github.io"
 
 # Task 2
 TASK_2_QUESTION="Add server1.rhcsa.github.io to /etc/hosts"
-TASK_2_HINT="Add an entry mapping 127.0.0.1 to the hostname in /etc/hosts"
+TASK_2_ANSWER="Add an entry mapping 127.0.0.1 to the hostname in /etc/hosts"
 TASK_2_COMMAND_1="echo '127.0.0.1   server1.rhcsa.github.io server1' >> /etc/hosts"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     local target_hostname="server1.rhcsa.github.io"

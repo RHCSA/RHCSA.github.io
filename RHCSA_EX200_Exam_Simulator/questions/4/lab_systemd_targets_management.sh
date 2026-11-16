@@ -17,31 +17,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="List all available targets on this host. Save the output to /tmp/all-targets.txt"
-TASK_1_HINT="Use systemctl list-units with the --type=target option"
+TASK_1_ANSWER="Use systemctl list-units with the --type=target option"
 TASK_1_COMMAND_1="systemctl list-units --type=target > /tmp/all-targets.txt"
 
 # Task 2
 TASK_2_QUESTION="Get the current default target. Save the output to /tmp/default-target.txt. Do this before you change the default target in the next task"
-TASK_2_HINT="Use systemctl get-default"
+TASK_2_ANSWER="Use systemctl get-default"
 TASK_2_COMMAND_1="systemctl get-default > /tmp/default-target.txt"
 
 # Task 3
 TASK_3_QUESTION="Set the default target to rescue.target"
-TASK_3_HINT="Use systemctl set-default"
+TASK_3_ANSWER="Use systemctl set-default"
 TASK_3_COMMAND_1="systemctl set-default rescue.target"
 
 # Task 4
 TASK_4_QUESTION="List the targets that are active right now. Save the output to /tmp/active-targets.txt"
-TASK_4_HINT="Use systemctl list-units with --type=target and --state=active"
+TASK_4_ANSWER="Use systemctl list-units with --type=target and --state=active"
 TASK_4_COMMAND_1="systemctl list-units --type=target --state=active > /tmp/active-targets.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

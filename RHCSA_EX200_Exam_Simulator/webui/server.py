@@ -23,12 +23,8 @@ QUESTIONS_DIR = "/usr/local/share/rhcsa/questions"
 PROGRESS_FILE = "/usr/local/share/rhcsa/.progress"
 WEBUI_DIR = "/usr/local/share/rhcsa/webui"
 
-# Shared TASK_* helper functions every lab file relies on (get_task_description,
-# get_task_commands, _build_hint). The rhcsa CLI defines these once itself and
-# lab files inherit them for free when sourced from within it - but the web UI
-# sources lab files in their own isolated bash process, so we must provide the
-# exact same definitions here or these calls silently fail (empty output),
-# which then overwrites perfectly good static task text with blanks.
+# Bash functions defined before a lab file is sourced. get_task_description is
+# used by resolve_dynamic_lab_data; without it the task text would come back empty.
 TASK_HELPER_FUNCTIONS_BASH = '''
 get_task_description() {
     local task_idx=$1
@@ -37,41 +33,9 @@ get_task_description() {
     echo "${!var_name}"
 }
 
-get_task_commands() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local result=""
-    for i in 1 2 3 4 5; do
-        local var_name="TASK_${task_num}_COMMAND_${i}"
-        local cmd="${!var_name}"
-        if [[ -n "$cmd" ]]; then
-            if [[ -n "$result" ]]; then
-                result+=$'\\n'
-            fi
-            result+="$cmd"
-        fi
-    done
-    echo "$result"
-}
-
-_build_hint() {
-    local result=""
-    for ((i=0; i<LAB_TASK_COUNT; i++)); do
-        local task_num=$((i+1))
-        local cmds=$(get_task_commands $i)
-        if [[ -n "$cmds" ]]; then
-            while IFS= read -r cmd; do
-                if [[ -n "$cmd" ]]; then
-                    if [[ -n "$result" ]]; then
-                        result+=$'\\n'
-                    fi
-                    result+="Task ${task_num}: ${cmd}"
-                fi
-            done <<< "$cmds"
-        fi
-    done
-    echo "$result"
-}
+# Old lab files still call these; the web UI does not use the result
+_build_answer() { :; }
+_build_hint() { :; }
 '''
 
 class RHCSAAPIHandler(SimpleHTTPRequestHandler):
@@ -148,8 +112,8 @@ class RHCSAAPIHandler(SimpleHTTPRequestHandler):
             result = check_lab(data)
             self.send_json(result)
         
-        elif path == '/api/lab/hint':
-            result = get_hint(data)
+        elif path == '/api/lab/answer':
+            result = get_answer(data)
             self.send_json(result)
         
         elif path == '/api/lab/exit':
@@ -239,8 +203,9 @@ def parse_question_file(filepath):
         task_count_match = re.search(r'LAB_TASK_COUNT=(\d+)', content)
         task_count = int(task_count_match.group(1)) if task_count_match else 0
         
-        # Extract ANSWER (used by non-lab, plain Q&A questions only)
-        answer_match = re.search(r'ANSWER="([^"]*)"', content)
+        # Extract ANSWER (used by non-lab, plain Q&A questions only). Anchored so
+        # a lab's TASK_N_ANSWER line is never taken as the question's answer.
+        answer_match = re.search(r'^ANSWER="([^"]*)"', content, re.MULTILINE)
         answer = answer_match.group(1) if answer_match else ""
         
         # Extract YOUTUBE_VIDEO (optional practice video link)
@@ -399,8 +364,7 @@ def start_lab(data):
 
 
 def parse_extra_terminals(content):
-    """Find prepare_lab_N (N>=2) functions in a lab file and their optional tab names.
-    Web UI only - the CLI simulator ignores these and only ever calls prepare_lab()."""
+    """Find prepare_lab_N (N>=2) functions in a lab file and their optional tab names."""
     terminals = []
     indices = sorted(set(int(m) for m in re.findall(r'\bprepare_lab_(\d+)\s*\(\)', content)))
 
@@ -459,17 +423,17 @@ def parse_lab_file(filepath):
             if task_match:
                 tasks.append(task_match.group(1))
         
-        # Extract hints for each task
-        task_hints = {}
+        # Extract the answer text for each task (TASK_N_HINT is the old name)
+        task_answers = {}
         for i in range(1, task_count + 1):
-            hint_match = re.search(rf'TASK_{i}_HINT="([^"]*)"', content)
-            if hint_match:
-                task_hints[i] = hint_match.group(1)
+            answer_match = re.search(rf'TASK_{i}_(?:ANSWER|HINT)="([^"]*)"', content)
+            if answer_match:
+                task_answers[i] = answer_match.group(1)
         
-        # Extract commands as structured array with hints
+        # Extract commands as structured array with answer text
         commands = []
         for i in range(1, task_count + 1):
-            task_hint = task_hints.get(i, '')
+            task_answer = task_answers.get(i, '')
             for j in range(1, 10):  # Support up to 9 commands per task
                 cmd_match = re.search(rf'TASK_{i}_COMMAND_{j}="([^"]*)"', content)
                 if cmd_match:
@@ -477,7 +441,7 @@ def parse_lab_file(filepath):
                         'task': i,
                         'cmd_index': j,
                         'label': f'Task {i}' + (f' - Command {j}' if j > 1 else ''),
-                        'hint': task_hint if j == 1 else '',  # Show hint only for first command of each task
+                        'answer': task_answer if j == 1 else '',  # Show answer text only for first command of each task
                         'command': cmd_match.group(1)
                     })
         
@@ -673,6 +637,9 @@ def run_check_tasks(filepath, task_count):
         script = f'''
 #!/bin/bash
 declare -a TASK_STATUS
+
+{TASK_HELPER_FUNCTIONS_BASH}
+
 source "$1"
 check_tasks
 for ((i=0; i<{task_count}; i++)); do
@@ -727,8 +694,8 @@ def mark_question_answered(data):
     return {'success': True}
 
 
-def get_hint(data):
-    """Get hint for a lab"""
+def get_answer(data):
+    """Get the answer (task notes and commands) for a lab"""
     obj_id = data.get('objective')
     filename = data.get('file')
     

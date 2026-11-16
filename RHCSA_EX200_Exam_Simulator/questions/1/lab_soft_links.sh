@@ -13,27 +13,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create symlink for /tmp/passwd_link file pointing to /etc/passwd"
-TASK_1_HINT="Use ln -s to create a symbolic link to a file"
+TASK_1_ANSWER="Use ln -s to create a symbolic link to a file"
 TASK_1_COMMAND_1="ln -s /etc/passwd /tmp/passwd_link"
 
 # Task 2
 TASK_2_QUESTION="Create symlink for /tmp/logs directory pointing to /var/log directory"
-TASK_2_HINT="Use ln -s to create a symbolic link to a directory"
+TASK_2_ANSWER="Use ln -s to create a symbolic link to a directory"
 TASK_2_COMMAND_1="ln -s /var/log /tmp/logs"
 
 # Task 3
 TASK_3_QUESTION="Save the target of /tmp/passwd_link to /tmp/link_target.txt using readlink command"
-TASK_3_HINT="Use readlink to get the target path and redirect to file"
+TASK_3_ANSWER="Use readlink to get the target path and redirect to file"
 TASK_3_COMMAND_1="readlink /tmp/passwd_link > /tmp/link_target.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

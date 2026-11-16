@@ -13,37 +13,34 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=5
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create uncompressed tar archive /tmp/backup1.tar with /etc/hosts and /etc/hostname"
-TASK_1_HINT="Use -cvf for create, verbose, file"
+TASK_1_ANSWER="Use -cvf for create, verbose, file"
 TASK_1_COMMAND_1="tar -cvf /tmp/backup1.tar /etc/hosts /etc/hostname"
 
 # Task 2
 TASK_2_QUESTION="Create gzip compressed archive /tmp/backup2.tar.gz with /etc/passwd and /etc/group"
-TASK_2_HINT="-z = gzip compression"
+TASK_2_ANSWER="-z = gzip compression"
 TASK_2_COMMAND_1="tar -cvzf /tmp/backup2.tar.gz /etc/passwd /etc/group"
 
 # Task 3
 TASK_3_QUESTION="Create bzip2 compressed archive /tmp/backup3.tar.bz2 with /etc/ssh"
-TASK_3_HINT="-j = bzip2 compression"
+TASK_3_ANSWER="-j = bzip2 compression"
 TASK_3_COMMAND_1="tar -cvjf /tmp/backup3.tar.bz2 /etc/ssh"
 
 # Task 4
 TASK_4_QUESTION="Extract /tmp/backup2.tar.gz to /tmp/extracted directory"
-TASK_4_HINT="-C specifies target directory for extraction"
+TASK_4_ANSWER="-C specifies target directory for extraction"
 TASK_4_COMMAND_1="mkdir -p /tmp/extracted && tar -xvzf /tmp/backup2.tar.gz -C /tmp/extracted"
 
 # Task 5
 TASK_5_QUESTION="Compress /etc/services to /tmp/services.gz (keep original)"
-TASK_5_HINT="Use -c to write to stdout and redirect"
+TASK_5_ANSWER="Use -c to write to stdout and redirect"
 TASK_5_COMMAND_1="gzip -k /etc/services -c > /tmp/services.gz"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Cleaning up any existing files...${RESET}"

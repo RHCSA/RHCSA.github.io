@@ -1,9 +1,6 @@
 #!/bin/bash
 # Objective 5: Configure local storage
 # LAB: Resize an existing logical volume to an exact size and grow its file system
-# NOTE: check_prerequisites() is only read by the web UI (webui/server.py).
-# The CLI simulator (rhcsa) never calls it, so on the CLI this lab just runs
-# prepare_lab/check_tasks/cleanup_lab like any other lab (no pre-flight popup).
 
 IS_LAB=true
 LAB_ID="lvm_resize_lv_exact"
@@ -12,7 +9,6 @@ QUESTION="Create a logical volume, format and mount it, then resize it to an EXA
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
-LAB_TITLE="LVM: Resize a Logical Volume to an Exact Size"
 LAB_TASK_COUNT=6
 
 # =============================================================================
@@ -71,32 +67,32 @@ _lvm_load_disks() {
 _lvm_load_disks
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an LVM physical volume on ${DISK1} (do not use the disk that holds /)"
-TASK_1_HINT="Use pvcreate to initialize the disk as an LVM physical volume"
+TASK_1_ANSWER="Use pvcreate to initialize the disk as an LVM physical volume"
 TASK_1_COMMAND_1="pvcreate ${DISK1}"
 
 # Task 2
 TASK_2_QUESTION="Create a volume group named ${VG_NAME} from ${DISK1}"
-TASK_2_HINT="Use vgcreate to build a volume group on top of the physical volume"
+TASK_2_ANSWER="Use vgcreate to build a volume group on top of the physical volume"
 TASK_2_COMMAND_1="vgcreate ${VG_NAME} ${DISK1}"
 
 # Task 3
 TASK_3_QUESTION="Create a logical volume named ${LV_NAME} with a size of ${INITIAL_SIZE} in ${VG_NAME}"
-TASK_3_HINT="Use lvcreate with --name and --size"
+TASK_3_ANSWER="Use lvcreate with --name and --size"
 TASK_3_COMMAND_1="lvcreate --name ${LV_NAME} --size ${INITIAL_SIZE} ${VG_NAME}"
 
 # Task 4
 TASK_4_QUESTION="Format /dev/${VG_NAME}/${LV_NAME} with the xfs file system"
-TASK_4_HINT="Use mkfs.xfs to format the logical volume"
+TASK_4_ANSWER="Use mkfs.xfs to format the logical volume"
 TASK_4_COMMAND_1="mkfs.xfs /dev/${VG_NAME}/${LV_NAME}"
 
 # Task 5
 TASK_5_QUESTION="Create ${MOUNT_POINT} and mount /dev/${VG_NAME}/${LV_NAME} there permanently (must persist after reboot)"
-TASK_5_HINT="Add an entry to /etc/fstab, then reload systemd and mount -a"
+TASK_5_ANSWER="Add an entry to /etc/fstab, then reload systemd and mount -a"
 TASK_5_COMMAND_1="mkdir ${MOUNT_POINT}"
 TASK_5_COMMAND_2="echo '/dev/${VG_NAME}/${LV_NAME} ${MOUNT_POINT} xfs defaults 0 0' >> /etc/fstab"
 TASK_5_COMMAND_3="systemctl daemon-reload"
@@ -104,68 +100,14 @@ TASK_5_COMMAND_4="mount -a"
 
 # Task 6
 TASK_6_QUESTION="Resize ${LV_NAME} to be EXACTLY ${TARGET_SIZE} and grow its file system to match, in one command"
-TASK_6_HINT="Use lvresize with --resizefs so the file system is grown along with the logical volume"
+TASK_6_ANSWER="Use lvresize with --resizefs so the file system is grown along with the logical volume"
 TASK_6_COMMAND_1="lvresize --resizefs --size ${TARGET_SIZE} /dev/${VG_NAME}/${LV_NAME}"
-
-# =============================================================================
-# TASK HELPER FUNCTIONS
-# =============================================================================
-
-# Get task description by index (0-based)
-get_task_description() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local var_name="TASK_${task_num}_QUESTION"
-    echo "${!var_name}"
-}
-
-# Get commands for a task (returns newline-separated commands)
-get_task_commands() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local result=""
-
-    for i in 1 2 3 4 5; do
-        local var_name="TASK_${task_num}_COMMAND_${i}"
-        local cmd="${!var_name}"
-        if [[ -n "$cmd" ]]; then
-            if [[ -n "$result" ]]; then
-                result+=$'\n'
-            fi
-            result+="$cmd"
-        fi
-    done
-    echo "$result"
-}
-
-# Build HINT from all task commands (called automatically)
-_build_hint() {
-    local result=""
-    for ((i=0; i<LAB_TASK_COUNT; i++)); do
-        local task_num=$((i+1))
-        local cmds=$(get_task_commands $i)
-        if [[ -n "$cmds" ]]; then
-            while IFS= read -r cmd; do
-                if [[ -n "$cmd" ]]; then
-                    if [[ -n "$result" ]]; then
-                        result+=$'\n'
-                    fi
-                    result+="Task ${task_num}: ${cmd}"
-                fi
-            done <<< "$cmds"
-        fi
-    done
-    echo "$result"
-}
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION
 # =============================================================================
 
-# Web UI only: verify 1 spare disk (>= 5G, not the root disk) exists before
+# Verify 1 spare disk (>= 5G, not the root disk) exists before
 # starting. If not, the web UI shows this message and never starts the lab.
 check_prerequisites() {
     local spares=()

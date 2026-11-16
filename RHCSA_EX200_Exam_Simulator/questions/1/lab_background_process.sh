@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Start 'sleep 300' as a background process"
-TASK_1_HINT="Use & to run in background, nohup to survive logout"
+TASK_1_ANSWER="Use & to run in background, nohup to survive logout"
 TASK_1_COMMAND_1="nohup sleep 300 &"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Killing any existing sleep processes...${RESET}"

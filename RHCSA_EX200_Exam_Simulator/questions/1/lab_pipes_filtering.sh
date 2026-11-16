@@ -13,27 +13,24 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Count lines with 'nologin' in /etc/passwd, save to /tmp/nologin-count.txt"
-TASK_1_HINT="Use grep to find lines and pipe to wc -l for counting"
+TASK_1_ANSWER="Use grep to find lines and pipe to wc -l for counting"
 TASK_1_COMMAND_1="grep 'nologin' /etc/passwd | wc -l > /tmp/nologin-count.txt"
 
 # Task 2
 TASK_2_QUESTION="List files containing 'conf' in /etc, sorted, save to /tmp/conf-files.txt"
-TASK_2_HINT="Use ls piped to grep and then to sort"
+TASK_2_ANSWER="Use ls piped to grep and then to sort"
 TASK_2_COMMAND_1="ls /etc | grep 'conf' | sort > /tmp/conf-files.txt"
 
 # Task 3
 TASK_3_QUESTION="List 5 largest files in /var/log, save to /tmp/largest-logs.txt (use ls and head)"
-TASK_3_HINT="Use ls -lS to sort by size and head to limit output"
+TASK_3_ANSWER="Use ls -lS to sort by size and head to limit output"
 TASK_3_COMMAND_1="ls -lS /var/log | head -6 > /tmp/largest-logs.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing files...${RESET}"

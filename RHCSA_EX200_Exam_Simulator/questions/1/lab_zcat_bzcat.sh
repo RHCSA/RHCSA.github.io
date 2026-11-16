@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="View /tmp/readme.gz contents and save to /tmp/readme_content.txt (don't decompress original)"
-TASK_1_HINT="zcat streams gzip content to stdout without decompressing the file"
+TASK_1_ANSWER="zcat streams gzip content to stdout without decompressing the file"
 TASK_1_COMMAND_1="zcat /tmp/readme.gz > /tmp/readme_content.txt"
 
 # Task 2
 TASK_2_QUESTION="View /tmp/notes.bz2 contents and save to /tmp/notes_content.txt (don't decompress original)"
-TASK_2_HINT="bzcat streams bzip2 content to stdout without decompressing the file"
+TASK_2_ANSWER="bzcat streams bzip2 content to stdout without decompressing the file"
 TASK_2_COMMAND_1="bzcat /tmp/notes.bz2 > /tmp/notes_content.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating compressed test files...${RESET}"

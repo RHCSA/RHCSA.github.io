@@ -21,46 +21,43 @@ QUESTION="Locate and interpret system log files"
 LAB_TASK_COUNT=7
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="A postfix error was just logged on this system. Find the line that mentions postfix in the general system log, and save it to /tmp/postfix_error.txt"
-TASK_1_HINT="Use grep to search the log file for postfix, and redirect the output to the file"
+TASK_1_ANSWER="Use grep to search the log file for postfix, and redirect the output to the file"
 TASK_1_COMMAND_1="cat /var/log/messages | grep postfix > /tmp/postfix_error.txt"
 
 # Task 2
 TASK_2_QUESTION="Write the path of the log file that stores general system messages (the one you just searched) to /tmp/messages_log_path.txt"
-TASK_2_HINT="This is the standard log file for general system messages on RHEL-based systems"
+TASK_2_ANSWER="This is the standard log file for general system messages on RHEL-based systems"
 TASK_2_COMMAND_1="echo /var/log/messages > /tmp/messages_log_path.txt"
 
 # Task 3
 TASK_3_QUESTION="Find the authentication problem in the authentication log, and save it to /tmp/secure_issue.txt"
-TASK_3_HINT="Authentication logs are stored in /var/log/secure. Use grep to search it"
+TASK_3_ANSWER="Authentication logs are stored in /var/log/secure. Use grep to search it"
 TASK_3_COMMAND_1="grep 'authentication error' /var/log/secure > /tmp/secure_issue.txt"
 
 # Task 4
 TASK_4_QUESTION="Find the disk problem in the boot log, and save it to /tmp/boot_issue.txt"
-TASK_4_HINT="Boot messages are stored in /var/log/boot.log. Use grep to search it"
+TASK_4_ANSWER="Boot messages are stored in /var/log/boot.log. Use grep to search it"
 TASK_4_COMMAND_1="grep 'boot error' /var/log/boot.log > /tmp/boot_issue.txt"
 
 # Task 5
 TASK_5_QUESTION="Find the cron job problem in the cron log, and save it to /tmp/cron_issue.txt"
-TASK_5_HINT="Cron job logs are stored in /var/log/cron. Use grep to search it"
+TASK_5_ANSWER="Cron job logs are stored in /var/log/cron. Use grep to search it"
 TASK_5_COMMAND_1="grep 'cron error' /var/log/cron > /tmp/cron_issue.txt"
 
 # Task 6
 TASK_6_QUESTION="Find the package problem in the package manager log, and save it to /tmp/dnf_issue.txt"
-TASK_6_HINT="Package manager logs are stored in /var/log/dnf.log. Use grep to search it"
+TASK_6_ANSWER="Package manager logs are stored in /var/log/dnf.log. Use grep to search it"
 TASK_6_COMMAND_1="grep 'dnf error' /var/log/dnf.log > /tmp/dnf_issue.txt"
 
 # Task 7
 TASK_7_QUESTION="Find the permission problem in the SELinux audit log, and save it to /tmp/audit_issue.txt"
-TASK_7_HINT="SELinux audit logs are stored in /var/log/audit/audit.log. Use grep to search it"
+TASK_7_ANSWER="SELinux audit logs are stored in /var/log/audit/audit.log. Use grep to search it"
 TASK_7_COMMAND_1="grep 'audit error' /var/log/audit/audit.log > /tmp/audit_issue.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

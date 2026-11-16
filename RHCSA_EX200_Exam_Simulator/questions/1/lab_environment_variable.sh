@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Set COMPANY=RedHat persistently for all users"
-TASK_1_HINT="Create a script in /etc/profile.d/ or add to /etc/environment"
+TASK_1_ANSWER="Create a script in /etc/profile.d/ or add to /etc/environment"
 TASK_1_COMMAND_1="echo 'export COMPANY=RedHat' > /etc/profile.d/company.sh"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing COMPANY variable configurations...${RESET}"

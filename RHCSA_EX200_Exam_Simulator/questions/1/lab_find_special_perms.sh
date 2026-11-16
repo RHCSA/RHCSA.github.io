@@ -13,32 +13,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find files with SUID set in /tmp/exam, save to /tmp/exam/suid_files.txt (use -perm /4000)"
-TASK_1_HINT="Use find with -perm /4000 -type f to find SUID files"
+TASK_1_ANSWER="Use find with -perm /4000 -type f to find SUID files"
 TASK_1_COMMAND_1="find /tmp/exam -perm /4000 -type f > /tmp/exam/suid_files.txt"
 
 # Task 2
 TASK_2_QUESTION="Find files with SGID set in /tmp/exam, save to /tmp/exam/sgid_files.txt (use -perm /2000)"
-TASK_2_HINT="Use find with -perm /2000 -type f to find SGID files"
+TASK_2_ANSWER="Use find with -perm /2000 -type f to find SGID files"
 TASK_2_COMMAND_1="find /tmp/exam -perm /2000 -type f > /tmp/exam/sgid_files.txt"
 
 # Task 3
 TASK_3_QUESTION="Find files with SUID or SGID set in /tmp/exam, save to /tmp/exam/suid_or_sgid.txt (use -perm /6000)"
-TASK_3_HINT="Use find with -perm /6000 -type f (6000 = 4000 + 2000)"
+TASK_3_ANSWER="Use find with -perm /6000 -type f (6000 = 4000 + 2000)"
 TASK_3_COMMAND_1="find /tmp/exam -perm /6000 -type f > /tmp/exam/suid_or_sgid.txt"
 
 # Task 4
 TASK_4_QUESTION="Find directories with sticky bit set in /tmp/exam, save to /tmp/exam/sticky_dirs.txt (use -perm /1000)"
-TASK_4_HINT="Use find with -perm /1000 -type d to find sticky bit directories"
+TASK_4_ANSWER="Use find with -perm /1000 -type d to find sticky bit directories"
 TASK_4_COMMAND_1="find /tmp/exam -perm /1000 -type d > /tmp/exam/sticky_dirs.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

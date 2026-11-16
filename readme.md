@@ -16,4 +16,8 @@ Explore more on our GitHub Pages:
 
 ---
 
+Want to help? Read [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
 Get ready to elevate your Linux expertise and ace the **EX200** exam! 💪🎯

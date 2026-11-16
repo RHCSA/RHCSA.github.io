@@ -1,40 +1,33 @@
 #!/bin/bash
 # Objective 8: Manage basic networking
 # LAB: Docker Container Practice (demo of a container as a second terminal tab)
-# NOTE: prepare_lab_2/PREPARE_LAB_N_NAME/PREPARE_LAB_N_COMMAND are only read by
-# the web UI (webui/server.py + webui/index.html). The CLI simulator (rhcsa)
-# only ever calls prepare_lab/check_tasks/cleanup_lab, so this lab behaves
-# like a normal single-terminal lab there (no container is used at all).
 
 IS_LAB=true
 LAB_ID="docker_container_demo"
 
-QUESTION="Tab 2 (web UI only) is a live terminal inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this same machine. Switch to that tab and install the httpd package inside the container."
+QUESTION="Tab 2 is a live terminal inside a Rocky Linux 10 container (a free RHEL 10 rebuild) running on this same machine. Switch to that tab and install the httpd package inside the container."
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Inside the container tab, install the httpd package"
-TASK_1_HINT="Use dnf to install httpd inside the container (tab 2)"
+TASK_1_ANSWER="Use dnf to install httpd inside the container (tab 2)"
 TASK_1_COMMAND_1="dnf install -y httpd"
 
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
-
 # =============================================================================
-# CONTAINER SETUP (web UI only)
+# CONTAINER SETUP
 # =============================================================================
 
 CONTAINER_NAME="rhcsa_lab_docker_demo"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
 
-# Tab names (web UI only)
+# Tab names
 PREPARE_LAB_1_NAME="Host Machine"
 PREPARE_LAB_2_NAME="Container (Rocky Linux 10)"
 # Attach tab 2 straight into the running container instead of a host shell
@@ -54,7 +47,7 @@ prepare_lab() {
     sleep 2
 }
 
-# Prepare tab 2 (web UI only) - required so the web UI detects and creates
+# Prepare tab 2 - required so the web UI detects and creates
 # the container tab; the container itself is already started by prepare_lab.
 prepare_lab_2() {
     :

@@ -12,12 +12,12 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/check_file.sh. Use [ -e /tmp/rhcsa_script_target.txt ] to test whether that exact file exists, and print 'File exists' when the test is true"
-TASK_1_HINT="Write the if/-e logic, then chmod +x the script so it can run directly as ./check_file.sh"
+TASK_1_ANSWER="Write the if/-e logic, then chmod +x the script so it can run directly as ./check_file.sh"
 TASK_1_COMMAND_1="cat > /root/check_file.sh << 'SCRIPT_END'
 #!/bin/bash
 if [ -e /tmp/rhcsa_script_target.txt ]; then
@@ -30,11 +30,8 @@ chmod +x /root/check_file.sh"
 
 # Task 2
 TASK_2_QUESTION="Confirm the script prints 'File does not exist' when the target file is absent (the else branch)"
-TASK_2_HINT="Remove the target file, then run ./check_file.sh again to see the else branch"
+TASK_2_ANSWER="Remove the target file, then run ./check_file.sh again to see the else branch"
 TASK_2_COMMAND_1="rm -f /tmp/rhcsa_script_target.txt && /root/check_file.sh"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

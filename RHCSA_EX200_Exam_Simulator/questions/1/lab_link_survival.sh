@@ -13,32 +13,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create /tmp/source.txt with content 'important data'"
-TASK_1_HINT="Use echo with redirection to create the file"
+TASK_1_ANSWER="Use echo with redirection to create the file"
 TASK_1_COMMAND_1="echo 'important data' > /tmp/source.txt"
 
 # Task 2
 TASK_2_QUESTION="Create hard link /tmp/hard.txt to /tmp/source.txt"
-TASK_2_HINT="Use ln without -s to create a hard link"
+TASK_2_ANSWER="Use ln without -s to create a hard link"
 TASK_2_COMMAND_1="ln /tmp/source.txt /tmp/hard.txt"
 
 # Task 3
 TASK_3_QUESTION="Create soft link /tmp/soft.txt to /tmp/source.txt"
-TASK_3_HINT="Use ln -s to create a symbolic link"
+TASK_3_ANSWER="Use ln -s to create a symbolic link"
 TASK_3_COMMAND_1="ln -s /tmp/source.txt /tmp/soft.txt"
 
 # Task 4
 TASK_4_QUESTION="Delete /tmp/source.txt and save which link survives ('hard' or 'soft') to /tmp/surviving_link.txt"
-TASK_4_HINT="Hard links share inode with original, soft links point to path"
+TASK_4_ANSWER="Hard links share inode with original, soft links point to path"
 TASK_4_COMMAND_1="rm /tmp/source.txt && echo 'hard' > /tmp/surviving_link.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

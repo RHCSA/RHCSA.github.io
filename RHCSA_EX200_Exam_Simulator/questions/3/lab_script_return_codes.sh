@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Return Codes ($?) to Check Command Success
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $?, which the
-# CLI's bash-based parser will expand while sourcing (a framework limitation
-# - see repo memory). This does NOT affect grading (check_tasks is real
-# bash, not a parsed string) or the web UI, which shows/sends it correctly.
-# CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_return_codes"
@@ -17,16 +12,16 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/check_command.sh. It should run grep to search for a marker inside /tmp/rhcsa_return_code_test.txt, then immediately check whether the exit status of that command was 0, printing 'Command succeeded' if it was or 'Command failed' if it wasn't"
-TASK_1_HINT="Run the command first, then check right after it whether the exit status equals 0"
+TASK_1_ANSWER="Run the command first, then check right after it whether the exit status equals 0"
 TASK_1_COMMAND_1="cat > /root/check_command.sh << 'SCRIPT_END'
 #!/bin/bash
 grep -q rhcsa_marker /tmp/rhcsa_return_code_test.txt 2>/dev/null
-if [ $? -eq 0 ]; then
+if [ \$? -eq 0 ]; then
     echo Command succeeded
 else
     echo Command failed
@@ -36,11 +31,8 @@ chmod +x /root/check_command.sh"
 
 # Task 2
 TASK_2_QUESTION="Confirm the script prints 'Command failed' when the marker text is not found in the file"
-TASK_2_HINT="Put unrelated text in the file, then run the script again"
+TASK_2_ANSWER="Put unrelated text in the file, then run the script again"
 TASK_2_COMMAND_1="echo something_else > /tmp/rhcsa_return_code_test.txt && /root/check_command.sh"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

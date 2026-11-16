@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Extract only USER and PID columns from 'ps aux' and save to /tmp/ps-users.txt"
-TASK_1_HINT="\$1 = USER, \$2 = PID in ps aux output"
+TASK_1_ANSWER="\$1 = USER, \$2 = PID in ps aux output"
 TASK_1_COMMAND_1="ps aux | awk '{print \$1, \$2}' > /tmp/ps-users.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing file...${RESET}"

@@ -13,27 +13,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Run /tmp/testscript.sh with output redirection"
-TASK_1_HINT="Run script with > for stdout and 2> for stderr"
+TASK_1_ANSWER="Run script with > for stdout and 2> for stderr"
 TASK_1_COMMAND_1="/tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt"
 
 # Task 2
 TASK_2_QUESTION="Redirect stdout to /tmp/output.txt (contains SUCCESS)"
-TASK_2_HINT="Use > to redirect stdout (file descriptor 1)"
+TASK_2_ANSWER="Use > to redirect stdout (file descriptor 1)"
 TASK_2_COMMAND_1="/tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt"
 
 # Task 3
 TASK_3_QUESTION="Redirect stderr to /tmp/errors.txt (contains ERROR)"
-TASK_3_HINT="Use 2> to redirect stderr (file descriptor 2)"
+TASK_3_ANSWER="Use 2> to redirect stderr (file descriptor 2)"
 TASK_3_COMMAND_1="/tmp/testscript.sh > /tmp/output.txt 2> /tmp/errors.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

@@ -665,9 +665,9 @@ build_success_summary() {
     sum_add "$head_p" "$head_s"
     (( blanks )) && sum_blank
     # "Ctrl+click" only makes sense where the terminal can make links (not on the text console or in a log file)
-    local hint=":"
-    [[ $LINKS == true ]] && hint=" (Ctrl+click):"
-    sum_add "Open the simulator in your browser${hint}" "${C_WHITE}Open the simulator in your browser${P}${C_GRAY}${hint}${P}"
+    local link_note=":"
+    [[ $LINKS == true ]] && link_note=" (Ctrl+click):"
+    sum_add "Open the simulator in your browser${link_note}" "${C_WHITE}Open the simulator in your browser${P}${C_GRAY}${link_note}${P}"
     for (( i = 0; i < shown; i++ )); do
         url="http://${ips[i]}"
         [[ $WEBUI_PORT == 80 ]] || url+=":${WEBUI_PORT}"
@@ -680,7 +680,7 @@ build_success_summary() {
     (( blanks )) && sum_blank
     [[ $WEB_OK == true ]] || sum_add "${S_WARN} The web interface did not answer yet - run: systemctl status ${SERVICE_NAME}" \
         "${C_WARN}${S_WARN} The web interface did not answer yet - run: systemctl status ${SERVICE_NAME}${P}"
-    sum_add "Terminal version:  rhcsa   (run it as root)" "${C_GRAY}Terminal version:${P}  ${BOLD}${C_WHITE}rhcsa${P}   ${C_GRAY}(run it as root)${P}"
+    sum_add "Reinstall/update:  sudo rhcsa" "${C_GRAY}Reinstall/update:${P}  ${BOLD}${C_WHITE}sudo rhcsa${P}"
     sum_add "Install log:       ${LOG_FILE}" "${C_GRAY}Install log:${P}       ${C_DIM}${LOG_FILE}${P}"
 }
 

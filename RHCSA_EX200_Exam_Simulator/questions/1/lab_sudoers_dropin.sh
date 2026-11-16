@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create /etc/sudoers.d/developers granting developers group passwordless sudo access to /usr/bin/ping"
-TASK_1_HINT="Use %groupname for groups, NOPASSWD: for passwordless"
+TASK_1_ANSWER="Use %groupname for groups, NOPASSWD: for passwordless"
 TASK_1_COMMAND_1="echo '%developers ALL=(ALL) NOPASSWD: /usr/bin/ping' > /etc/sudoers.d/developers"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing configuration...${RESET}"

@@ -14,12 +14,12 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/create_user.sh that creates a group named examgroup, creates a user named examuser with home directory /home/examuser and examgroup as a secondary group, and sets examuser's password to P@ssw0rd123. Then run the script"
-TASK_1_HINT="groupadd creates the group; useradd -m -d /home/examuser -G examgroup examuser creates the user"
+TASK_1_ANSWER="groupadd creates the group; useradd -m -d /home/examuser -G examgroup examuser creates the user"
 TASK_1_COMMAND_1="cat > /root/create_user.sh << 'SCRIPT_END'
 #!/bin/bash
 groupadd examgroup
@@ -31,16 +31,13 @@ chmod +x /root/create_user.sh && /root/create_user.sh"
 
 # Task 2
 TASK_2_QUESTION="Confirm examuser exists with home directory /home/examuser and is a member of examgroup"
-TASK_2_HINT="Check with id examuser"
+TASK_2_ANSWER="Check with id examuser"
 TASK_2_COMMAND_1="id examuser"
 
 # Task 3
 TASK_3_QUESTION="Confirm examuser's password is set to P@ssw0rd123"
-TASK_3_HINT="passwd --stdin reads the new password directly from standard input"
+TASK_3_ANSWER="passwd --stdin reads the new password directly from standard input"
 TASK_3_COMMAND_1="getent shadow examuser"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

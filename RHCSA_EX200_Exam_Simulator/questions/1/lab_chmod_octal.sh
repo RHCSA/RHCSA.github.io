@@ -13,32 +13,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Set /tmp/script.sh to 755 (rwxr-xr-x) - user: full access; group/others: read and execute only"
-TASK_1_HINT="Use chmod with octal mode 755 to set rwxr-xr-x permissions"
+TASK_1_ANSWER="Use chmod with octal mode 755 to set rwxr-xr-x permissions"
 TASK_1_COMMAND_1="chmod 755 /tmp/script.sh"
 
 # Task 2
 TASK_2_QUESTION="Set /tmp/document.txt to 644 (rw-r--r--) - user: read/write; group/others: read only"
-TASK_2_HINT="Use chmod with octal mode 644 to set rw-r--r-- permissions"
+TASK_2_ANSWER="Use chmod with octal mode 644 to set rw-r--r-- permissions"
 TASK_2_COMMAND_1="chmod 644 /tmp/document.txt"
 
 # Task 3
 TASK_3_QUESTION="Set /tmp/private.txt to 600 (rw-------) - user: read/write; group/others: no access"
-TASK_3_HINT="Use chmod with octal mode 600 to restrict access to owner only"
+TASK_3_ANSWER="Use chmod with octal mode 600 to restrict access to owner only"
 TASK_3_COMMAND_1="chmod 600 /tmp/private.txt"
 
 # Task 4
 TASK_4_QUESTION="Set /tmp/shared/ to 750 (rwxr-x---) - user: full access; group: read/execute; others: no access"
-TASK_4_HINT="Use chmod with octal mode 750 to allow group read/execute but deny others"
+TASK_4_ANSWER="Use chmod with octal mode 750 to allow group read/execute but deny others"
 TASK_4_COMMAND_1="chmod 750 /tmp/shared/"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

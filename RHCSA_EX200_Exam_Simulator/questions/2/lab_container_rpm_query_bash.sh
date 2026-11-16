@@ -3,9 +3,7 @@
 # LAB: Query an Installed Package with rpm (container-only terminal)
 # NOTE: same pattern as lab_container_install_httpd.sh - prepare_lab attaches
 # the single default terminal straight into the container via `tmux
-# send-keys`, so no host shell is ever shown or reachable. Web UI only;
-# harmless no-op on the CLI simulator - CLI users would need to run
-# `docker exec -it rhcsa_lab_container_rpm_query bash` themselves.
+# send-keys`, so no host shell is ever shown or reachable.
 
 IS_LAB=true
 LAB_ID="container_rpm_query_bash"
@@ -17,16 +15,13 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Use rpm to list installed packages and filter for bash, redirecting the result into /root/bash_package.txt instead of the screen"
-TASK_1_HINT="rpm -qa lists every installed package; piping that into grep bash filters the list down to just the ones with bash in their name"
+TASK_1_ANSWER="rpm -qa lists every installed package; piping that into grep bash filters the list down to just the ones with bash in their name"
 TASK_1_COMMAND_1="rpm -qa | grep bash > /root/bash_package.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 CONTAINER_NAME="rhcsa_lab_container_rpm_query"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
@@ -44,7 +39,7 @@ prepare_lab() {
         -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$CONTAINER_IMAGE" /usr/sbin/init &>/dev/null
     sleep 2
 
-    # Web UI only: attach the single visible terminal straight into the
+    # Attach the single visible terminal straight into the
     # container so no host shell is ever shown for this lab
     tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null
 }

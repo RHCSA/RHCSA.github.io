@@ -30,21 +30,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Schedule a reboot for 10 minutes from now, with the wall message 'reboot in 10 minutes'"
-TASK_1_HINT="shutdown -r +N 'message' schedules a reboot N minutes from now and broadcasts the message to logged-in users beforehand"
+TASK_1_ANSWER="shutdown -r +N 'message' schedules a reboot N minutes from now and broadcasts the message to logged-in users beforehand"
 TASK_1_COMMAND_1="shutdown -r +10 'reboot in 10 minutes'"
 
 # Task 2
 TASK_2_QUESTION="Reschedule the reboot to happen at 01:00 instead, with the wall message 'apply update'"
-TASK_2_HINT="Running shutdown again with a new time replaces the previously scheduled one; an hh:mm time schedules it for that clock time"
+TASK_2_ANSWER="Running shutdown again with a new time replaces the previously scheduled one; an hh:mm time schedules it for that clock time"
 TASK_2_COMMAND_1="shutdown -r 01:00 'apply update'"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 WATCHER_STOP_FILE="/tmp/.rhcsa_lab_shutdown_watcher_stop"
 MARKER_FILE="/root/.task1_seen"

@@ -13,37 +13,33 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=5
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Set all FILES in /tmp/exam/web to 644"
-TASK_1_HINT="Use find with -type f and -exec chmod 644 {} \\;"
+TASK_1_ANSWER="Use find with -type f and -exec chmod 644 {} \\;"
 TASK_1_COMMAND_1="find /tmp/exam/web -type f -exec chmod 644 {} \\;"
 
 # Task 2
 TASK_2_QUESTION="Set all DIRECTORIES in /tmp/exam/web to 755"
-TASK_2_HINT="Use find with -type d and -exec chmod 755 {} \\;"
+TASK_2_ANSWER="Use find with -type d and -exec chmod 755 {} \\;"
 TASK_2_COMMAND_1="find /tmp/exam/web -type d -exec chmod 755 {} \\;"
 
 # Task 3
 TASK_3_QUESTION="Copy all .conf files from /tmp/exam/config to /tmp/exam/backup/"
-TASK_3_HINT="Use find with -name '*.conf' and -exec cp {} destination \\;"
+TASK_3_ANSWER="Use find with -name '*.conf' and -exec cp {} destination \\;"
 TASK_3_COMMAND_1="find /tmp/exam/config -name '*.conf' -exec cp {} /tmp/exam/backup/ \\;"
 
 # Task 4
 TASK_4_QUESTION="Delete all empty files in /tmp/exam/temp"
-TASK_4_HINT="Use find with -type f -empty -delete"
+TASK_4_ANSWER="Use find with -type f -empty -delete"
 TASK_4_COMMAND_1="find /tmp/exam/temp -type f -empty -delete"
 
 # Task 5
 TASK_5_QUESTION="Delete all empty directories in /tmp/exam/cleanup"
-TASK_5_HINT="Use find with -type d -empty -delete"
+TASK_5_ANSWER="Use find with -type d -empty -delete"
 TASK_5_COMMAND_1="find /tmp/exam/cleanup -type d -empty -delete"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

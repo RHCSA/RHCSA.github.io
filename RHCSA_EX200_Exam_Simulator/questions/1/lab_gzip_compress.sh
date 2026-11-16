@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Compress /tmp/testfile.txt using gzip, keeping the original file (both files should exist)"
-TASK_1_HINT="Alternative: gzip -c /tmp/testfile.txt > /tmp/testfile.txt.gz"
+TASK_1_ANSWER="Alternative: gzip -c /tmp/testfile.txt > /tmp/testfile.txt.gz"
 TASK_1_COMMAND_1="gzip -k /tmp/testfile.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test file for compression...${RESET}"

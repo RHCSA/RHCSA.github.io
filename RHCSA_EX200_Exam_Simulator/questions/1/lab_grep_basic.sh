@@ -13,27 +13,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find all users with /bin/bash shell from /etc/passwd and save to /tmp/bash-users.txt"
-TASK_1_HINT="Use grep to search for '/bin/bash' pattern and redirect output to file"
+TASK_1_ANSWER="Use grep to search for '/bin/bash' pattern and redirect output to file"
 TASK_1_COMMAND_1="grep '/bin/bash' /etc/passwd > /tmp/bash-users.txt"
 
 # Task 2
 TASK_2_QUESTION="Count how many users have 'nologin' shell and save the count to /tmp/nologin-count.txt"
-TASK_2_HINT="Use grep -c to count matching lines containing 'nologin'"
+TASK_2_ANSWER="Use grep -c to count matching lines containing 'nologin'"
 TASK_2_COMMAND_1="grep -c 'nologin' /etc/passwd > /tmp/nologin-count.txt"
 
 # Task 3
 TASK_3_QUESTION="From /tmp/testconfig.conf, extract only non-comment lines (lines not starting with #) to /tmp/active-config.txt"
-TASK_3_HINT="Use grep -v with '^#' pattern to exclude lines starting with #"
+TASK_3_ANSWER="Use grep -v with '^#' pattern to exclude lines starting with #"
 TASK_3_COMMAND_1="grep -v '^#' /tmp/testconfig.conf > /tmp/active-config.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

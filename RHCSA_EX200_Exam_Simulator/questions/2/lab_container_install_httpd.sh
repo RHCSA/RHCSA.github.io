@@ -4,10 +4,7 @@
 # NOTE: unlike questions/8/lab_docker_container_demo.sh (host tab + separate
 # container tab), this lab redirects the single default terminal itself
 # straight into the container via `tmux send-keys` in prepare_lab, so no host
-# shell is ever shown or reachable for this lab. This only has an effect in
-# the web UI (which uses this tmux session); it is a harmless no-op on the
-# CLI simulator - CLI users would need to run
-# `docker exec -it rhcsa_lab_container_httpd bash` themselves to reach it.
+# shell is ever shown or reachable for this lab.
 
 IS_LAB=true
 LAB_ID="container_install_httpd"
@@ -19,21 +16,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Install the httpd package"
-TASK_1_HINT="dnf install -y httpd installs the package without pausing for a yes/no prompt"
+TASK_1_ANSWER="dnf install -y httpd installs the package without pausing for a yes/no prompt"
 TASK_1_COMMAND_1="dnf install -y httpd"
 
 # Task 2
 TASK_2_QUESTION="List httpd's dependencies, and redirect the output into /root/httpd_deps.txt instead of the screen"
-TASK_2_HINT="rpm -qR httpd lists every dependency (requirement) that httpd needs to run"
+TASK_2_ANSWER="rpm -qR httpd lists every dependency (requirement) that httpd needs to run"
 TASK_2_COMMAND_1="rpm -qR httpd > /root/httpd_deps.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 CONTAINER_NAME="rhcsa_lab_container_httpd"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
@@ -51,7 +45,7 @@ prepare_lab() {
         -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$CONTAINER_IMAGE" /usr/sbin/init &>/dev/null
     sleep 2
 
-    # Web UI only: attach the single visible terminal straight into the
+    # Attach the single visible terminal straight into the
     # container so no host shell is ever shown for this lab
     tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null
 }

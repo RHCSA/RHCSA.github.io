@@ -3,8 +3,8 @@
 # Question: Reset the root password (alternative method, init=/bin/bash)
 # This is a plain question, not a lab - see question_reset_root_password.sh
 # for the rd.break method and the container/boot limit note. No IS_LAB
-# line, so both the CLI and the webui treat this as a plain Question/Answer
-# entry (QUESTION + ANSWER only, no HINT needed).
+# line, so the web UI treats this as a plain Question/Answer
+# entry (QUESTION + ANSWER only).
 
 QUESTION="Reset the root password using the init=/bin/bash method."
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"

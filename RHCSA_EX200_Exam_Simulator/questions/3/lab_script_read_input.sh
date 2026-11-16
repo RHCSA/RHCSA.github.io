@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Reading User Input (read -p)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $name, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_read_input"
@@ -17,26 +12,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/greet.sh. Use read -p with a prompt such as Name: to read a name into a variable, then echo a greeting that includes that name, for example Hello followed by the entered name"
-TASK_1_HINT="read -p followed by a prompt string reads user input into a variable; then echo a greeting using that variable"
+TASK_1_ANSWER="read -p followed by a prompt string reads user input into a variable; then echo a greeting using that variable"
 TASK_1_COMMAND_1="cat > /root/greet.sh << 'SCRIPT_END'
 #!/bin/bash
 read -p 'Name: ' name
-echo Hello $name
+echo Hello \$name
 SCRIPT_END
 chmod +x /root/greet.sh"
 
 # Task 2
 TASK_2_QUESTION="Run the script and enter 'Bob' when prompted: it should print 'Hello Bob'"
-TASK_2_HINT="Run the script, type a name at the prompt, and press Enter"
+TASK_2_ANSWER="Run the script, type a name at the prompt, and press Enter"
 TASK_2_COMMAND_1="/root/greet.sh"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

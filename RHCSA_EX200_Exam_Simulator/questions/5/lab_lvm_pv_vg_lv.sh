@@ -1,9 +1,6 @@
 #!/bin/bash
 # Objective 5: Configure local storage
 # LAB: Create physical volumes, a volume group, and a logical volume
-# NOTE: check_prerequisites() is only read by the web UI (webui/server.py).
-# The CLI simulator (rhcsa) never calls it, so on the CLI this lab just runs
-# prepare_lab/check_tasks/cleanup_lab like any other lab (no pre-flight popup).
 
 IS_LAB=true
 LAB_ID="lvm_pv_vg_lv"
@@ -12,7 +9,6 @@ QUESTION="Set up LVM storage: create physical volumes, a volume group, and a log
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
-LAB_TITLE="LVM: Physical Volumes, Volume Group, and Logical Volume"
 LAB_TASK_COUNT=5
 
 # =============================================================================
@@ -68,96 +64,42 @@ _lvm_load_disks() {
 _lvm_load_disks
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create LVM physical volumes on the two available extra disks: ${DISK1} and ${DISK2} (do not use the disk that holds /)"
-TASK_1_HINT="Use pvcreate on both disks to initialize them as LVM physical volumes"
+TASK_1_ANSWER="Use pvcreate on both disks to initialize them as LVM physical volumes"
 TASK_1_COMMAND_1="pvcreate ${DISK1} ${DISK2}"
 
 # Task 2
 TASK_2_QUESTION="Create a volume group named ${VG_NAME} from ${DISK1} and ${DISK2}"
-TASK_2_HINT="Use vgcreate to combine both physical volumes into one volume group"
+TASK_2_ANSWER="Use vgcreate to combine both physical volumes into one volume group"
 TASK_2_COMMAND_1="vgcreate ${VG_NAME} ${DISK1} ${DISK2}"
 
 # Task 3
 TASK_3_QUESTION="Create a logical volume named ${LV_NAME} in ${VG_NAME} with a size of EXACTLY ${LV_SIZE}"
-TASK_3_HINT="Use lvcreate with --name and --size to request the exact size"
+TASK_3_ANSWER="Use lvcreate with --name and --size to request the exact size"
 TASK_3_COMMAND_1="lvcreate --name ${LV_NAME} --size ${LV_SIZE} ${VG_NAME}"
 
 # Task 4
 TASK_4_QUESTION="Format /dev/${VG_NAME}/${LV_NAME} with the xfs file system"
-TASK_4_HINT="Use mkfs.xfs to format the logical volume"
+TASK_4_ANSWER="Use mkfs.xfs to format the logical volume"
 TASK_4_COMMAND_1="mkfs.xfs /dev/${VG_NAME}/${LV_NAME}"
 
 # Task 5
 TASK_5_QUESTION="Create ${MOUNT_POINT} and mount /dev/${VG_NAME}/${LV_NAME} there permanently (must persist after reboot)"
-TASK_5_HINT="Add an entry to /etc/fstab, then reload systemd and mount -a"
+TASK_5_ANSWER="Add an entry to /etc/fstab, then reload systemd and mount -a"
 TASK_5_COMMAND_1="mkdir ${MOUNT_POINT}"
 TASK_5_COMMAND_2="echo '/dev/${VG_NAME}/${LV_NAME} ${MOUNT_POINT} xfs defaults 0 0' >> /etc/fstab"
 TASK_5_COMMAND_3="systemctl daemon-reload"
 TASK_5_COMMAND_4="mount -a"
 
 # =============================================================================
-# TASK HELPER FUNCTIONS
-# =============================================================================
-
-# Get task description by index (0-based)
-get_task_description() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local var_name="TASK_${task_num}_QUESTION"
-    echo "${!var_name}"
-}
-
-# Get commands for a task (returns newline-separated commands)
-get_task_commands() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local result=""
-
-    for i in 1 2 3 4 5; do
-        local var_name="TASK_${task_num}_COMMAND_${i}"
-        local cmd="${!var_name}"
-        if [[ -n "$cmd" ]]; then
-            if [[ -n "$result" ]]; then
-                result+=$'\n'
-            fi
-            result+="$cmd"
-        fi
-    done
-    echo "$result"
-}
-
-# Build HINT from all task commands (called automatically)
-_build_hint() {
-    local result=""
-    for ((i=0; i<LAB_TASK_COUNT; i++)); do
-        local task_num=$((i+1))
-        local cmds=$(get_task_commands $i)
-        if [[ -n "$cmds" ]]; then
-            while IFS= read -r cmd; do
-                if [[ -n "$cmd" ]]; then
-                    if [[ -n "$result" ]]; then
-                        result+=$'\n'
-                    fi
-                    result+="Task ${task_num}: ${cmd}"
-                fi
-            done <<< "$cmds"
-        fi
-    done
-    echo "$result"
-}
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
-
-# =============================================================================
 # LAB IMPLEMENTATION
 # =============================================================================
 
-# Web UI only: verify 2 spare disks (>= 5G, not the root disk) exist before
+# Verify 2 spare disks (>= 5G, not the root disk) exist before
 # starting. If not, the web UI shows this message and never starts the lab.
 check_prerequisites() {
     local spares=()

@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="List the contents of /tmp/archive.tar.gz and save the output to /tmp/archive_contents.txt"
-TASK_1_HINT="-t = list contents of archive"
+TASK_1_ANSWER="-t = list contents of archive"
 TASK_1_COMMAND_1="tar -tvzf /tmp/archive.tar.gz > /tmp/archive_contents.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test archive...${RESET}"

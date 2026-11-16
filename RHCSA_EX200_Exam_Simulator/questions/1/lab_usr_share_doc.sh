@@ -11,27 +11,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find bash documentation directory name, save to /tmp/exam/bash_doc_dir.txt"
-TASK_1_HINT="Use ls with grep to find specific package docs"
+TASK_1_ANSWER="Use ls with grep to find specific package docs"
 TASK_1_COMMAND_1="ls /usr/share/doc/ | grep -i bash > /tmp/exam/bash_doc_dir.txt"
 
 # Task 2
 TASK_2_QUESTION="List files in sudo documentation, save to /tmp/exam/sudo_files.txt"
-TASK_2_HINT="Use wildcard to match sudo package name with version"
+TASK_2_ANSWER="Use wildcard to match sudo package name with version"
 TASK_2_COMMAND_1="ls /usr/share/doc/sudo*/ > /tmp/exam/sudo_files.txt"
 
 # Task 3
 TASK_3_QUESTION="List all doc files for bash using rpm, save to /tmp/exam/bash_rpm_docs.txt"
-TASK_3_HINT="rpm -qd lists documentation files for a package"
+TASK_3_ANSWER="rpm -qd lists documentation files for a package"
 TASK_3_COMMAND_1="rpm -qd bash > /tmp/exam/bash_rpm_docs.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

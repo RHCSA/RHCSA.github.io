@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Extract the home directory of all users from /etc/passwd and save to /tmp/home.txt"
-TASK_1_HINT="-d = delimiter, -f = field number, field 6 = home directory"
+TASK_1_ANSWER="-d = delimiter, -f = field number, field 6 = home directory"
 TASK_1_COMMAND_1="cat /etc/passwd | cut -d':' -f 6 > /tmp/home.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing file...${RESET}"

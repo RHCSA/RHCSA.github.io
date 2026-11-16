@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Allow 'webdev' to run 'systemctl restart httpd' without password and 'kill' with password via sudo"
-TASK_1_HINT="Use NOPASSWD: for specific commands and PASSWD: for others"
+TASK_1_ANSWER="Use NOPASSWD: for specific commands and PASSWD: for others"
 TASK_1_COMMAND_1="echo 'webdev ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart httpd, PASSWD: /bin/kill' > /etc/sudoers.d/webdev"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing configuration...${RESET}"

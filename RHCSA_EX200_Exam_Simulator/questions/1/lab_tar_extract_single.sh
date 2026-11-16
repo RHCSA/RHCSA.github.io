@@ -13,22 +13,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Save the list of archive contents of /tmp/system.tar.gz to /tmp/archive_list.txt"
-TASK_1_HINT="Use tar -tvzf to list contents with verbose output and redirect to file"
+TASK_1_ANSWER="Use tar -tvzf to list contents with verbose output and redirect to file"
 TASK_1_COMMAND_1="tar -tvzf /tmp/system.tar.gz > /tmp/archive_list.txt"
 
 # Task 2
 TASK_2_QUESTION="Extract only 'etc/hostname' from /tmp/system.tar.gz to current directory"
-TASK_2_HINT="Specify the exact path of the file to extract after the archive name"
+TASK_2_ANSWER="Specify the exact path of the file to extract after the archive name"
 TASK_2_COMMAND_1="tar -xvzf /tmp/system.tar.gz etc/hostname"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

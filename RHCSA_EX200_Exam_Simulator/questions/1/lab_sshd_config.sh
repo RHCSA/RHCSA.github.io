@@ -13,37 +13,34 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=5
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Set PermitRootLogin to 'yes' in /etc/ssh/sshd_config"
-TASK_1_HINT="Edit /etc/ssh/sshd_config and add/modify PermitRootLogin directive"
+TASK_1_ANSWER="Edit /etc/ssh/sshd_config and add/modify PermitRootLogin directive"
 TASK_1_COMMAND_1="vim /etc/ssh/sshd_config"
 
 # Task 2
 TASK_2_QUESTION="Configure AllowUsers to permit only: root, admin, developer"
-TASK_2_HINT="AllowUsers directive accepts space-separated list of usernames"
+TASK_2_ANSWER="AllowUsers directive accepts space-separated list of usernames"
 TASK_2_COMMAND_1="AllowUsers root admin developer"
 
 # Task 3
 TASK_3_QUESTION="Set MaxAuthTries to 3"
-TASK_3_HINT="MaxAuthTries limits authentication attempts per connection"
+TASK_3_ANSWER="MaxAuthTries limits authentication attempts per connection"
 TASK_3_COMMAND_1="MaxAuthTries 3"
 
 # Task 4
 TASK_4_QUESTION="Disable X11 forwarding (X11Forwarding no)"
-TASK_4_HINT="X11Forwarding controls graphical application forwarding over SSH"
+TASK_4_ANSWER="X11Forwarding controls graphical application forwarding over SSH"
 TASK_4_COMMAND_1="X11Forwarding no"
 
 # Task 5
 TASK_5_QUESTION="Disable empty passwords (PermitEmptyPasswords no)"
-TASK_5_HINT="PermitEmptyPasswords controls login for accounts without passwords"
+TASK_5_ANSWER="PermitEmptyPasswords controls login for accounts without passwords"
 TASK_5_COMMAND_1="PermitEmptyPasswords no"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Backing up original sshd_config...${RESET}"

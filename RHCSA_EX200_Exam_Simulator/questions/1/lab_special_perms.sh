@@ -13,32 +13,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Make /tmp/special/myapp run as the file owner (SUID)"
-TASK_1_HINT="Use chmod u+s or chmod 4755 to set SUID"
+TASK_1_ANSWER="Use chmod u+s or chmod 4755 to set SUID"
 TASK_1_COMMAND_1="chmod u+s /tmp/special/myapp"
 
 # Task 2
 TASK_2_QUESTION="Make new files in /tmp/special/shared/ inherit the directory group (SGID)"
-TASK_2_HINT="Use chmod g+s or chmod 2775 to set SGID on directory"
+TASK_2_ANSWER="Use chmod g+s or chmod 2775 to set SGID on directory"
 TASK_2_COMMAND_1="chmod g+s /tmp/special/shared/"
 
 # Task 3
 TASK_3_QUESTION="Prevent users from deleting others' files in /tmp/special/dropbox/ (Sticky Bit)"
-TASK_3_HINT="Use chmod o+t or chmod 1777 to set sticky bit"
+TASK_3_ANSWER="Use chmod o+t or chmod 1777 to set sticky bit"
 TASK_3_COMMAND_1="chmod o+t /tmp/special/dropbox/"
 
 # Task 4
 TASK_4_QUESTION="Set /tmp/special/project/ to inherit group AND prevent deletion by others (SGID + Sticky)"
-TASK_4_HINT="Use chmod 3775 to set both SGID (2) and Sticky (1)"
+TASK_4_ANSWER="Use chmod 3775 to set both SGID (2) and Sticky (1)"
 TASK_4_COMMAND_1="chmod 3775 /tmp/special/project/"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

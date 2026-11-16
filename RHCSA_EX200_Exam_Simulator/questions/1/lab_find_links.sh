@@ -13,22 +13,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find all symlinks in /tmp/linktest and save to /tmp/symlinks.txt"
-TASK_1_HINT="Use find with -type l to find symbolic links"
+TASK_1_ANSWER="Use find with -type l to find symbolic links"
 TASK_1_COMMAND_1="find /tmp/linktest -type l > /tmp/symlinks.txt"
 
 # Task 2
 TASK_2_QUESTION="Find broken symlinks in /tmp/linktest and save to /tmp/broken_links.txt"
-TASK_2_HINT="Use find with -xtype l to find broken symbolic links"
+TASK_2_ANSWER="Use find with -xtype l to find broken symbolic links"
 TASK_2_COMMAND_1="find /tmp/linktest -xtype l > /tmp/broken_links.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

@@ -45,41 +45,38 @@ UNTIL_TIME=$(_load_state_line 2 "<until>")
 TEST_PID=$(_load_state_line 3 "<pid>")
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Show the journal entries for the sshd service. Save the output to /tmp/journal_sshd.txt"
-TASK_1_HINT="Use journalctl with -u and the unit name"
+TASK_1_ANSWER="Use journalctl with -u and the unit name"
 TASK_1_COMMAND_1="journalctl -u sshd > /tmp/journal_sshd.txt"
 
 # Task 2
 TASK_2_QUESTION="Show journal entries at error priority or higher. Save the output to /tmp/journal_err.txt"
-TASK_2_HINT="Use journalctl with -p and the priority name"
+TASK_2_ANSWER="Use journalctl with -p and the priority name"
 TASK_2_COMMAND_1="journalctl -p err > /tmp/journal_err.txt"
 
 # Task 3
 TASK_3_QUESTION="Show journal entries between ${SINCE_TIME} and ${UNTIL_TIME}. Save the output to /tmp/journal_window.txt"
-TASK_3_HINT="Use journalctl with --since and --until"
+TASK_3_ANSWER="Use journalctl with --since and --until"
 TASK_3_COMMAND_1="journalctl --since '${SINCE_TIME}' --until '${UNTIL_TIME}' > /tmp/journal_window.txt"
 
 # Task 4
 TASK_4_QUESTION="Show journal entries from the current boot. Save the output to /tmp/journal_boot.txt"
-TASK_4_HINT="Use journalctl with -b"
+TASK_4_ANSWER="Use journalctl with -b"
 TASK_4_COMMAND_1="journalctl -b > /tmp/journal_boot.txt"
 
 # Task 5
 TASK_5_QUESTION="Show kernel messages from the journal. Save the output to /tmp/journal_kernel.txt"
-TASK_5_HINT="Use journalctl with -k"
+TASK_5_ANSWER="Use journalctl with -k"
 TASK_5_COMMAND_1="journalctl -k > /tmp/journal_kernel.txt"
 
 # Task 6
 TASK_6_QUESTION="A test process with PID ${TEST_PID} just logged a message. Show the journal entries for that PID. Save the output to /tmp/journal_pid.txt"
-TASK_6_HINT="Use journalctl with a field match: _PID= followed by the PID"
+TASK_6_ANSWER="Use journalctl with a field match: _PID= followed by the PID"
 TASK_6_COMMAND_1="journalctl _PID=${TEST_PID} > /tmp/journal_pid.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

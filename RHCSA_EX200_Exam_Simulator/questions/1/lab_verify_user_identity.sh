@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Run 'id sysadmin' and save output to /tmp/sysadmin_id.txt"
-TASK_1_HINT="id command shows UID, GID, and all group memberships"
+TASK_1_ANSWER="id command shows UID, GID, and all group memberships"
 TASK_1_COMMAND_1="id sysadmin > /tmp/sysadmin_id.txt"
 
 # Task 2
 TASK_2_QUESTION="Run 'groups sysadmin' and save output to /tmp/sysadmin_groups.txt"
-TASK_2_HINT="groups command shows all groups a user belongs to"
+TASK_2_ANSWER="groups command shows all groups a user belongs to"
 TASK_2_COMMAND_1="groups sysadmin > /tmp/sysadmin_groups.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test user sysadmin...${RESET}"

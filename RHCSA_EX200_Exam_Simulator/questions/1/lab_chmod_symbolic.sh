@@ -13,32 +13,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Add execute for user on /tmp/app.sh (rw-rw-r-- --> rwxrw-r--) - user gains execute"
-TASK_1_HINT="Use chmod u+x to add execute permission for the user"
+TASK_1_ANSWER="Use chmod u+x to add execute permission for the user"
 TASK_1_COMMAND_1="chmod u+x /tmp/app.sh"
 
 # Task 2
 TASK_2_QUESTION="Remove write for group/others on /tmp/config.txt (rw-rw-rw- --> rw-r--r--) - only user can write"
-TASK_2_HINT="Use chmod go-w to remove write permission from group and others"
+TASK_2_ANSWER="Use chmod go-w to remove write permission from group and others"
 TASK_2_COMMAND_1="chmod go-w /tmp/config.txt"
 
 # Task 3
 TASK_3_QUESTION="Set /tmp/data.txt to 640 (rw-r-----) - user: read/write; group: read only; others: no access"
-TASK_3_HINT="Use chmod with symbolic notation u=rw,g=r,o= to set exact permissions"
+TASK_3_ANSWER="Use chmod with symbolic notation u=rw,g=r,o= to set exact permissions"
 TASK_3_COMMAND_1="chmod u=rw,g=r,o= /tmp/data.txt"
 
 # Task 4
 TASK_4_QUESTION="Add read for all on /tmp/readme.txt (--------- --> r--r--r--) - everyone can read"
-TASK_4_HINT="Use chmod a+r to add read permission for all users"
+TASK_4_ANSWER="Use chmod a+r to add read permission for all users"
 TASK_4_COMMAND_1="chmod a+r /tmp/readme.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

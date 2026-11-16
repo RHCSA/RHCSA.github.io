@@ -11,27 +11,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find all commands related to 'password', save to /tmp/exam/password_cmds.txt"
-TASK_1_HINT="apropos searches all man pages containing the keyword"
+TASK_1_ANSWER="apropos searches all man pages containing the keyword"
 TASK_1_COMMAND_1="apropos password > /tmp/exam/password_cmds.txt"
 
 # Task 2
 TASK_2_QUESTION="Find all commands related to 'partition', save to /tmp/exam/partition_cmds.txt"
-TASK_2_HINT="man -k is the same as apropos"
+TASK_2_ANSWER="man -k is the same as apropos"
 TASK_2_COMMAND_1="man -k partition > /tmp/exam/partition_cmds.txt"
 
 # Task 3
 TASK_3_QUESTION="Find admin commands (section 8) related to 'user', save to /tmp/exam/user_admin.txt"
-TASK_3_HINT="Use apropos -s 8 to search only section 8 (admin commands)"
+TASK_3_ANSWER="Use apropos -s 8 to search only section 8 (admin commands)"
 TASK_3_COMMAND_1="apropos -s 8 user > /tmp/exam/user_admin.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

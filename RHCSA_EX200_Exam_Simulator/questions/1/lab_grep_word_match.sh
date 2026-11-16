@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find lines containing the exact word 'log' (not 'login' or 'syslog') from /tmp/services.txt, save to /tmp/log-only.txt"
-TASK_1_HINT="-w matches whole words only"
+TASK_1_ANSWER="-w matches whole words only"
 TASK_1_COMMAND_1="grep -w 'log' /tmp/services.txt > /tmp/log-only.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

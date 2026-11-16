@@ -13,27 +13,24 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find lines containing 'error', 'warning', or 'critical' (case-insensitive) from /tmp/app.log, save to /tmp/issues.txt"
-TASK_1_HINT="Use -E with alternation (|) and -i for case-insensitive"
+TASK_1_ANSWER="Use -E with alternation (|) and -i for case-insensitive"
 TASK_1_COMMAND_1="grep -iE 'error|warning|critical' /tmp/app.log > /tmp/issues.txt"
 
 # Task 2
 TASK_2_QUESTION="Find lines with 2 or more consecutive 'o' characters from /tmp/words.txt and save to /tmp/double-o.txt"
-TASK_2_HINT="Use -E with quantifier {2,} or simply search for 'oo'"
+TASK_2_ANSWER="Use -E with quantifier {2,} or simply search for 'oo'"
 TASK_2_COMMAND_1="grep -E 'o{2,}' /tmp/words.txt > /tmp/double-o.txt"
 
 # Task 3
 TASK_3_QUESTION="From /tmp/server.conf, extract lines that are NOT comments and NOT empty, save to /tmp/clean-config.txt"
-TASK_3_HINT="Use -v to invert match and -E with alternation for multiple patterns"
+TASK_3_ANSWER="Use -v to invert match and -E with alternation for multiple patterns"
 TASK_3_COMMAND_1="grep -Ev '^#|^$' /tmp/server.conf > /tmp/clean-config.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

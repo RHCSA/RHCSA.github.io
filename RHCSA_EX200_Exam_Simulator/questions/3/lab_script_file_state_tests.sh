@@ -14,12 +14,12 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/check_file_state.sh. Add one if block for each test against /tmp/rhcsa_state_file.txt: -x should echo 'Executable', -w should echo 'Writable', and -s should echo 'Has content', each only when that specific test is true"
-TASK_1_HINT="Three separate if blocks: [ -x FILE ] echoes Executable, [ -w FILE ] echoes Writable, [ -s FILE ] echoes Has content"
+TASK_1_ANSWER="Three separate if blocks: [ -x FILE ] echoes Executable, [ -w FILE ] echoes Writable, [ -s FILE ] echoes Has content"
 TASK_1_COMMAND_1="cat > /root/check_file_state.sh << 'SCRIPT_END'
 #!/bin/bash
 if [ -x /tmp/rhcsa_state_file.txt ]; then
@@ -36,16 +36,13 @@ chmod +x /root/check_file_state.sh"
 
 # Task 2
 TASK_2_QUESTION="Confirm the script prints 'Executable' once the target file itself is made executable"
-TASK_2_HINT="chmod +x the target file, then run the script again"
+TASK_2_ANSWER="chmod +x the target file, then run the script again"
 TASK_2_COMMAND_1="chmod +x /tmp/rhcsa_state_file.txt && /root/check_file_state.sh"
 
 # Task 3
 TASK_3_QUESTION="Confirm the script does not print 'Has content' once the target file is emptied"
-TASK_3_HINT="Truncate the file to zero bytes, then run the script again"
+TASK_3_ANSWER="Truncate the file to zero bytes, then run the script again"
 TASK_3_COMMAND_1=": > /tmp/rhcsa_state_file.txt && /root/check_file_state.sh"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

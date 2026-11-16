@@ -16,31 +16,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Display the top 10 processes sorted by CPU usage. Save the output to /tmp/top_cpu.txt"
-TASK_1_HINT="Use ps aux with --sort=-%cpu, then head"
+TASK_1_ANSWER="Use ps aux with --sort=-%cpu, then head"
 TASK_1_COMMAND_1="ps aux --sort=-%cpu | head -11 > /tmp/top_cpu.txt"
 
 # Task 2
 TASK_2_QUESTION="Display the top 10 processes sorted by memory usage. Save the output to /tmp/top_mem.txt"
-TASK_2_HINT="Use ps aux with --sort=-%mem, then head"
+TASK_2_ANSWER="Use ps aux with --sort=-%mem, then head"
 TASK_2_COMMAND_1="ps aux --sort=-%mem | head -11 > /tmp/top_mem.txt"
 
 # Task 3
 TASK_3_QUESTION="Find the PID of the sshd process. Save the output to /tmp/sshd_pid.txt"
-TASK_3_HINT="Use pgrep"
+TASK_3_ANSWER="Use pgrep"
 TASK_3_COMMAND_1="pgrep sshd > /tmp/sshd_pid.txt"
 
 # Task 4
 TASK_4_QUESTION="List all processes owned by the user chrony. Save the output to /tmp/chrony_procs.txt"
-TASK_4_HINT="Use ps -u chrony, or pgrep -u chrony"
+TASK_4_ANSWER="Use ps -u chrony, or pgrep -u chrony"
 TASK_4_COMMAND_1="ps -u chrony > /tmp/chrony_procs.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

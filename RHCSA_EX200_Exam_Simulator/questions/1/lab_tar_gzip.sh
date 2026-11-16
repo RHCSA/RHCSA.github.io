@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create a gzip compressed tar archive named /tmp/logs.tar.gz containing all .log files in /var/log/"
-TASK_1_HINT="-z = gzip compression"
+TASK_1_ANSWER="-z = gzip compression"
 TASK_1_COMMAND_1="tar -cvzf /tmp/logs.tar.gz /var/log/*.log"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing any existing logs.tar.gz...${RESET}"

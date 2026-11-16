@@ -1,12 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Check a Service's Enabled and Active State (systemctl)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $enabled/
-# $active, which the CLI's bash-based parser will expand while sourcing (a
-# framework limitation - see repo memory). This does NOT affect grading
-# (check_tasks is real bash, not a parsed string) or the web UI, which
-# shows/sends it correctly. CLI users may see a slightly different hint
-# text for this task.
 # NOTE: sshd is what provides remote access to this machine, so its real
 # enabled/active state is only ever read here, never changed. The "not ok"
 # path is graded by running a copy of the script with "sshd" substituted
@@ -23,17 +17,17 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/check_sshd_status.sh. Store the result of checking whether the sshd service is enabled, and separately the result of checking whether it is active. Print ok only when both checks confirm it is enabled and active; otherwise print not ok"
-TASK_1_HINT="systemctl is-enabled sshd reports whether the service is enabled; systemctl is-active sshd reports whether it is currently running. Capture both with command substitution, then compare each result before deciding what to print"
+TASK_1_ANSWER="systemctl is-enabled sshd reports whether the service is enabled; systemctl is-active sshd reports whether it is currently running. Capture both with command substitution, then compare each result before deciding what to print"
 TASK_1_COMMAND_1="cat > /root/check_sshd_status.sh << 'SCRIPT_END'
 #!/bin/bash
-enabled=$(systemctl is-enabled sshd)
-active=$(systemctl is-active sshd)
-if [ $enabled = enabled ] && [ $active = active ]
+enabled=\$(systemctl is-enabled sshd)
+active=\$(systemctl is-active sshd)
+if [ \$enabled = enabled ] && [ \$active = active ]
 then
     echo ok
 else
@@ -44,11 +38,8 @@ chmod +x /root/check_sshd_status.sh"
 
 # Task 2
 TASK_2_QUESTION="Run the script: since sshd is enabled and active on this machine, it should print ok"
-TASK_2_HINT="Run the script directly; with sshd already enabled and running, the output should be exactly ok"
+TASK_2_ANSWER="Run the script directly; with sshd already enabled and running, the output should be exactly ok"
 TASK_2_COMMAND_1="/root/check_sshd_status.sh"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

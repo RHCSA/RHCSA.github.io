@@ -11,27 +11,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Get man page for passwd FILE FORMAT (section 5), save to /tmp/exam/passwd_file.txt"
-TASK_1_HINT="Section 5 = file formats, not the command"
+TASK_1_ANSWER="Section 5 = file formats, not the command"
 TASK_1_COMMAND_1="man 5 passwd > /tmp/exam/passwd_file.txt"
 
 # Task 2
 TASK_2_QUESTION="Get man page for crontab FILE FORMAT (section 5), save to /tmp/exam/crontab_format.txt"
-TASK_2_HINT="Section 5 = crontab file format, not the command"
+TASK_2_ANSWER="Section 5 = crontab file format, not the command"
 TASK_2_COMMAND_1="man 5 crontab > /tmp/exam/crontab_format.txt"
 
 # Task 3
 TASK_3_QUESTION="Get man page for useradd ADMIN command (section 8), save to /tmp/exam/useradd_admin.txt"
-TASK_3_HINT="Section 8 = system administration commands"
+TASK_3_ANSWER="Section 8 = system administration commands"
 TASK_3_COMMAND_1="man 8 useradd > /tmp/exam/useradd_admin.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

@@ -11,27 +11,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Get one-line description of 'tar', save to /tmp/exam/tar_desc.txt"
-TASK_1_HINT="whatis gives brief description of a command"
+TASK_1_ANSWER="whatis gives brief description of a command"
 TASK_1_COMMAND_1="whatis tar > /tmp/exam/tar_desc.txt"
 
 # Task 2
 TASK_2_QUESTION="Show all sections for 'passwd', save to /tmp/exam/passwd_sections.txt"
-TASK_2_HINT="man -f shows which sections have pages for a command"
+TASK_2_ANSWER="man -f shows which sections have pages for a command"
 TASK_2_COMMAND_1="man -f passwd > /tmp/exam/passwd_sections.txt"
 
 # Task 3
 TASK_3_QUESTION="Get descriptions for ls, cp, mv in one command, save to /tmp/exam/multi_desc.txt"
-TASK_3_HINT="whatis accepts multiple commands as arguments"
+TASK_3_ANSWER="whatis accepts multiple commands as arguments"
 TASK_3_COMMAND_1="whatis ls cp mv > /tmp/exam/multi_desc.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

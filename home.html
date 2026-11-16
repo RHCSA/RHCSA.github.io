@@ -386,6 +386,93 @@
             font-size: 40px;
             cursor: pointer;
         }
+
+        /* Contribute popup */
+        .contribute-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+        }
+        .contribute-overlay.active {
+            display: flex;
+        }
+        .contribute-box {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+            padding: 28px 30px;
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            border-top: 4px solid #cc0000;
+            border-radius: 10px;
+            color: #eaeaea;
+            text-align: left;
+        }
+        .contribute-box h3 {
+            margin: 0 0 6px;
+        }
+        .contribute-box p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        .contribute-box ol {
+            margin: 10px 0 0;
+            padding-left: 22px;
+        }
+        .contribute-box li {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        .contribute-box a {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .contribute-close {
+            position: absolute;
+            top: 8px;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .contribute-close:hover {
+            color: #fff;
+        }
+        .contribute-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+        .contribute-links a {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 5px;
+            background-color: #cc0000;
+            color: #fff;
+            text-decoration: none;
+        }
+        .contribute-links a:hover {
+            background-color: #aa0000;
+        }
+        .contribute-links a.secondary {
+            background-color: #333;
+        }
+        .contribute-links a.secondary:hover {
+            background-color: #444;
+        }
     </style>
 </head>
 <body>
@@ -455,6 +542,7 @@
                 <pre style="background: #1e1e1e; color: #dcdcdc; padding: 15px; border-radius: 5px; margin: 0; flex-grow: 1; white-space: nowrap; overflow-x: auto;"><code id="install-cmd">curl -sL https://raw.githubusercontent.com/RHCSA/RHCSA.github.io/main/Install_RHCSA_EX200_Exam_Simulator.sh | sudo bash</code></pre>
                 <button onclick="copyToClipboard()" style="background: #cc0000; color: white; border: none; padding: 15px 25px; border-radius: 5px; cursor: pointer; white-space: nowrap; font-size: 16px; font-weight: bold;">📋 Copy</button>
             </div>
+            <p>When the installation is complete, open the address that the installer shows in your web browser. To update or reinstall the simulator later, run <code>sudo rhcsa</code>.</p>
             
             <hr style="border: 1px solid #444; margin: 20px 0;">
             
@@ -678,6 +766,23 @@
         </div>
     </div>
 
+    <!-- Contribute popup -->
+    <div id="contributeOverlay" class="contribute-overlay" onclick="if (event.target === this) closeContributePopup()">
+        <div class="contribute-box" role="dialog" aria-modal="true" aria-labelledby="contributeTitle">
+            <button type="button" class="contribute-close" onclick="closeContributePopup()" aria-label="Close">&times;</button>
+            <h3 id="contributeTitle">Want to Contribute?</h3>
+            <ol>
+                <li><strong>Fork</strong> the repository and create a branch.</li>
+                <li><strong>Make and test</strong> your change.</li>
+                <li><strong>Open a Pull Request</strong> to <code>main</code>.</li>
+            </ol>
+            <div class="contribute-links">
+                <a href="https://github.com/RHCSA/RHCSA.github.io/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Read the guide</a>
+                <a class="secondary" href="https://github.com/RHCSA/RHCSA.github.io/fork" target="_blank" rel="noopener">Fork the repository</a>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript for Tab Navigation and Typing Effect -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
@@ -700,14 +805,20 @@
             });
         }
 
-        // Contribute popup function
+        // Contribute popup
         function openContributePopup() {
-            const overlay = document.createElement('div');
-            overlay.className = 'lightbox-overlay active';
-            overlay.innerHTML = '<span class="lightbox-close">&times;</span><div style="background: #1a1a1a; padding: 30px; border-radius: 10px; max-width: 500px; text-align: center;"><h3 style="color: #ffc107; margin-bottom: 15px;">Want to Contribute?</h3><p style="color: #eaeaea;">You can do your contribution in a feature branch and make a Pull Request to this repo:</p><p><a href="https://github.com/RHCSA/RHCSA.github.io" target="_blank" style="color: #cc0000; font-weight: bold;">https://github.com/RHCSA/RHCSA.github.io</a></p></div>';
-            overlay.onclick = function(e) { if (e.target === overlay || e.target.className === 'lightbox-close') document.body.removeChild(overlay); };
-            document.body.appendChild(overlay);
+            const overlay = document.getElementById('contributeOverlay');
+            overlay.classList.add('active');
+            overlay.querySelector('.contribute-close').focus();
         }
+
+        function closeContributePopup() {
+            document.getElementById('contributeOverlay').classList.remove('active');
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeContributePopup();
+        });
 
         function toggleMenu() {
             document.querySelector('.tabs').classList.toggle('open');

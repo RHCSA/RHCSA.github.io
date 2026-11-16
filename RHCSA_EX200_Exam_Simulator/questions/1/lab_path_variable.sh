@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create directory /opt/custom/bin"
-TASK_1_HINT="Use -p to create parent directories"
+TASK_1_ANSWER="Use -p to create parent directories"
 TASK_1_COMMAND_1="mkdir -p /opt/custom/bin"
 
 # Task 2
 TASK_2_QUESTION="Add /opt/custom/bin to PATH in /etc/profile"
-TASK_2_HINT="Append an export PATH statement to /etc/profile"
+TASK_2_ANSWER="Append an export PATH statement to /etc/profile"
 TASK_2_COMMAND_1="echo 'export PATH=\$PATH:/opt/custom/bin' >> /etc/profile"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing /opt/custom/bin from /etc/profile...${RESET}"

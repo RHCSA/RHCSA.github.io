@@ -13,19 +13,16 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Switch to 'devuser' with login shell (su -) and create ~/i_was_here.txt"
-TASK_1_HINT="su - loads full login shell environment including profile scripts"
+TASK_1_ANSWER="su - loads full login shell environment including profile scripts"
 TASK_1_COMMAND_1="su - devuser"
 TASK_1_COMMAND_2="touch ~/i_was_here.txt"
 TASK_1_COMMAND_3="exit"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test user devuser...${RESET}"

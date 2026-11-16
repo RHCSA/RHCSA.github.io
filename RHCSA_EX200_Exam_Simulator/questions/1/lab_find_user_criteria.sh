@@ -13,37 +13,33 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=5
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find files owned by examuser, save to /tmp/exam/user_files.txt"
-TASK_1_HINT="Use find with -user examuser"
+TASK_1_ANSWER="Use find with -user examuser"
 TASK_1_COMMAND_1="find /tmp/exam -user examuser > /tmp/exam/user_files.txt"
 
 # Task 2
 TASK_2_QUESTION="Find files owned by UID of examuser, save to /tmp/exam/uid_files.txt (use -uid)"
-TASK_2_HINT="Use find with -uid <number> -type f (check UID with id command)"
-TASK_2_COMMAND_1="find /tmp/exam -uid $(id -u examuser 2>/dev/null || echo 1001) -type f > /tmp/exam/uid_files.txt"
+TASK_2_ANSWER="Use find with -uid <number> -type f (check UID with id command)"
+TASK_2_COMMAND_1="find /tmp/exam -uid \$(id -u examuser 2>/dev/null || echo 1001) -type f > /tmp/exam/uid_files.txt"
 
 # Task 3
 TASK_3_QUESTION="Find .txt files owned by root, save to /tmp/exam/root_txt.txt"
-TASK_3_HINT="Use find with -type f -name '*.txt' -user root (AND logic)"
+TASK_3_ANSWER="Use find with -type f -name '*.txt' -user root (AND logic)"
 TASK_3_COMMAND_1="find /tmp/exam -type f -name '*.txt' -user root > /tmp/exam/root_txt.txt"
 
 # Task 4
 TASK_4_QUESTION="Find .log OR .tmp files, save to /tmp/exam/log_or_tmp.txt"
-TASK_4_HINT="Use find with -name '*.log' -o -name '*.tmp' (OR logic)"
+TASK_4_ANSWER="Use find with -name '*.log' -o -name '*.tmp' (OR logic)"
 TASK_4_COMMAND_1="find /tmp/exam -type f \\( -name '*.log' -o -name '*.tmp' \\) > /tmp/exam/log_or_tmp.txt"
 
 # Task 5
 TASK_5_QUESTION="Find files that are NOT .conf, save to /tmp/exam/not_conf.txt"
-TASK_5_HINT="Use find with ! -name '*.conf' (NOT logic)"
+TASK_5_ANSWER="Use find with ! -name '*.conf' (NOT logic)"
 TASK_5_COMMAND_1="find /tmp/exam -type f ! -name '*.conf' > /tmp/exam/not_conf.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

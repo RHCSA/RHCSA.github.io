@@ -11,27 +11,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Check if 'cd' is builtin or external, save to /tmp/exam/type_cd.txt"
-TASK_1_HINT="type command shows if a command is builtin, alias, or external"
+TASK_1_ANSWER="type command shows if a command is builtin, alias, or external"
 TASK_1_COMMAND_1="type cd > /tmp/exam/type_cd.txt"
 
 # Task 2
 TASK_2_QUESTION="Check if 'ls' is builtin or external, save to /tmp/exam/type_ls.txt"
-TASK_2_HINT="External commands show their full path"
+TASK_2_ANSWER="External commands show their full path"
 TASK_2_COMMAND_1="type ls > /tmp/exam/type_ls.txt"
 
 # Task 3
 TASK_3_QUESTION="Get help for 'export' builtin command, save to /tmp/exam/help_export.txt"
-TASK_3_HINT="Use help for builtins, not man"
+TASK_3_ANSWER="Use help for builtins, not man"
 TASK_3_COMMAND_1="help export > /tmp/exam/help_export.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

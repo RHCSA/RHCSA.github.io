@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Run 'df -h' and use tee to both display the output and save it to /tmp/disk-usage.txt"
-TASK_1_HINT="tee writes to both stdout and a file simultaneously"
+TASK_1_ANSWER="tee writes to both stdout and a file simultaneously"
 TASK_1_COMMAND_1="df -h | tee /tmp/disk-usage.txt"
 
 # Task 2
 TASK_2_QUESTION="Append 'free -m' output to /tmp/disk-usage.txt using tee -a"
-TASK_2_HINT="Use -a flag with tee to append instead of overwrite"
+TASK_2_ANSWER="Use -a flag with tee to append instead of overwrite"
 TASK_2_COMMAND_1="free -m | tee -a /tmp/disk-usage.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing file...${RESET}"

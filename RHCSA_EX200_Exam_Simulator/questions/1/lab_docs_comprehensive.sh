@@ -11,37 +11,33 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=5
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Get /etc/shadow file format documentation (section 5), save to /tmp/exam/shadow_format.txt"
-TASK_1_HINT="Section 5 contains file format documentation"
+TASK_1_ANSWER="Section 5 contains file format documentation"
 TASK_1_COMMAND_1="man 5 shadow > /tmp/exam/shadow_format.txt"
 
 # Task 2
 TASK_2_QUESTION="Find filesystem admin commands (section 8), save to /tmp/exam/fs_admin.txt"
-TASK_2_HINT="Use apropos -s 8 to search only admin commands"
+TASK_2_ANSWER="Use apropos -s 8 to search only admin commands"
 TASK_2_COMMAND_1="apropos -s 8 filesystem > /tmp/exam/fs_admin.txt"
 
 # Task 3
 TASK_3_QUESTION="Find where ls man page file is stored, save to /tmp/exam/man_location.txt"
-TASK_3_HINT="man -w shows the location of the man page file"
+TASK_3_ANSWER="man -w shows the location of the man page file"
 TASK_3_COMMAND_1="man -w ls > /tmp/exam/man_location.txt"
 
 # Task 4
 TASK_4_QUESTION="Get help for 'alias' builtin, save to /tmp/exam/alias_help.txt"
-TASK_4_HINT="Use help command for shell builtins"
+TASK_4_ANSWER="Use help command for shell builtins"
 TASK_4_COMMAND_1="help alias > /tmp/exam/alias_help.txt"
 
 # Task 5
 TASK_5_QUESTION="List first 10 doc files of the coreutils documentation package (coreutils-common), save to /tmp/exam/coreutils_docs.txt"
-TASK_5_HINT="On RHEL 8/9 the coreutils docs ship in coreutils-common; rpm -qd lists doc files, pipe to head for first 10"
+TASK_5_ANSWER="On RHEL 8/9 the coreutils docs ship in coreutils-common; rpm -qd lists doc files, pipe to head for first 10"
 TASK_5_COMMAND_1="rpm -qd coreutils-common | head -10 > /tmp/exam/coreutils_docs.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

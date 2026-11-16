@@ -13,22 +13,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create the directory /tmp/restore"
-TASK_1_HINT="Use mkdir -p to create the directory (and parent directories if needed)"
+TASK_1_ANSWER="Use mkdir -p to create the directory (and parent directories if needed)"
 TASK_1_COMMAND_1="mkdir -p /tmp/restore"
 
 # Task 2
 TASK_2_QUESTION="Extract /tmp/test_archive.tar.gz to /tmp/restore"
-TASK_2_HINT="Use tar -xvzf with -C option to extract to specific directory"
+TASK_2_ANSWER="Use tar -xvzf with -C option to extract to specific directory"
 TASK_2_COMMAND_1="tar -xvzf /tmp/test_archive.tar.gz -C /tmp/restore"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

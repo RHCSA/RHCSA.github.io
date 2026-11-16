@@ -10,7 +10,7 @@
 # NOTE: subscription-manager repos --enable/--disable only manages repos
 # that come from an attached Red Hat subscription (the CDN repos) - it does
 # not apply to a custom local repo like the one this lab creates. It is
-# mentioned in the hints as real-exam-relevant knowledge, not as a method
+# mentioned in the answers as real-exam-relevant knowledge, not as a method
 # that works for this specific repo.
 # NOTE: dnf config-manager --add-repo=URL is old DNF4 flag syntax. DNF5
 # (RHEL 10's default) does not document that flag on config-manager, and a
@@ -32,31 +32,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Mount /root/rhel10-mini.iso on /mnt, then configure a new DNF repository whose base URL points at /mnt, enabled and without GPG checking, so packages on the ISO become installable"
-TASK_1_HINT="dnf config-manager addrepo --id=rhel10-mini --set=baseurl=file:///mnt --set=gpgcheck=0 mounts a working repo in one command and enables it by default. You can instead write a file under /etc/yum.repos.d/ by hand with a section that sets baseurl=file:///mnt, enabled=1, and gpgcheck=0 - both produce the same result"
+TASK_1_ANSWER="dnf config-manager addrepo --id=rhel10-mini --set=baseurl=file:///mnt --set=gpgcheck=0 mounts a working repo in one command and enables it by default. You can instead write a file under /etc/yum.repos.d/ by hand with a section that sets baseurl=file:///mnt, enabled=1, and gpgcheck=0 - both produce the same result"
 TASK_1_COMMAND_1="mount -o loop /root/rhel10-mini.iso /mnt && dnf config-manager addrepo --id=rhel10-mini --set=baseurl=file:///mnt --set=gpgcheck=0"
 
 # Task 2
 TASK_2_QUESTION="Install the tree package using the newly configured repository, proving that it actually works"
-TASK_2_HINT="dnf install -y tree pulls the package from whichever enabled repository provides it - here, that is the repository pointing at /mnt"
+TASK_2_ANSWER="dnf install -y tree pulls the package from whichever enabled repository provides it - here, that is the repository pointing at /mnt"
 TASK_2_COMMAND_1="dnf install -y tree"
 
 # Task 3
 TASK_3_QUESTION="Run dnf repolist and redirect its output into /root/repolist_output.txt instead of the screen"
-TASK_3_HINT="The > operator redirects standard output to a file, overwriting any existing content"
+TASK_3_ANSWER="The > operator redirects standard output to a file, overwriting any existing content"
 TASK_3_COMMAND_1="dnf repolist > /root/repolist_output.txt"
 
 # Task 4
 TASK_4_QUESTION="Disable the repository you added, then run dnf repolist --enabled and confirm it no longer appears in that list"
-TASK_4_HINT="Set enabled=0 in the repo file, or run dnf config-manager --disable rhel10-mini (dnf5's config-manager plugin also accepts --set=rhel10-mini.enabled=0); either way, --enabled only lists repositories that are still active"
+TASK_4_ANSWER="Set enabled=0 in the repo file, or run dnf config-manager --disable rhel10-mini (dnf5's config-manager plugin also accepts --set=rhel10-mini.enabled=0); either way, --enabled only lists repositories that are still active"
 TASK_4_COMMAND_1="dnf repolist --enabled"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

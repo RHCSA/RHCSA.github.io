@@ -4,8 +4,8 @@
 # This is a plain question, not a lab. Resetting the root password needs a
 # real reboot into rd.break, which a container cannot do (see
 # question_grub_rescue_target.sh header for the same container/boot limit).
-# No IS_LAB line, so both the CLI and the webui treat this as a plain
-# Question/Answer entry (QUESTION + ANSWER only, no HINT needed).
+# No IS_LAB line, so the web UI treats this as a plain
+# Question/Answer entry (QUESTION + ANSWER only).
 
 QUESTION="You forgot the root password. Reset it without reinstalling the system."
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"

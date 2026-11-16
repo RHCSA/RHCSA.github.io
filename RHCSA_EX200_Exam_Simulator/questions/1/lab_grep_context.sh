@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find 'ERROR' in /tmp/application.log and show 2 lines AFTER each match, save to /tmp/error-context.txt"
-TASK_1_HINT="Use -A N to show N lines after each match"
+TASK_1_ANSWER="Use -A N to show N lines after each match"
 TASK_1_COMMAND_1="grep -A 2 'ERROR' /tmp/application.log > /tmp/error-context.txt"
 
 # Task 2
 TASK_2_QUESTION="Find 'WARNING' in /tmp/application.log and show 1 line BEFORE and 1 line AFTER, save to /tmp/warning-context.txt"
-TASK_2_HINT="Use -C N for context (N lines before AND after)"
+TASK_2_ANSWER="Use -C N for context (N lines before AND after)"
 TASK_2_COMMAND_1="grep -C 1 'WARNING' /tmp/application.log > /tmp/warning-context.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

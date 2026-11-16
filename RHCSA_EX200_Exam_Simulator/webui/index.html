@@ -491,9 +491,9 @@
         .task-btn:active:not(:disabled) { transform: scale(0.98); }
         .task-btn:disabled { cursor: default; }
 
-        .task-btn-hint { background-color: #ffc107; color: #000; }
-        .task-btn-hint:hover:not(:disabled),
-        .task-btn-hint.active { background-color: #e0a800; }
+        .task-btn-answer { background-color: #ffc107; color: #000; }
+        .task-btn-answer:hover:not(:disabled),
+        .task-btn-answer.active { background-color: #e0a800; }
 
         .task-btn-verify { background-color: #0d6efd; color: #fff; }
         .task-btn-verify:hover:not(:disabled) { background-color: #0b5ed7; }
@@ -640,6 +640,7 @@
             background-color: var(--seg-pending);
         }
 
+        .summary-dot.passed { background-color: var(--seg-passed); }
         .summary-dot.failed { background-color: var(--seg-failed); }
         .summary-dot.skipped { background-color: var(--seg-skipped); }
 
@@ -715,8 +716,8 @@
             to { transform: scale(6); opacity: 0; }
         }
 
-        /* Task Hint (inline under the task's buttons) */
-        .task-hint {
+        /* Task Answer (inline under the task's buttons) */
+        .task-answer {
             display: none;
             margin-top: 14px;
             padding: 12px;
@@ -725,12 +726,12 @@
             border-radius: 10px;
         }
 
-        .task-hint.show {
+        .task-answer.show {
             display: block;
-            animation: hintIn 0.25s ease-out;
+            animation: answerIn 0.25s ease-out;
         }
 
-        @keyframes hintIn {
+        @keyframes answerIn {
             from { opacity: 0; transform: translateY(-6px); }
             to { opacity: 1; transform: translateY(0); }
         }
@@ -738,11 +739,11 @@
         @media (prefers-reduced-motion: reduce) {
             .task-track { transition: none !important; }
             .task-btn, .task-seg { transition: none; }
-            .task-btn-verify.failed, .task-btn-verify.pop, .task-hint.show, .summary-emoji { animation: none; }
+            .task-btn-verify.failed, .task-btn-verify.pop, .task-answer.show, .summary-emoji { animation: none; }
             .fw-layer { display: none; }
         }
 
-        .hint-text {
+        .task-answer-note {
             color: #ffc107;
             font-size: 0.85em;
             font-style: italic;
@@ -1055,34 +1056,206 @@
         }
 
         /* ==================== LOADING ==================== */
+        /* Shown while a lab starts or ends: the real steps, the command that
+           runs on the machine, and the time spent on slow steps */
         .loading {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            inset: 0;
             z-index: 999;
             justify-content: center;
             align-items: center;
+            padding: 20px;
+            background-color: rgba(8, 8, 8, 0.72);
+            backdrop-filter: blur(4px);
         }
 
         .loading.show {
             display: flex;
+            animation: loadingFadeIn 0.25s ease-out;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #333;
-            border-top-color: #cc0000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .loading.leaving {
+            animation: loadingFadeOut 0.25s ease-in forwards;
         }
+
+        .loading-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 22px 24px 16px;
+            background: linear-gradient(160deg, #1f1f1f 0%, #171717 100%);
+            border: 1px solid #333;
+            border-top: 3px solid #cc0000;
+            border-radius: 14px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+            animation: loadingCardIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .loading-term {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .loading-term-bar {
+            display: flex;
+            gap: 6px;
+            padding: 7px 10px;
+            background-color: #161b22;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .loading-term-bar i {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        .loading-term-bar i:nth-child(1) { background-color: #ff5f57; }
+        .loading-term-bar i:nth-child(2) { background-color: #febc2e; }
+        .loading-term-bar i:nth-child(3) { background-color: #28c840; }
+
+        .loading-term-line {
+            padding: 12px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #58a6ff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .loading-prompt { color: #2fc760; }
+
+        .loading-caret {
+            display: inline-block;
+            width: 8px;
+            height: 1.05em;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            background-color: #c9d1d9;
+            animation: caretBlink 1s steps(1) infinite;
+        }
+
+        .loading-title {
+            margin-top: 18px;
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .loading-sub {
+            margin-top: 4px;
+            font-size: 0.85em;
+            line-height: 1.4;
+            color: #9a9ea6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .loading-sub:empty { display: none; }
+
+        .loading-steps {
+            list-style: none;
+            margin-top: 16px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .loading-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .loading-step.active { color: #fff; }
+        .loading-step.done { color: #9a9ea6; }
+
+        .loading-step-icon {
+            position: relative;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border: 2px solid #444;
+            border-radius: 50%;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .loading-step.active .loading-step-icon {
+            border-color: rgba(26, 166, 255, 0.25);
+            border-top-color: #1aa6ff;
+            animation: spin 0.9s linear infinite;
+        }
+
+        .loading-step.done .loading-step-icon {
+            border-color: #2fc760;
+            background-color: #2fc760;
+        }
+
+        .loading-step.done .loading-step-icon::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 1px;
+            width: 4px;
+            height: 8px;
+            border: solid #111;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .loading-bar {
+            position: relative;
+            height: 3px;
+            margin-top: 18px;
+            overflow: hidden;
+            border-radius: 3px;
+            background-color: #2a2a2a;
+        }
+
+        .loading-bar span {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 35%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, transparent, #cc0000, #ff5a5f, transparent);
+            animation: loadingSweep 1.4s ease-in-out infinite;
+        }
+
+        .loading-elapsed {
+            min-height: 1.2em;
+            margin-top: 8px;
+            font-size: 0.75em;
+            text-align: right;
+            color: #666;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @keyframes loadingFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes loadingFadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes loadingCardIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: none; }
+        }
+        @keyframes loadingSweep { from { left: -35%; } to { left: 100%; } }
+        @keyframes caretBlink { 50% { opacity: 0; } }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .loading.show, .loading.leaving, .loading-card, .loading-caret, .loading-bar span { animation: none; }
+            .loading-step.active .loading-step-icon { animation: none; border-color: #1aa6ff; }
         }
 
         /* Scrollbar */
@@ -1352,9 +1525,19 @@
         </div>
     </div>
 
-    <!-- Loading Spinner -->
+    <!-- Loading screen (lab start and lab end) -->
     <div class="loading" id="loading">
-        <div class="spinner"></div>
+        <div class="loading-card" role="status" aria-live="polite">
+            <div class="loading-term" aria-hidden="true">
+                <div class="loading-term-bar"><i></i><i></i><i></i></div>
+                <div class="loading-term-line"><span class="loading-prompt">[root@rhcsa ~]#</span> <span id="loadingCmd"></span><span class="loading-caret"></span></div>
+            </div>
+            <div class="loading-title" id="loadingTitle">Please wait</div>
+            <div class="loading-sub" id="loadingSub"></div>
+            <ol class="loading-steps" id="loadingSteps"></ol>
+            <div class="loading-bar" aria-hidden="true"><span></span></div>
+            <div class="loading-elapsed" id="loadingElapsed" aria-hidden="true"></div>
+        </div>
     </div>
 
     <script>
@@ -1365,7 +1548,7 @@
         // State
         let currentLab = null;
         let completedLabs = new Set();
-        let labHints = [];  // Stores hint data for each task
+        let labAnswers = [];  // Answer data (notes and commands) for each task
         let questionsData = {};  // Cached question metadata (incl. answer/is_lab), keyed by file
 
         // Task pager state (a real lab shows one task at a time)
@@ -1383,7 +1566,7 @@
             terminal: `<svg class="terminal-icon" viewBox="0 0 24 24"><path d="M20 3H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2zM4 19V7h16l.002 12H4z"/><path d="m9.293 9.293-3 3a.999.999 0 0 0 0 1.414l3 3 1.414-1.414L8.414 13l2.293-2.293-1.414-1.414zm5.414 0-1.414 1.414L15.586 13l-2.293 2.293 1.414 1.414 3-3a.999.999 0 0 0 0-1.414l-3-3z"/></svg>`,
             incomplete: `<svg class="status-icon status-incomplete" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
             complete: `<svg class="status-icon status-complete" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`,
-            bulb: `<svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>`,
+            answer: `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`,
             check: `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`,
             cross: `<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`,
             stop: `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`,
@@ -1812,7 +1995,15 @@
                 return;
             }
 
-            showLoading();
+            const steps = [];
+            if (currentLab) steps.push({ label: 'Stop the previous lab', cmd: 'cleanup_lab' });
+            steps.push(
+                { label: 'Prepare the lab environment', cmd: 'prepare_lab' },
+                { label: 'Load the tasks and answers', cmd: `source ${file}` },
+                { label: 'Open the terminal', cmd: 'tmux attach -t rhcsa-terminal' }
+            );
+            showLoading('Starting the lab', qData ? qData.question : '', steps);
+            let step = 0;
             
             try {
                 // If there's a current lab, clean it up first
@@ -1830,6 +2021,7 @@
                     } catch (e) {
                         console.warn('Failed to cleanup previous lab:', e);
                     }
+                    setLoadingStep(++step);
                 }
                 
                 // Start the lab
@@ -1844,16 +2036,17 @@
                     
                     if (labData.error === 'prerequisite_failed') {
                         // Requirements not met (web UI only check) - stay on the menu
-                        alert(labData.message || 'This lab requires something that is not available on this machine.');
                         hideLoading();
+                        alert(labData.message || 'This lab requires something that is not available on this machine.');
                         return;
                     }
                     
                     currentLab = { objId, idx, file, ...labData };
                     
-                    // Also fetch hints
-                    await loadHints();
+                    setLoadingStep(++step);
+                    await loadAnswers();
                     
+                    setLoadingStep(++step);
                     showLabInterface(labData);
                 } else {
                     alert('Failed to start lab');
@@ -1866,12 +2059,12 @@
             hideLoading();
         }
 
-        // Load hints for the current lab
-        async function loadHints() {
+        // Load the answers (task notes and commands) for the current lab
+        async function loadAnswers() {
             if (!currentLab) return;
             
             try {
-                const response = await fetch(`${API_BASE}/lab/hint`, {
+                const response = await fetch(`${API_BASE}/lab/answer`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -1883,11 +2076,11 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    labHints = data.commands || [];
+                    labAnswers = data.commands || [];
                 }
             } catch (e) {
-                console.error('Error getting hints:', e);
-                labHints = [];
+                console.error('Error getting answers:', e);
+                labAnswers = [];
             }
         }
 
@@ -1906,7 +2099,7 @@
             // Populate lab content
             document.getElementById('labQuestion').textContent = labData.question;
 
-            // One slide per task (each with its own hint), plus a summary slide
+            // One slide per task (each with its own answer), plus a summary slide
             buildTaskPager(labData.tasks);
 
             // Load terminal
@@ -2031,41 +2224,41 @@
             document.getElementById('taskProgress').innerHTML = '';
         }
 
-        // One slide: task text, Hint and Verify buttons, and this task's own hint panel
+        // One slide: task text, Answer and Verify buttons, and this task's own answer panel
         function buildTaskSlide(task, idx) {
-            const taskHints = labHints.filter(h => h.task === idx + 1);
-            const hintHtml = taskHints.length > 0 ? taskHints.map((hint, hIdx) => `
-                ${hint.hint ? `<div class="hint-text">${escapeHtml(hint.hint)}</div>` : ''}
+            const taskAnswers = labAnswers.filter(a => a.task === idx + 1);
+            const answerHtml = taskAnswers.length > 0 ? taskAnswers.map((item, aIdx) => `
+                ${item.answer ? `<div class="task-answer-note">${escapeHtml(item.answer)}</div>` : ''}
                 <div class="command-box">
                     <div class="command-header">
-                        <span class="command-label">Command${taskHints.length > 1 ? ' ' + (hIdx + 1) : ''}</span>
+                        <span class="command-label">Command${taskAnswers.length > 1 ? ' ' + (aIdx + 1) : ''}</span>
                         <div class="command-actions">
-                            <button class="cmd-action-btn" onclick="copyCommand(${idx}, ${hIdx})" id="copyBtn-${idx}-${hIdx}">
+                            <button class="cmd-action-btn" onclick="copyCommand(${idx}, ${aIdx})" id="copyBtn-${idx}-${aIdx}">
                                 ${icons.copy}
                                 <span>Copy</span>
                             </button>
-                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx}, ${hIdx})" id="sendBtn-${idx}-${hIdx}">
+                            <button class="cmd-action-btn" onclick="sendToTerminal(${idx}, ${aIdx})" id="sendBtn-${idx}-${aIdx}">
                                 ${icons.send}
                                 <span>Send</span>
                             </button>
                         </div>
                     </div>
-                    <div class="command-text">${escapeHtml(unescapeCommand(hint.command))}</div>
+                    <div class="command-text">${escapeHtml(unescapeCommand(item.command))}</div>
                 </div>
-            `).join('') : '<div class="hint-text">No hint available for this task.</div>';
+            `).join('') : '<div class="task-answer-note">No answer available for this task.</div>';
 
             return `
                 <section class="task-slide" id="task-${idx}">
                     <div class="task-info-icon" aria-hidden="true">i</div>
                     <div class="task-text">${escapeHtml(task)}</div>
                     <div class="task-actions">
-                        <button class="task-btn task-btn-hint" id="hintBtn-${idx}" aria-expanded="false" onclick="toggleHint(${idx})">
-                            ${icons.bulb}<span>Hint</span>
+                        <button class="task-btn task-btn-answer" id="answerBtn-${idx}" aria-expanded="false" onclick="toggleAnswer(${idx})">
+                            ${icons.answer}<span>Answer</span>
                         </button>
                         <button class="task-btn task-btn-verify" id="verifyBtn-${idx}" onclick="verifyTask(${idx})"></button>
                     </div>
                     <div class="verify-msg" id="verifyMsg-${idx}" role="status" aria-live="polite"></div>
-                    <div class="task-hint" id="task-hint-${idx}">${hintHtml}</div>
+                    <div class="task-answer" id="task-answer-${idx}">${answerHtml}</div>
                 </section>
             `;
         }
@@ -2284,7 +2477,7 @@
             setTimeout(() => layer.remove(), 1600);
         }
 
-        // Summary slide: the tasks that still need work (if any) and the End Lab button
+        // Summary slide: every task with its result (if any is unfinished) and the End Lab button
         function renderSummary() {
             const el = document.getElementById('taskSummary');
             if (!el) return;
@@ -2293,9 +2486,6 @@
             const passed = taskStates.filter(s => s === 'passed').length;
             const allPassed = total > 0 && passed === total;
 
-            const open = taskStates
-                .map((state, i) => ({ state, i }))
-                .filter(t => t.state !== 'passed');
             const details = allPassed ? `
                 <div class="summary-emoji">🎉</div>
                 <div class="summary-title">All tasks complete!</div>
@@ -2304,11 +2494,11 @@
                 <div class="summary-title">${passed} of ${total} tasks passed</div>
                 <div class="summary-sub">Open a task to finish it, or end the lab.</div>
                 <div class="summary-list">
-                    ${open.map(t => `
-                        <button class="summary-row" onclick="goToTask(${t.i})">
-                            <span class="summary-dot ${t.state}"></span>
-                            <span class="summary-label">Task ${t.i + 1}: ${escapeHtml(taskTexts[t.i])}</span>
-                            <span class="summary-state">${STATE_LABELS[t.state]}</span>
+                    ${taskStates.map((state, i) => `
+                        <button class="summary-row" onclick="goToTask(${i})">
+                            <span class="summary-dot ${state}"></span>
+                            <span class="summary-label">Task ${i + 1}: ${escapeHtml(taskTexts[i])}</span>
+                            <span class="summary-state">${STATE_LABELS[state]}</span>
                         </button>
                     `).join('')}
                 </div>
@@ -2322,10 +2512,10 @@
             `;
         }
 
-        // Show or hide the hint of one task
-        function toggleHint(idx) {
-            const panel = document.getElementById(`task-hint-${idx}`);
-            const btn = document.getElementById(`hintBtn-${idx}`);
+        // Show or hide the answer of one task
+        function toggleAnswer(idx) {
+            const panel = document.getElementById(`task-answer-${idx}`);
+            const btn = document.getElementById(`answerBtn-${idx}`);
             if (!panel || !btn) return;
 
             const show = !panel.classList.contains('show');
@@ -2347,20 +2537,20 @@
             return div.innerHTML;
         }
 
-        // Get hint command by task and hint index
-        function getHintCommand(taskIdx, hintIdx) {
-            const taskHints = labHints.filter(h => h.task === taskIdx + 1);
-            return taskHints[hintIdx];
+        // Get answer command by task and command index
+        function getAnswerCommand(taskIdx, cmdIdx) {
+            const taskAnswers = labAnswers.filter(a => a.task === taskIdx + 1);
+            return taskAnswers[cmdIdx];
         }
 
         // Copy command to clipboard
-        async function copyCommand(taskIdx, hintIdx) {
-            const hint = getHintCommand(taskIdx, hintIdx);
-            if (!hint) return;
+        async function copyCommand(taskIdx, cmdIdx) {
+            const item = getAnswerCommand(taskIdx, cmdIdx);
+            if (!item) return;
             
-            const btn = document.getElementById(`copyBtn-${taskIdx}-${hintIdx}`);
+            const btn = document.getElementById(`copyBtn-${taskIdx}-${cmdIdx}`);
             // Unescape the command before copying
-            const command = unescapeCommand(hint.command);
+            const command = unescapeCommand(item.command);
             
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2397,13 +2587,13 @@
         }
 
         // Send command to terminal via server API (uses tmux send-keys)
-        async function sendToTerminal(taskIdx, hintIdx) {
-            const hint = getHintCommand(taskIdx, hintIdx);
-            if (!hint) return;
+        async function sendToTerminal(taskIdx, cmdIdx) {
+            const item = getAnswerCommand(taskIdx, cmdIdx);
+            if (!item) return;
             
-            const btn = document.getElementById(`sendBtn-${taskIdx}-${hintIdx}`);
+            const btn = document.getElementById(`sendBtn-${taskIdx}-${cmdIdx}`);
             // Unescape the command before sending
-            const command = unescapeCommand(hint.command);
+            const command = unescapeCommand(item.command);
             
             try {
                 // Call server API to send command via tmux (with Enter key)
@@ -2573,7 +2763,11 @@
             document.getElementById('terminalTabs').classList.remove('show');
 
             
-            showLoading();
+            showLoading('Ending the lab', currentLab.question || '', [
+                { label: 'Run the lab cleanup', cmd: 'cleanup_lab' },
+                { label: 'Save your progress', cmd: 'cat /usr/local/share/rhcsa/.progress' },
+                { label: 'Go back to the question list', cmd: 'clear' }
+            ]);
             
             try {
                 await fetch(`${API_BASE}/lab/exit`, {
@@ -2590,11 +2784,13 @@
             }
             
             currentLab = null;
-            labHints = [];
+            labAnswers = [];
             resetTaskPager();
             
             // Re-read the progress file before the list shows again
+            setLoadingStep(1);
             await loadCompletedLabs();
+            setLoadingStep(2);
 
             // Switch back to menu view
             document.getElementById('labView').classList.remove('active');
@@ -2640,13 +2836,68 @@
             });
         }
 
-        // Loading helpers
-        function showLoading() {
-            document.getElementById('loading').classList.add('show');
+        // Loading screen: the real steps of starting or ending a lab
+        let loadingSteps = [];
+        let loadingClock = null;
+        let loadingTyper = null;
+        let loadingHideTimer = null;
+
+        function showLoading(title = 'Please wait', subtitle = '', steps = []) {
+            const el = document.getElementById('loading');
+            clearTimeout(loadingHideTimer);
+            el.classList.remove('leaving');
+
+            loadingSteps = steps;
+            document.getElementById('loadingTitle').textContent = title;
+            document.getElementById('loadingSub').textContent = subtitle;
+            document.getElementById('loadingSteps').innerHTML = steps.map(s =>
+                `<li class="loading-step"><span class="loading-step-icon"></span><span>${escapeHtml(s.label)}</span></li>`
+            ).join('');
+
+            // The timer only appears on slow steps, e.g. a container lab that installs packages
+            const started = Date.now();
+            const elapsed = document.getElementById('loadingElapsed');
+            elapsed.textContent = '';
+            clearInterval(loadingClock);
+            loadingClock = setInterval(() => {
+                const s = Math.floor((Date.now() - started) / 1000);
+                elapsed.textContent = s >= 3 ? `${s}s` : '';
+            }, 500);
+
+            el.classList.add('show');
+            setLoadingStep(0);
+        }
+
+        // Steps before idx are done, idx is running; idx = steps.length means all done
+        function setLoadingStep(idx) {
+            document.querySelectorAll('#loadingSteps .loading-step').forEach((li, i) => {
+                li.className = 'loading-step' + (i < idx ? ' done' : i === idx ? ' active' : '');
+            });
+            typeLoadingCommand(loadingSteps[idx] ? loadingSteps[idx].cmd : '');
+        }
+
+        function typeLoadingCommand(cmd) {
+            const out = document.getElementById('loadingCmd');
+            clearInterval(loadingTyper);
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                out.textContent = cmd;
+                return;
+            }
+            let n = 0;
+            out.textContent = '';
+            loadingTyper = setInterval(() => {
+                out.textContent = cmd.slice(0, ++n);
+                if (n >= cmd.length) clearInterval(loadingTyper);
+            }, 35);
         }
 
         function hideLoading() {
-            document.getElementById('loading').classList.remove('show');
+            const el = document.getElementById('loading');
+            if (!el.classList.contains('show')) return;
+            setLoadingStep(loadingSteps.length);
+            clearInterval(loadingClock);
+            el.classList.add('leaving');
+            loadingHideTimer = setTimeout(() => el.classList.remove('show', 'leaving'), 250);
         }
     </script>
 </body>

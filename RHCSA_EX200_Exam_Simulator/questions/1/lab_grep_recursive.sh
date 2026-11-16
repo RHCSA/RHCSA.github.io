@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find all lines containing 'TODO' in /tmp/project/ recursively, save to /tmp/todos.txt"
-TASK_1_HINT="Use -r for recursive search through directories"
+TASK_1_ANSWER="Use -r for recursive search through directories"
 TASK_1_COMMAND_1="grep -r 'TODO' /tmp/project/ > /tmp/todos.txt"
 
 # Task 2
 TASK_2_QUESTION="List only filenames (not content) containing 'FIXME' in /tmp/project/, save to /tmp/fixme-files.txt"
-TASK_2_HINT="Use -l to show only filenames, not matching lines"
+TASK_2_ANSWER="Use -l to show only filenames, not matching lines"
 TASK_2_COMMAND_1="grep -rl 'FIXME' /tmp/project/ > /tmp/fixme-files.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files and directories...${RESET}"

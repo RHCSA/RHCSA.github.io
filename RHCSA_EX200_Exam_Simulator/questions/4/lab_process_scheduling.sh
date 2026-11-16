@@ -38,41 +38,38 @@ _load_target_pid() {
 TARGET_PID=$(_load_target_pid)
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Start a long-running command in the background with a lower priority (nice value 10). This is often used for backups or other heavy tasks so they do not slow down the rest of the system"
-TASK_1_HINT="Use nice -n with the value, then the command, then & to run it in the background"
+TASK_1_ANSWER="Use nice -n with the value, then the command, then & to run it in the background"
 TASK_1_COMMAND_1="nice -n 10 sleep 600 &"
 
 # Task 2
 TASK_2_QUESTION="Show the PID, niceness, and command name of the process with PID ${TARGET_PID}. Save the output to /tmp/nice_ps_output.txt"
-TASK_2_HINT="Use ps -o pid,ni,comm with -p and the PID"
+TASK_2_ANSWER="Use ps -o pid,ni,comm with -p and the PID"
 TASK_2_COMMAND_1="ps -o pid,ni,comm -p ${TARGET_PID} > /tmp/nice_ps_output.txt"
 
 # Task 3
 TASK_3_QUESTION="Show the default nice value. Save the output to /tmp/nice_default.txt"
-TASK_3_HINT="Run nice with no other arguments"
+TASK_3_ANSWER="Run nice with no other arguments"
 TASK_3_COMMAND_1="nice > /tmp/nice_default.txt"
 
 # Task 4
 TASK_4_QUESTION="Change the niceness of the process with PID ${TARGET_PID} to 15"
-TASK_4_HINT="Use renice -n with the new value and -p with the PID"
+TASK_4_ANSWER="Use renice -n with the new value and -p with the PID"
 TASK_4_COMMAND_1="renice -n 15 -p ${TARGET_PID}"
 
 # Task 5
 TASK_5_QUESTION="Change the niceness of every process owned by the user chrony to 10"
-TASK_5_HINT="Use renice with the new value and -u with the username"
+TASK_5_ANSWER="Use renice with the new value and -u with the username"
 TASK_5_COMMAND_1="renice 10 -u chrony"
 
 # Task 6
 TASK_6_QUESTION="Start a background process with a very low priority (nice value 19)"
-TASK_6_HINT="Use nice -n with a high value for low priority, then the command, then & to run it in the background"
+TASK_6_ANSWER="Use nice -n with a high value for low priority, then the command, then & to run it in the background"
 TASK_6_COMMAND_1="nice -n 19 sleep 1234 &"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

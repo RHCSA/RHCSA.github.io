@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find all lines containing 'error' (any case: ERROR, Error, error) from /tmp/system.log, save to /tmp/all-errors.txt"
-TASK_1_HINT="Use -i for case-insensitive matching"
+TASK_1_ANSWER="Use -i for case-insensitive matching"
 TASK_1_COMMAND_1="grep -i 'error' /tmp/system.log > /tmp/all-errors.txt"
 
 # Task 2
 TASK_2_QUESTION="Find 'Failed' in /tmp/auth.log with line numbers shown, save to /tmp/failed-lines.txt"
-TASK_2_HINT="Use -n to show line numbers with matches"
+TASK_2_ANSWER="Use -n to show line numbers with matches"
 TASK_2_COMMAND_1="grep -n 'Failed' /tmp/auth.log > /tmp/failed-lines.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

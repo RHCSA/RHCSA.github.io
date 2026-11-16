@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create xz compressed archive /tmp/config_backup.tar.xz containing /etc/ssh and /etc/pam.d"
-TASK_1_HINT="-J = xz compression"
+TASK_1_ANSWER="-J = xz compression"
 TASK_1_COMMAND_1="tar -cvJf /tmp/config_backup.tar.xz /etc/ssh /etc/pam.d"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing any existing config_backup.tar.xz...${RESET}"

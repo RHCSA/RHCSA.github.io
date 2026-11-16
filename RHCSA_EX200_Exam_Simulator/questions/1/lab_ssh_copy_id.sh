@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Use ssh-copy-id to copy your SSH public key to root@127.0.0.1 (this server)"
-TASK_1_HINT="ssh-copy-id adds your public key to remote authorized_keys"
+TASK_1_ANSWER="ssh-copy-id adds your public key to remote authorized_keys"
 TASK_1_COMMAND_1="ssh-copy-id root@127.0.0.1"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring user has SSH key pair...${RESET}"

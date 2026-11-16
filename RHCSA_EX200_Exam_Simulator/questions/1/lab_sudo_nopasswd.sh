@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Configure user 'automation' to run all sudo commands without password"
-TASK_1_HINT="Create a drop-in file in /etc/sudoers.d/ with NOPASSWD: ALL"
+TASK_1_ANSWER="Create a drop-in file in /etc/sudoers.d/ with NOPASSWD: ALL"
 TASK_1_COMMAND_1="echo 'automation ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/automation"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing configuration...${RESET}"

@@ -13,36 +13,32 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Set umask so new files get user:rw, group:r, others:r then create /tmp/exam/file1.txt"
-TASK_1_HINT="Set umask 022 before creating the file to get 644 permissions"
+TASK_1_ANSWER="Set umask 022 before creating the file to get 644 permissions"
 TASK_1_COMMAND_1="umask 022"
 TASK_1_COMMAND_2="touch /tmp/exam/file1.txt"
 
 # Task 2
 TASK_2_QUESTION="Set umask so new files get user:rw, group:none, others:none then create /tmp/exam/file2.txt"
-TASK_2_HINT="Set umask 077 before creating the file to get 600 permissions"
+TASK_2_ANSWER="Set umask 077 before creating the file to get 600 permissions"
 TASK_2_COMMAND_1="umask 077"
 TASK_2_COMMAND_2="touch /tmp/exam/file2.txt"
 
 # Task 3
 TASK_3_QUESTION="Set umask so new dirs get user:rwx, group:rx, others:none then create /tmp/exam/dir1"
-TASK_3_HINT="Set umask 027 before creating the directory to get 750 permissions"
+TASK_3_ANSWER="Set umask 027 before creating the directory to get 750 permissions"
 TASK_3_COMMAND_1="umask 027"
 TASK_3_COMMAND_2="mkdir /tmp/exam/dir1"
 
 # Task 4
 TASK_4_QUESTION="Set umask so new dirs get user:rwx, group:rwx, others:rx then create /tmp/exam/dir2"
-TASK_4_HINT="Set umask 002 before creating the directory to get 775 permissions"
+TASK_4_ANSWER="Set umask 002 before creating the directory to get 775 permissions"
 TASK_4_COMMAND_1="umask 002"
 TASK_4_COMMAND_2="mkdir /tmp/exam/dir2"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

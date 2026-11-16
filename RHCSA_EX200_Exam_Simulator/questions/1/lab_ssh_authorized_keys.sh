@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Add the public key from /tmp/remote_user.pub to ~/.ssh/authorized_keys"
-TASK_1_HINT="Use >> to append to existing file without overwriting"
+TASK_1_ANSWER="Use >> to append to existing file without overwriting"
 TASK_1_COMMAND_1="cat /tmp/remote_user.pub >> ~/.ssh/authorized_keys"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

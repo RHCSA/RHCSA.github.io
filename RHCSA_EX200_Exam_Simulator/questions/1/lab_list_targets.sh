@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Write the list of all available targets on this host to /tmp/all-targets.txt"
-TASK_1_HINT="Use systemctl list-units with --type=target (or -t target)"
+TASK_1_ANSWER="Use systemctl list-units with --type=target (or -t target)"
 TASK_1_COMMAND_1="systemctl list-units --type=target > /tmp/all-targets.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing target list file...${RESET}"

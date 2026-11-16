@@ -13,32 +13,29 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Replace first 'error' with 'warning' on each line in /tmp/logfile.txt (in-place)"
-TASK_1_HINT="Without 'g' flag, sed replaces only the first occurrence"
+TASK_1_ANSWER="Without 'g' flag, sed replaces only the first occurrence"
 TASK_1_COMMAND_1="sed -i 's/error/warning/' /tmp/logfile.txt"
 
 # Task 2
 TASK_2_QUESTION="Replace ALL occurrences of 'DEBUG' with 'INFO' in /tmp/logfile.txt (global)"
-TASK_2_HINT="g = global, replaces all occurrences on each line"
+TASK_2_ANSWER="g = global, replaces all occurrences on each line"
 TASK_2_COMMAND_1="sed -i 's/DEBUG/INFO/g' /tmp/logfile.txt"
 
 # Task 3
 TASK_3_QUESTION="Replace all 'fail' with 'pass' case-insensitively in /tmp/logfile.txt"
-TASK_3_HINT="gi = global + ignore case"
+TASK_3_ANSWER="gi = global + ignore case"
 TASK_3_COMMAND_1="sed -i 's/fail/pass/gi' /tmp/logfile.txt"
 
 # Task 4
 TASK_4_QUESTION="Delete all lines containing 'DEPRECATED' from /tmp/logfile.txt"
-TASK_4_HINT="d = delete lines matching the pattern"
+TASK_4_ANSWER="d = delete lines matching the pattern"
 TASK_4_COMMAND_1="sed -i '/DEPRECATED/d' /tmp/logfile.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test log file...${RESET}"

@@ -3,7 +3,7 @@
 # LAB: Download a Package Without Installing It (runs on the host)
 
 IS_LAB=true
-LAB_ID="dnf_download_only"
+LAB_ID="container_dnf_download_only"
 
 QUESTION="Download a package with and without its dependencies, without installing it."
 
@@ -11,21 +11,18 @@ QUESTION="Download a package with and without its dependencies, without installi
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Download the httpd package into /tmp/httpd-package-only/ without installing it"
-TASK_1_HINT="dnf download saves the .rpm file itself without installing it; --destdir sets where the file is saved"
+TASK_1_ANSWER="dnf download saves the .rpm file itself without installing it; --destdir sets where the file is saved"
 TASK_1_COMMAND_1="dnf download httpd --destdir=/tmp/httpd-package-only/"
 
 # Task 2
 TASK_2_QUESTION="Download httpd again, this time including every one of its dependencies, into /tmp/httpd-dependencies/"
-TASK_2_HINT="adding --resolve tells dnf download to also fetch every dependency the package needs, not just the package itself"
+TASK_2_ANSWER="adding --resolve tells dnf download to also fetch every dependency the package needs, not just the package itself"
 TASK_2_COMMAND_1="dnf download httpd --resolve --destdir=/tmp/httpd-dependencies/"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

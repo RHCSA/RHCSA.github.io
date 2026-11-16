@@ -13,32 +13,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find files with EXACTLY 644, save to /tmp/exam/exact_644.txt (use -perm 644)"
-TASK_1_HINT="Use find with -perm 644 for exact match"
+TASK_1_ANSWER="Use find with -perm 644 for exact match"
 TASK_1_COMMAND_1="find /tmp/exam -perm 644 > /tmp/exam/exact_644.txt"
 
 # Task 2
 TASK_2_QUESTION="Find files with AT LEAST 644, save to /tmp/exam/minimum_644.txt (use -perm -644)"
-TASK_2_HINT="Use find with -perm -644 (minus prefix means all bits must be set)"
+TASK_2_ANSWER="Use find with -perm -644 (minus prefix means all bits must be set)"
 TASK_2_COMMAND_1="find /tmp/exam -perm -644 > /tmp/exam/minimum_644.txt"
 
 # Task 3
 TASK_3_QUESTION="Find files where ANY write bit is set, save to /tmp/exam/any_write.txt (use -perm /222)"
-TASK_3_HINT="Use find with -perm /222 (slash prefix means any bit can match)"
+TASK_3_ANSWER="Use find with -perm /222 (slash prefix means any bit can match)"
 TASK_3_COMMAND_1="find /tmp/exam -perm /222 -type f > /tmp/exam/any_write.txt"
 
 # Task 4
 TASK_4_QUESTION="Find files where ALL have execute, save to /tmp/exam/all_exec.txt (use -perm -111)"
-TASK_4_HINT="Use find with -perm -111 (all execute bits must be set)"
+TASK_4_ANSWER="Use find with -perm -111 (all execute bits must be set)"
 TASK_4_COMMAND_1="find /tmp/exam -perm -111 -type f > /tmp/exam/all_exec.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

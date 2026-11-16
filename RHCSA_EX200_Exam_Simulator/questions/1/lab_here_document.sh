@@ -13,12 +13,12 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create /tmp/app.conf with here document containing hostname"
-TASK_1_HINT="Use cat << EOF > file to create a here document"
+TASK_1_ANSWER="Use cat << EOF > file to create a here document"
 TASK_1_COMMAND_1="cat << EOF > /tmp/app.conf
 hostname=\$(hostname)
 user=\$(whoami)
@@ -26,12 +26,9 @@ EOF"
 
 # Task 2
 TASK_2_QUESTION="File must contain current username"
-TASK_2_HINT="Variables are expanded (actual hostname/username in output)"
+TASK_2_ANSWER="Variables are expanded (actual hostname/username in output)"
 TASK_2_COMMAND_1="# Verified by check_tasks - username must be in file"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM} Removing existing config file...${RESET}"

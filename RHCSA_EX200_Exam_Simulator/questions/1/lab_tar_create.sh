@@ -13,17 +13,13 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an uncompressed tar archive named /tmp/backup.tar containing all files in /etc/sysconfig/"
-TASK_1_HINT="Use tar -cvf to create archive: -c=create, -v=verbose, -f=file"
+TASK_1_ANSWER="Use tar -cvf to create archive: -c=create, -v=verbose, -f=file"
 TASK_1_COMMAND_1="tar -cvf /tmp/backup.tar /etc/sysconfig/"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

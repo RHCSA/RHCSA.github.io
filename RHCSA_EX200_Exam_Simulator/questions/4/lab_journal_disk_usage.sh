@@ -14,21 +14,18 @@ QUESTION="Check journal disk usage"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Check how much disk space the journal is currently using. Save the output to /tmp/journal_disk_usage.txt"
-TASK_1_HINT="Use journalctl with --disk-usage"
+TASK_1_ANSWER="Use journalctl with --disk-usage"
 TASK_1_COMMAND_1="journalctl --disk-usage > /tmp/journal_disk_usage.txt"
 
 # Task 2
 TASK_2_QUESTION="From that same report, extract just the size value (for example 173.4M) and save it to /tmp/journal_disk_size.txt"
-TASK_2_HINT="Pipe journalctl --disk-usage through grep with a pattern that matches a number followed by a size letter"
+TASK_2_ANSWER="Pipe journalctl --disk-usage through grep with a pattern that matches a number followed by a size letter"
 TASK_2_COMMAND_1="journalctl --disk-usage | grep -oE '[0-9.]+[BKMGT]' > /tmp/journal_disk_size.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

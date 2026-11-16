@@ -32,33 +32,30 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Add a new DNF repository for Kubernetes using this base URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/ - enable the repository"
-TASK_1_HINT="dnf config-manager --add-repo followed by just the URL creates and enables the repository in one command"
+TASK_1_ANSWER="dnf config-manager --add-repo followed by just the URL creates and enables the repository in one command"
 TASK_1_COMMAND_1="dnf config-manager --add-repo https://pkgs.k8s.io/core:/stable:/v1.37/rpm/"
 
 # Task 2
 TASK_2_QUESTION="Using this GPG key URL: https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key - turn on GPG checking for the Kubernetes repository and point it at that key"
-TASK_2_HINT="Append gpgcheck=1 and a gpgkey= line pointing at the key URL to the repo file"
+TASK_2_ANSWER="Append gpgcheck=1 and a gpgkey= line pointing at the key URL to the repo file"
 TASK_2_COMMAND_1="echo 'gpgcheck=1' >> /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo"
 TASK_2_COMMAND_2="echo 'gpgkey=https://pkgs.k8s.io/core:/stable:/v1.37/rpm/repodata/repomd.xml.key' >> /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo"
 
 # Task 3
 TASK_3_QUESTION="Install kubectl using the Kubernetes repository, proving that the repository and its GPG key are both configured correctly"
-TASK_3_HINT="dnf install -y kubectl pulls the package from whichever enabled repository provides it, and verifies its signature against the configured GPG key before installing"
+TASK_3_ANSWER="dnf install -y kubectl pulls the package from whichever enabled repository provides it, and verifies its signature against the configured GPG key before installing"
 TASK_3_COMMAND_1="dnf install -y kubectl"
 
 # Task 4
 TASK_4_QUESTION="Disable the Kubernetes repository, then confirm it is gone from dnf repolist --enabled"
-TASK_4_HINT="Set enabled=0 in the repo file; --enabled only lists repositories that are still active"
+TASK_4_ANSWER="Set enabled=0 in the repo file; --enabled only lists repositories that are still active"
 TASK_4_COMMAND_1="sed -i 's/^enabled=1/enabled=0/' /etc/yum.repos.d/pkgs.k8s.io_core_stable_v1.37_rpm_.repo"
 TASK_4_COMMAND_2="dnf repolist --enabled"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Find whichever .repo file (any name) configures the pkgs.k8s.io repo
 _k8s_repo_file() {

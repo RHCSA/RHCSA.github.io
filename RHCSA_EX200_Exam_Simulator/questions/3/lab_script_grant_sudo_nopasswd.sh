@@ -14,12 +14,12 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/grant_sudo_sam.sh. Have it append a rule granting user Sam full sudo privileges with no password prompt to a new file inside /etc/sudoers.d/, then run the script"
-TASK_1_HINT="Append a line such as Sam ALL=(ALL) NOPASSWD:ALL to /etc/sudoers.d/Sam; quote the whole line with single or double quotes so the parentheses are not interpreted by the shell"
+TASK_1_ANSWER="Append a line such as Sam ALL=(ALL) NOPASSWD:ALL to /etc/sudoers.d/Sam; quote the whole line with single or double quotes so the parentheses are not interpreted by the shell"
 TASK_1_COMMAND_1="cat > /root/grant_sudo_sam.sh << 'SCRIPT_END'
 #!/bin/bash
 echo 'Sam ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/Sam
@@ -28,11 +28,8 @@ chmod +x /root/grant_sudo_sam.sh && /root/grant_sudo_sam.sh"
 
 # Task 2
 TASK_2_QUESTION="Confirm Sam can run sudo commands without being prompted for a password"
-TASK_2_HINT="Switch to Sam and attempt a non-interactive sudo command; it should succeed immediately with no password prompt"
+TASK_2_ANSWER="Switch to Sam and attempt a non-interactive sudo command; it should succeed immediately with no password prompt"
 TASK_2_COMMAND_1="sudo -u Sam sudo -n true"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

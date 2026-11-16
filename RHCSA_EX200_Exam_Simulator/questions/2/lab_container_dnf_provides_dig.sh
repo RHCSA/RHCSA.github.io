@@ -3,9 +3,7 @@
 # LAB: Find and Install a Package with dnf provides (container-only terminal)
 # NOTE: same pattern as lab_container_install_httpd.sh - prepare_lab attaches
 # the single default terminal straight into the container via `tmux
-# send-keys`, so no host shell is ever shown or reachable. Web UI only;
-# harmless no-op on the CLI simulator - CLI users would need to run
-# `docker exec -it rhcsa_lab_container_dnf_provides bash` themselves.
+# send-keys`, so no host shell is ever shown or reachable.
 
 IS_LAB=true
 LAB_ID="container_dnf_provides_dig"
@@ -17,21 +15,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Find which package provides the dig command, and redirect the result into /root/provides_output.txt instead of the screen"
-TASK_1_HINT="dnf provides '*/dig' searches every enabled repository for a package that contains a file named dig; the leading */ matches it regardless of which directory it ends up in"
+TASK_1_ANSWER="dnf provides '*/dig' searches every enabled repository for a package that contains a file named dig; the leading */ matches it regardless of which directory it ends up in"
 TASK_1_COMMAND_1="dnf provides '*/dig' > /root/provides_output.txt"
 
 # Task 2
 TASK_2_QUESTION="Install the package you found, then confirm the dig command now works by looking up localhost"
-TASK_2_HINT="dnf install -y bind-utils installs the package; dig localhost then queries DNS for that name to prove the command works"
+TASK_2_ANSWER="dnf install -y bind-utils installs the package; dig localhost then queries DNS for that name to prove the command works"
 TASK_2_COMMAND_1="dnf install -y bind-utils && dig localhost"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 CONTAINER_NAME="rhcsa_lab_container_dnf_provides"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
@@ -49,7 +44,7 @@ prepare_lab() {
         -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$CONTAINER_IMAGE" /usr/sbin/init &>/dev/null
     sleep 2
 
-    # Web UI only: attach the single visible terminal straight into the
+    # Attach the single visible terminal straight into the
     # container so no host shell is ever shown for this lab
     tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null
 }

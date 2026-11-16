@@ -25,46 +25,43 @@ LAB_TASK_COUNT=7
 STATE_FILE="/tmp/.rhcsa_lab_tuned_original_state"
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Enable and start the tuned service"
-TASK_1_HINT="Use systemctl enable with --now to enable and start in one command"
+TASK_1_ANSWER="Use systemctl enable with --now to enable and start in one command"
 TASK_1_COMMAND_1="systemctl enable --now tuned"
 
 # Task 2
 TASK_2_QUESTION="Display all available tuning profiles. Save the output to /tmp/tuned_list.txt"
-TASK_2_HINT="Use tuned-adm list"
+TASK_2_ANSWER="Use tuned-adm list"
 TASK_2_COMMAND_1="tuned-adm list > /tmp/tuned_list.txt"
 
 # Task 3
 TASK_3_QUESTION="Set the system tuning profile to optimize for throughput performance"
-TASK_3_HINT="Use tuned-adm profile with the profile name"
+TASK_3_ANSWER="Use tuned-adm profile with the profile name"
 TASK_3_COMMAND_1="tuned-adm profile throughput-performance"
 
 # Task 4
 TASK_4_QUESTION="Display the currently active tuning profile. Save the output to /tmp/tuned_active.txt"
-TASK_4_HINT="Use tuned-adm active"
+TASK_4_ANSWER="Use tuned-adm active"
 TASK_4_COMMAND_1="tuned-adm active > /tmp/tuned_active.txt"
 
 # Task 5
 TASK_5_QUESTION="Confirm that the current system settings match the active tuning profile"
-TASK_5_HINT="Use tuned-adm verify; add -i (--ignore-missing) to skip tunings this hardware doesn't support, common in VMs"
+TASK_5_ANSWER="Use tuned-adm verify; add -i (--ignore-missing) to skip tunings this hardware doesn't support, common in VMs"
 TASK_5_COMMAND_1="tuned-adm verify -i"
 
 # Task 6
 TASK_6_QUESTION="Get tuned's recommended profile for this system. Save the output to /tmp/tuned_recommend.txt"
-TASK_6_HINT="Use tuned-adm recommend"
+TASK_6_ANSWER="Use tuned-adm recommend"
 TASK_6_COMMAND_1="tuned-adm recommend > /tmp/tuned_recommend.txt"
 
 # Task 7
 TASK_7_QUESTION="Display the configuration of the throughput-performance profile. Save the output to /tmp/tuned_profile_conf.txt"
-TASK_7_HINT="The profile's configuration file is at /usr/lib/tuned/profiles/throughput-performance/tuned.conf"
+TASK_7_ANSWER="The profile's configuration file is at /usr/lib/tuned/profiles/throughput-performance/tuned.conf"
 TASK_7_COMMAND_1="cat /usr/lib/tuned/profiles/throughput-performance/tuned.conf > /tmp/tuned_profile_conf.txt"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

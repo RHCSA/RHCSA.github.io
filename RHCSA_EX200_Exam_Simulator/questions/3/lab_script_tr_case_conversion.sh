@@ -1,11 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Convert Case with tr
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $input, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_tr_case_conversion"
@@ -17,26 +12,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/lowercase.sh. Use read to capture a line of input into a variable, then pipe that variable through tr '[:upper:]' '[:lower:]' to convert any uppercase letters to lowercase, and print the result"
-TASK_1_HINT="Read the input into a variable, then pipe it through tr [:upper:] [:lower:]"
+TASK_1_ANSWER="Read the input into a variable, then pipe it through tr [:upper:] [:lower:]"
 TASK_1_COMMAND_1="cat > /root/lowercase.sh << 'SCRIPT_END'
 #!/bin/bash
 read input
-echo $input | tr '[:upper:]' '[:lower:]'
+echo \$input | tr '[:upper:]' '[:lower:]'
 SCRIPT_END
 chmod +x /root/lowercase.sh"
 
 # Task 2
 TASK_2_QUESTION="Run the script and enter 'RHCSA Exam' when prompted: it should print 'rhcsa exam'"
-TASK_2_HINT="Run the script, type mixed-case text, and press Enter"
+TASK_2_ANSWER="Run the script, type mixed-case text, and press Enter"
 TASK_2_COMMAND_1="/root/lowercase.sh"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

@@ -3,9 +3,6 @@
 # LAB: Create an LVM volume group/logical volume sized in extents, with a
 #      custom PE size, then grow it first by a fixed extent count and finally
 #      to consume all remaining free space in the volume group
-# NOTE: check_prerequisites() is only read by the web UI (webui/server.py).
-# The CLI simulator (rhcsa) never calls it, so on the CLI this lab just runs
-# prepare_lab/check_tasks/cleanup_lab like any other lab (no pre-flight popup).
 #
 # IMPORTANT: 100 extents @ 32M PE size = 3.125 GiB. Each disk only needs to
 # individually cover that initial size - disk2 joins the volume group in
@@ -19,7 +16,6 @@ QUESTION="Create an LVM volume group with a custom PE (physical extent) size, si
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
-LAB_TITLE="LVM: PE Size and Extent-Based Sizing"
 LAB_TASK_COUNT=9
 
 # =============================================================================
@@ -86,32 +82,32 @@ _lvm_load_disks() {
 _lvm_load_disks
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create a physical volume on the first available extra disk: ${DISK1} (not the disk that holds /)"
-TASK_1_HINT="Use pvcreate to initialize the disk as an LVM physical volume"
+TASK_1_ANSWER="Use pvcreate to initialize the disk as an LVM physical volume"
 TASK_1_COMMAND_1="pvcreate ${DISK1}"
 
 # Task 2
 TASK_2_QUESTION="Create a volume group named ${VG_NAME} using ${DISK1} with a PE (physical extent) size of ${PE_SIZE}"
-TASK_2_HINT="Use vgcreate with --physicalextentsize to set a custom PE size"
+TASK_2_ANSWER="Use vgcreate with --physicalextentsize to set a custom PE size"
 TASK_2_COMMAND_1="vgcreate --physicalextentsize ${PE_SIZE} ${VG_NAME} ${DISK1}"
 
 # Task 3
 TASK_3_QUESTION="Create a logical volume named ${LV_NAME} in ${VG_NAME} with an initial size of ${INITIAL_EXTENTS} extents"
-TASK_3_HINT="Use lvcreate with --extents to size the logical volume in extents instead of bytes"
+TASK_3_ANSWER="Use lvcreate with --extents to size the logical volume in extents instead of bytes"
 TASK_3_COMMAND_1="lvcreate --name ${LV_NAME} --extents ${INITIAL_EXTENTS} ${VG_NAME}"
 
 # Task 4
 TASK_4_QUESTION="Format /dev/${VG_NAME}/${LV_NAME} with the xfs file system"
-TASK_4_HINT="Use mkfs.xfs to format the logical volume"
+TASK_4_ANSWER="Use mkfs.xfs to format the logical volume"
 TASK_4_COMMAND_1="mkfs.xfs /dev/${VG_NAME}/${LV_NAME}"
 
 # Task 5
 TASK_5_QUESTION="Create ${MOUNT_POINT} and mount /dev/${VG_NAME}/${LV_NAME} there permanently (must persist after reboot)"
-TASK_5_HINT="Add an entry to /etc/fstab, then reload systemd and mount -a"
+TASK_5_ANSWER="Add an entry to /etc/fstab, then reload systemd and mount -a"
 TASK_5_COMMAND_1="mkdir ${MOUNT_POINT}"
 TASK_5_COMMAND_2="echo '/dev/${VG_NAME}/${LV_NAME} ${MOUNT_POINT} xfs defaults 0 0' >> /etc/fstab"
 TASK_5_COMMAND_3="systemctl daemon-reload"
@@ -119,84 +115,30 @@ TASK_5_COMMAND_4="mount -a"
 
 # Task 6
 TASK_6_QUESTION="Create a file named testfile inside ${MOUNT_POINT} to confirm the volume is functional"
-TASK_6_HINT="Use touch to create an empty file inside the mounted directory"
+TASK_6_ANSWER="Use touch to create an empty file inside the mounted directory"
 TASK_6_COMMAND_1="touch ${TEST_FILE}"
 
 # Task 7
 TASK_7_QUESTION="Expand ${VG_NAME} by adding a new disk: create a physical volume on ${DISK2} and add it to the volume group"
-TASK_7_HINT="Use pvcreate on the new disk, then vgextend to add it to the existing volume group"
+TASK_7_ANSWER="Use pvcreate on the new disk, then vgextend to add it to the existing volume group"
 TASK_7_COMMAND_1="pvcreate ${DISK2}"
 TASK_7_COMMAND_2="vgextend ${VG_NAME} ${DISK2}"
 
 # Task 8
 TASK_8_QUESTION="Resize ${LV_NAME} to add ${EXTEND_EXTENTS} extents, ensuring the file system is resized automatically, in one command"
-TASK_8_HINT="Use lvextend with --resizefs and --extents +${EXTEND_EXTENTS}"
+TASK_8_ANSWER="Use lvextend with --resizefs and --extents +${EXTEND_EXTENTS}"
 TASK_8_COMMAND_1="lvextend --resizefs --extents +${EXTEND_EXTENTS} /dev/${VG_NAME}/${LV_NAME}"
 
 # Task 9
 TASK_9_QUESTION="Extend ${LV_NAME} to use all remaining free space in ${VG_NAME}, resizing the file system accordingly, in one command"
-TASK_9_HINT="Use lvextend with --resizefs and --extents +100%FREE"
+TASK_9_ANSWER="Use lvextend with --resizefs and --extents +100%FREE"
 TASK_9_COMMAND_1="lvextend --resizefs --extents +100%FREE /dev/${VG_NAME}/${LV_NAME}"
-
-# =============================================================================
-# TASK HELPER FUNCTIONS
-# =============================================================================
-
-# Get task description by index (0-based)
-get_task_description() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local var_name="TASK_${task_num}_QUESTION"
-    echo "${!var_name}"
-}
-
-# Get commands for a task (returns newline-separated commands)
-get_task_commands() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local result=""
-
-    for i in 1 2 3 4 5; do
-        local var_name="TASK_${task_num}_COMMAND_${i}"
-        local cmd="${!var_name}"
-        if [[ -n "$cmd" ]]; then
-            if [[ -n "$result" ]]; then
-                result+=$'\n'
-            fi
-            result+="$cmd"
-        fi
-    done
-    echo "$result"
-}
-
-# Build HINT from all task commands (called automatically)
-_build_hint() {
-    local result=""
-    for ((i=0; i<LAB_TASK_COUNT; i++)); do
-        local task_num=$((i+1))
-        local cmds=$(get_task_commands $i)
-        if [[ -n "$cmds" ]]; then
-            while IFS= read -r cmd; do
-                if [[ -n "$cmd" ]]; then
-                    if [[ -n "$result" ]]; then
-                        result+=$'\n'
-                    fi
-                    result+="Task ${task_num}: ${cmd}"
-                fi
-            done <<< "$cmds"
-        fi
-    done
-    echo "$result"
-}
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION
 # =============================================================================
 
-# Web UI only: verify 2 spare disks (>= MIN_DISK_SIZE_GB, not the root disk)
+# Verify 2 spare disks (>= MIN_DISK_SIZE_GB, not the root disk)
 # exist before starting. If not, the web UI shows this message and never
 # starts the lab.
 check_prerequisites() {

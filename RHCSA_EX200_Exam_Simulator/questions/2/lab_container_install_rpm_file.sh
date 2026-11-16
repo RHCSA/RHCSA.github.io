@@ -3,9 +3,7 @@
 # LAB: Install RPM Files (local file and directly from a URL, container-only terminal)
 # NOTE: same pattern as lab_container_install_httpd.sh - prepare_lab attaches
 # the single default terminal straight into the container via `tmux
-# send-keys`, so no host shell is ever shown or reachable. Web UI only;
-# harmless no-op on the CLI simulator - CLI users would need to run
-# `docker exec -it rhcsa_lab_container_rpm_install bash` themselves.
+# send-keys`, so no host shell is ever shown or reachable.
 # NOTE: prepare_lab downloads the EPEL RPM on the host (curl is a guaranteed
 # dependency of the simulator itself) and copies it in with `docker cp`,
 # rather than requiring curl/wget to be present inside the container image.
@@ -20,21 +18,18 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="The EPEL release package for RHEL 10 has already been downloaded to /root/epel-release-latest-10.noarch.rpm. Install that local file using dnf"
-TASK_1_HINT="dnf install can install a local .rpm file directly by path, resolving any of its own dependencies from the enabled repositories"
+TASK_1_ANSWER="dnf install can install a local .rpm file directly by path, resolving any of its own dependencies from the enabled repositories"
 TASK_1_COMMAND_1="dnf install -y /root/epel-release-latest-10.noarch.rpm"
 
 # Task 2
 TASK_2_QUESTION="Install this package directly from a URL, without downloading it separately first: https://packages.microsoft.com/config/rhel/10/packages-microsoft-prod.rpm"
-TASK_2_HINT="dnf install can take a URL directly as its argument; dnf downloads the file itself before installing it"
+TASK_2_ANSWER="dnf install can take a URL directly as its argument; dnf downloads the file itself before installing it"
 TASK_2_COMMAND_1="dnf install -y https://packages.microsoft.com/config/rhel/10/packages-microsoft-prod.rpm"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 CONTAINER_NAME="rhcsa_lab_container_rpm_install"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
@@ -59,7 +54,7 @@ prepare_lab() {
     docker cp /tmp/epel-release-latest-10.noarch.rpm "$CONTAINER_NAME":/root/epel-release-latest-10.noarch.rpm &>/dev/null
     rm -f /tmp/epel-release-latest-10.noarch.rpm
 
-    # Web UI only: attach the single visible terminal straight into the
+    # Attach the single visible terminal straight into the
     # container so no host shell is ever shown for this lab
     tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null
 }

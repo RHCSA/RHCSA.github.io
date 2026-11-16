@@ -3,15 +3,9 @@
 # LAB: Kill Processes (kill -9, pkill by user, pkill by name) - container-only terminal
 # NOTE: same pattern as questions/2/lab_container_install_httpd.sh - prepare_lab
 # redirects the single default terminal straight into the container via
-# `tmux send-keys`, so no host shell is ever shown or reachable. Web UI only;
-# harmless no-op on the CLI simulator - CLI users would need to run
-# `docker exec -it rhcsa_lab_container_kill_process bash` themselves.
-# NOTE: Task 1's PID is chosen fresh each time prepare_lab runs, so
-# TASK_1_QUESTION/TASK_1_COMMAND_1 embed ${TEST_PID} - this needs its own
-# copy of get_task_description()/get_task_commands()/_build_hint() (same
-# approach as questions/5/lab_lvm_pv_vg_lv.sh) so the web UI's post-prepare
-# re-resolve step can pick up the real PID instead of the literal
-# placeholder text.
+# `tmux send-keys`, so no host shell is ever shown or reachable.
+# NOTE: prepare_lab picks Task 1's PID and saves it in STATE_FILE. The web UI
+# loads the file again after prepare_lab, so the task shows the real PID.
 
 IS_LAB=true
 LAB_ID="container_kill_process"
@@ -36,75 +30,23 @@ _load_test_pid() {
 TEST_PID=$(_load_test_pid)
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="A test process is already running with PID ${TEST_PID}. Kill it using signal 9"
-TASK_1_HINT="Use kill -9 with the PID"
+TASK_1_ANSWER="Use kill -9 with the PID"
 TASK_1_COMMAND_1="kill -9 ${TEST_PID}"
 
 # Task 2
 TASK_2_QUESTION="Kill all processes owned by the user testuser"
-TASK_2_HINT="Use pkill with -u to match by owning user"
+TASK_2_ANSWER="Use pkill with -u to match by owning user"
 TASK_2_COMMAND_1="pkill -u testuser"
 
 # Task 3
 TASK_3_QUESTION="Kill all processes named httpd"
-TASK_3_HINT="Use pkill with the process name"
+TASK_3_ANSWER="Use pkill with the process name"
 TASK_3_COMMAND_1="pkill httpd"
-
-# =============================================================================
-# TASK HELPER FUNCTIONS (local copies so the web UI's dynamic re-resolve step
-# can read the real ${TEST_PID} after prepare_lab has run - see NOTE above)
-# =============================================================================
-
-get_task_description() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local var_name="TASK_${task_num}_QUESTION"
-    echo "${!var_name}"
-}
-
-get_task_commands() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local result=""
-
-    for i in 1 2 3 4 5; do
-        local var_name="TASK_${task_num}_COMMAND_${i}"
-        local cmd="${!var_name}"
-        if [[ -n "$cmd" ]]; then
-            if [[ -n "$result" ]]; then
-                result+=$'\n'
-            fi
-            result+="$cmd"
-        fi
-    done
-    echo "$result"
-}
-
-_build_hint() {
-    local result=""
-    for ((i=0; i<LAB_TASK_COUNT; i++)); do
-        local task_num=$((i+1))
-        local cmds=$(get_task_commands $i)
-        if [[ -n "$cmds" ]]; then
-            while IFS= read -r cmd; do
-                if [[ -n "$cmd" ]]; then
-                    if [[ -n "$result" ]]; then
-                        result+=$'\n'
-                    fi
-                    result+="Task ${task_num}: ${cmd}"
-                fi
-            done <<< "$cmds"
-        fi
-    done
-    echo "$result"
-}
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 CONTAINER_NAME="rhcsa_lab_container_kill_process"
 CONTAINER_IMAGE="rockylinux/rockylinux:10-ubi-init"
@@ -122,7 +64,7 @@ prepare_lab() {
         -v /sys/fs/cgroup:/sys/fs/cgroup:rw "$CONTAINER_IMAGE" /usr/sbin/init &>/dev/null
     sleep 2
 
-    # Web UI only: attach the single visible terminal straight into the
+    # Attach the single visible terminal straight into the
     # container immediately, before the slower provisioning below - so a
     # slow dnf install can never leave the terminal stuck on the host shell
     tmux send-keys -t rhcsa-terminal:lab_main "clear; docker exec -it $CONTAINER_NAME bash" Enter 2>/dev/null

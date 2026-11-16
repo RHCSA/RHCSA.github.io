@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Generate an Ed25519 key pair saved as ~/.ssh/exam_key with comment 'RHCSA Exam Key'"
-TASK_1_HINT="Use ssh-keygen -t for key type, -f for filename, -C for comment"
+TASK_1_ANSWER="Use ssh-keygen -t for key type, -f for filename, -C for comment"
 TASK_1_COMMAND_1="ssh-keygen -t ed25519 -f ~/.ssh/exam_key -C 'RHCSA Exam Key'"
 
 # Task 2
 TASK_2_QUESTION="Generate a 4096-bit RSA key pair saved as ~/.ssh/backup_key"
-TASK_2_HINT="Use -b to specify key bit length for RSA keys"
+TASK_2_ANSWER="Use -b to specify key bit length for RSA keys"
 TASK_2_COMMAND_1="ssh-keygen -t rsa -b 4096 -f ~/.ssh/backup_key"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

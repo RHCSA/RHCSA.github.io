@@ -13,27 +13,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create /tmp/myfile.txt containing 'Hello World'"
-TASK_1_HINT="Use echo with > to create/overwrite file"
+TASK_1_ANSWER="Use echo with > to create/overwrite file"
 TASK_1_COMMAND_1="echo 'Hello World' > /tmp/myfile.txt"
 
 # Task 2
 TASK_2_QUESTION="Append 'Second Line' to /tmp/myfile.txt"
-TASK_2_HINT="Use echo with >> to append to file"
+TASK_2_ANSWER="Use echo with >> to append to file"
 TASK_2_COMMAND_1="echo 'Second Line' >> /tmp/myfile.txt"
 
 # Task 3
 TASK_3_QUESTION="Append 'Third Line' to /tmp/myfile.txt"
-TASK_3_HINT="Use echo with >> to append to file"
+TASK_3_ANSWER="Use echo with >> to append to file"
 TASK_3_COMMAND_1="echo 'Third Line' >> /tmp/myfile.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

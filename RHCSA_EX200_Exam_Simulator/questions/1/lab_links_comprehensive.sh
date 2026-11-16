@@ -13,37 +13,33 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=5
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create /tmp/datafile.txt with 'data' and hard link /tmp/datafile_hard.txt"
-TASK_1_HINT="Hard links share the same inode number as the original file"
+TASK_1_ANSWER="Hard links share the same inode number as the original file"
 TASK_1_COMMAND_1="echo 'data' > /tmp/datafile.txt && ln /tmp/datafile.txt /tmp/datafile_hard.txt"
 
 # Task 2
 TASK_2_QUESTION="Create symlink /tmp/etc_link pointing to /etc"
-TASK_2_HINT="Use ln -s to create symbolic links"
+TASK_2_ANSWER="Use ln -s to create symbolic links"
 TASK_2_COMMAND_1="ln -s /etc /tmp/etc_link"
 
 # Task 3
 TASK_3_QUESTION="Save the inode number of /tmp/datafile.txt to /tmp/inode.txt"
-TASK_3_HINT="Use stat -c %i to get the inode number"
+TASK_3_ANSWER="Use stat -c %i to get the inode number"
 TASK_3_COMMAND_1="stat -c %i /tmp/datafile.txt > /tmp/inode.txt"
 
 # Task 4
 TASK_4_QUESTION="Update /tmp/etc_link to point to /var instead (use ln -sfn)"
-TASK_4_HINT="Use -n to not follow existing symlink, -f to force"
+TASK_4_ANSWER="Use -n to not follow existing symlink, -f to force"
 TASK_4_COMMAND_1="ln -sfn /var /tmp/etc_link"
 
 # Task 5
 TASK_5_QUESTION="Save the hard link count of /tmp/datafile.txt to /tmp/linkcount.txt"
-TASK_5_HINT="Use stat -c %h to get the hard link count"
+TASK_5_ANSWER="Use stat -c %h to get the hard link count"
 TASK_5_COMMAND_1="stat -c %h /tmp/datafile.txt > /tmp/linkcount.txt"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

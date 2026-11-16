@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Use scp to upload /tmp/upload_test.txt to root@127.0.0.1:/tmp/uploaded.txt"
-TASK_1_HINT="scp syntax: scp source user@host:destination"
+TASK_1_ANSWER="scp syntax: scp source user@host:destination"
 TASK_1_COMMAND_1="scp /tmp/upload_test.txt root@127.0.0.1:/tmp/uploaded.txt"
 
 # Task 2
 TASK_2_QUESTION="Use scp to download root@127.0.0.1:/tmp/remote_file.txt to /tmp/downloaded.txt"
-TASK_2_HINT="To download, put remote path first and local path second"
+TASK_2_ANSWER="To download, put remote path first and local path second"
 TASK_2_COMMAND_1="scp root@127.0.0.1:/tmp/remote_file.txt /tmp/downloaded.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

@@ -1,268 +1,157 @@
-# RHCSA Questions and Labs - Contribution Guide
+# Question and Lab File Format
 
-## 🎉 Welcome Contributors!
+This file tells how to write a lab or a question for the simulator. For the steps to send your change (fork, branch, test, pull request), read [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
-This is an **open source project** and we need your help! Currently, only **Chapter 01 (Understand and use essential tools)** has complete questions. We're looking for contributors to help add questions for chapters 2-10.
+## Folders
 
-**Your contributions will help thousands of RHCSA exam candidates worldwide!**
+Each folder is one RHCSA EX200 objective. The simulator shows all `.sh` files of a folder, sorted by file name.
 
----
+| Folder | Objective | Content (2026-11-15) |
+|---|---|---|
+| 1 | Understand and use essential tools | 81 labs, 1 question |
+| 2 | Manage software | 12 labs |
+| 3 | Create simple shell scripts | 23 labs |
+| 4 | Operate running systems | 11 labs, 4 questions |
+| 5 | Configure local storage | 6 labs |
+| 6 | Create and configure file systems | Help wanted |
+| 7 | Deploy, configure, and maintain systems | Help wanted |
+| 8 | Manage basic networking | 1 lab, 2 demo labs |
+| 9 | Manage users and groups | Help wanted |
+| 10 | Manage security | Help wanted |
 
-## 🚀 How to Contribute
+Each folder also has a `more_questions_will_be_added_here_<N>.sh` placeholder.
 
-### Quick Start (3 Simple Steps)
+## File types
 
-1. **Fork the repository** on GitHub: https://github.com/RHCSA/RHCSA.github.io
-2. **Add your question/lab** following the templates below
-3. **Submit a Pull Request** - we'll review and merge it!
+| Type | File name | Use it when |
+|---|---|---|
+| Lab | `lab_<name>.sh` | The student can do the task in a terminal and a script can check the result. Use a lab when possible. |
+| Question | `question_<name>.sh` | A lab cannot do it, for example a reboot into GRUB or a root password reset. |
 
-### What We Need
-
-| Chapter | Topic | Status |
-|---------|-------|--------|
-| 1 | Understand and use essential tools | ✅ Complete (75+ labs) |
-| 2 | Manage software | ❌ Needs questions |
-| 3 | Create simple shell scripts | ❌ Needs questions |
-| 4 | Operate running systems | ❌ Needs questions |
-| 5 | Configure local storage | ❌ Needs questions |
-| 6 | Create and configure file systems | ❌ Needs questions |
-| 7 | Deploy, configure, and maintain systems | ❌ Needs questions |
-| 8 | Manage basic networking | ❌ Needs questions |
-| 9 | Manage users and groups | ❌ Needs questions |
-| 10 | Manage security | ❌ Needs questions |
-
----
-
-## 📁 Directory Structure
-
-```
-questions/
-├── 1/   # Chapter 01: Understand and use essential tools ✅
-├── 2/   # Chapter 02: Manage software
-├── 3/   # Chapter 03: Create simple shell scripts
-├── 4/   # Chapter 04: Operate running systems
-├── 5/   # Chapter 05: Configure local storage
-├── 6/   # Chapter 06: Create and configure file systems
-├── 7/   # Chapter 07: Deploy, configure, and maintain systems
-├── 8/   # Chapter 08: Manage basic networking
-├── 9/   # Chapter 09: Manage users and groups
-└── 10/  # Chapter 10: Manage security
-```
-
----
-
-## 🧪 Adding a New Lab Exercise (Hands-on Practice)
-
-Labs are interactive exercises where students complete tasks in a real terminal. This is the **recommended format** for RHCSA practice!
-
-1. Navigate to the appropriate objective directory (0-9)
-2. Create a new `.sh` file with prefix `lab_` (e.g., `lab_firewall.sh`)
-3. Add the following content:
+## Lab template
 
 ```bash
 #!/bin/bash
-# Objective X: [Objective Name]
-# LAB: [Lab Title]
+# Objective N: <objective name>
+# LAB: <lab title>
 
-# Mark this as a lab exercise
 IS_LAB=true
 LAB_ID="unique_lab_id"
 
-# Question text (displayed as lab title)
-QUESTION="Brief description of the lab task"
+QUESTION="One line that tells what the lab is about"
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
-LAB_TASK_COUNT=2  # Number of tasks in this lab
+LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
-TASK_1_QUESTION="First task description"
-TASK_1_HINT="Hint for task 1"
-TASK_1_COMMAND_1="command to complete task 1"
+TASK_1_QUESTION="Set /tmp/script.sh to 755 (rwxr-xr-x)"
+TASK_1_ANSWER="Use chmod with octal mode 755"
+TASK_1_COMMAND_1="chmod 755 /tmp/script.sh"
 
 # Task 2
-TASK_2_QUESTION="Second task description"
-TASK_2_HINT="Hint for task 2"
-TASK_2_COMMAND_1="command to complete task 2"
+TASK_2_QUESTION="Set /tmp/private.txt to 600 (rw-------)"
+TASK_2_ANSWER="Use chmod with octal mode 600"
+TASK_2_COMMAND_1="chmod 600 /tmp/private.txt"
 
-# Auto-generate HINT from commands (uses helper function from TUI)
-HINT=$(_build_hint)
-
-# Prepare the lab environment (reset state before lab starts)
+# Prepare the lab environment (runs before the student starts)
 prepare_lab() {
-    echo -e "  ${DIM}• Resetting environment...${RESET}"
-    # Add commands to prepare/reset the environment
-    # e.g., remove files, reset configurations, etc.
+    echo -e "  ${DIM}• Creating test files...${RESET}"
+    touch /tmp/script.sh /tmp/private.txt
+    chmod 644 /tmp/script.sh /tmp/private.txt
     sleep 0.3
 }
 
-# Check task completion - sets TASK_STATUS array
+# Check task completion - TASK_STATUS[0] is task 1
 check_tasks() {
-    # Task 0: Check first task
-    if [[ some_condition ]]; then
+    if [[ "$(stat -c %a /tmp/script.sh 2>/dev/null)" == "755" ]]; then
         TASK_STATUS[0]="true"
     else
         TASK_STATUS[0]="false"
     fi
-    
-    # Task 1: Check second task
-    if [[ some_other_condition ]]; then
+
+    if [[ "$(stat -c %a /tmp/private.txt 2>/dev/null)" == "600" ]]; then
         TASK_STATUS[1]="true"
     else
         TASK_STATUS[1]="false"
     fi
 }
+
+# Remove everything the lab made (runs when the student stops the lab)
+cleanup_lab() {
+    echo -e "  ${DIM}• Cleaning up lab environment...${RESET}"
+    rm -f /tmp/script.sh /tmp/private.txt
+    echo -e "  ${GREEN}✓ Lab environment cleaned up${RESET}"
+    sleep 1
+}
 ```
 
-**Example:** `questions/9/lab_firewall.sh`
+A real lab of this type: [1/lab_chmod_octal.sh](1/lab_chmod_octal.sh).
+
+### Lab fields
+
+| Name | Required | What it does |
+|---|---|---|
+| `IS_LAB=true` | Yes | Marks the file as a lab. |
+| `LAB_ID` | Yes | Unique ID. Do not use the same ID in two files. |
+| `QUESTION` | Yes | Lab title in the list and at the top of the lab. |
+| `YOUTUBE_VIDEO` | No | Video in the **Lab Video Practice** tab. |
+| `LAB_TASK_COUNT` | Yes | Number of tasks (1 to 10). |
+| `TASK_N_QUESTION` | Yes | Text of task N. |
+| `TASK_N_ANSWER` | No | Short explanation. The **Answer** button shows it above the commands. |
+| `TASK_N_COMMAND_1` to `TASK_N_COMMAND_9` | Yes (at least 1) | Commands that do task N. The **Answer** panel shows them with **Copy** and **Send** buttons. |
+| `prepare_lab()` | Yes | Puts the system in a known state. |
+| `check_tasks()` | Yes | Sets `TASK_STATUS[i]` to `"true"` or `"false"`. Index 0 is task 1. |
+| `cleanup_lab()` | Yes | Removes what the lab made and puts back system files. |
+
+Old files use `TASK_N_HINT` instead of `TASK_N_ANSWER`. The old name still works, but use `TASK_N_ANSWER` in new files.
+
+### Optional features
+
+| Feature | What it does | Example |
+|---|---|---|
+| `check_prerequisites()` | Sets `PREREQ_OK=false` and `PREREQ_MESSAGE` when the machine cannot run the lab. The lab does not start. | [5/lab_lvm_pv_vg_lv.sh](5/lab_lvm_pv_vg_lv.sh) |
+| `prepare_lab_2()`, `prepare_lab_3()` ... | Adds more terminal tabs. `PREPARE_LAB_N_NAME` sets the tab name. `PREPARE_LAB_N_COMMAND` runs a command in the tab. | [8/lab_multi_terminal_demo.sh](8/lab_multi_terminal_demo.sh) |
+| Container lab | Starts a Rocky Linux 10 container and connects the terminal to it. | [2/lab_container_install_httpd.sh](2/lab_container_install_httpd.sh) |
+| Values from `prepare_lab` | Shows a value that `prepare_lab` selects (a disk name, a PID) in the task text. Save the value in a state file and read it at the top of the lab file. | [5/lab_lvm_pv_vg_lv.sh](5/lab_lvm_pv_vg_lv.sh) |
+
+## Question template
+
 ```bash
 #!/bin/bash
-# Objective 9: Security
-# LAB: Firewall Configuration
+# Objective N: <objective name>
+# Question: <title>
 
-IS_LAB=true
-LAB_ID="firewall"
-
-QUESTION="Configure firewall to allow HTTP and HTTPS traffic"
-
-LAB_TASK_COUNT=3
-
-# =============================================================================
-# TASK DEFINITIONS
-# =============================================================================
-
-# Task 1
-TASK_1_QUESTION="Enable and start firewalld service"
-TASK_1_HINT="Use systemctl to enable and start the service"
-TASK_1_COMMAND_1="systemctl enable --now firewalld"
-
-# Task 2
-TASK_2_QUESTION="Allow HTTP (port 80) through the firewall permanently"
-TASK_2_HINT="Use firewall-cmd with --permanent flag"
-TASK_2_COMMAND_1="firewall-cmd --permanent --add-service=http"
-
-# Task 3
-TASK_3_QUESTION="Allow HTTPS (port 443) through the firewall permanently"
-TASK_3_HINT="Same as HTTP but for https service"
-TASK_3_COMMAND_1="firewall-cmd --permanent --add-service=https"
-
-# Auto-generate HINT from task commands
-HINT=$(_build_hint)
-
-prepare_lab() {
-    echo -e "  ${DIM}• Stopping firewalld...${RESET}"
-    systemctl stop firewalld 2>/dev/null
-    sleep 0.3
-    
-    echo -e "  ${DIM}• Removing existing rules...${RESET}"
-    firewall-cmd --permanent --remove-service=http 2>/dev/null
-    firewall-cmd --permanent --remove-service=https 2>/dev/null
-    sleep 0.3
-}
-
-check_tasks() {
-    # Task 0: Check if firewalld is running
-    if systemctl is-active firewalld &>/dev/null; then
-        TASK_STATUS[0]="true"
-    else
-        TASK_STATUS[0]="false"
-    fi
-    
-    # Task 1: Check HTTP service
-    if firewall-cmd --list-services 2>/dev/null | grep -q "http"; then
-        TASK_STATUS[1]="true"
-    else
-        TASK_STATUS[1]="false"
-    fi
-    
-    # Task 2: Check HTTPS service
-    if firewall-cmd --list-services 2>/dev/null | grep -q "https"; then
-        TASK_STATUS[2]="true"
-    else
-        TASK_STATUS[2]="false"
-    fi
-}
+QUESTION="You forgot the root password. Reset it without reinstalling the system."
+YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
+ANSWER="1. Reboot the system.
+2. At the GRUB menu, press the 'e' key.
+3. ..."
 ```
 
----
+A question has no `IS_LAB` line. The student clicks **Show Answer** to see `ANSWER`. Example: [4/question_reset_root_password.sh](4/question_reset_root_password.sh).
 
-## 📛 File Naming Convention
+## Rules
 
-- **Labs:** `lab_<name>.sh` (e.g., `lab_hostname.sh`, `lab_firewall.sh`)
+1. Put each value in double quotes on its own `NAME="..."` line. The web interface reads the values with a regular expression, so do not put a double quote (`"`) inside a value. Use single quotes.
+2. In `TASK_N_COMMAND_N`, write a literal `$` as `\$`. Example: `echo \$HOME`. If you do not, bash replaces `$HOME` when it loads the file. See [1/lab_here_document.sh](1/lab_here_document.sh).
+3. Write `${VAR}` without `\` only for a variable that the lab file sets itself, for example `${DISK1}`.
+4. Labs run as root on the real machine. Never change the disk that holds `/`. Make a backup of each system file in `prepare_lab()` and put it back in `cleanup_lab()`.
+5. A check must not pass before the student does the task.
+6. Use these colors in messages: `${DIM}`, `${RESET}`, `${GREEN}`, `${RED}`, `${YELLOW}`, `${CYAN}`.
 
+## Checklist
 
----
-
-## 🎨 Available Variables in Lab Functions
-
-The following variables are available from the main script:
-- `${DIM}` - Dim text formatting
-- `${RESET}` - Reset formatting
-- `${GREEN}` - Green text
-- `${RED}` - Red text
-- `${YELLOW}` - Yellow text
-- `${CYAN}` - Cyan text
-
----
-
-## 💡 Tips for Contributors
-
-1. **Test your questions/labs:** Run the main RHCSA script and navigate to your new question to test it
-2. **Keep hints helpful:** Provide enough guidance without giving away the answer
-3. **Lab preparation:** Always reset the environment to a known state so students can retry
-4. **Task checks:** Make checks specific enough to validate correct completion
-
----
-
-## 🔍 Example: Look at Existing Labs
-
-The best way to learn is by example! Check out the existing labs in the `1/` directory:
-
-```bash
-ls -la questions/1/
-```
-
-Some good examples to study:
-- `lab_chmod_symbolic.sh` - Simple file permissions lab
-- `lab_tar_create.sh` - Archive creation lab
-- `lab_grep_basic.sh` - Text searching lab
-
----
-
-## 📝 Contribution Checklist
-
-Before submitting your Pull Request:
-
-- [ ] File is in the correct chapter directory (1-10)
-- [ ] File has `.sh` extension
-- [ ] File follows naming convention (`lab_*.sh` or `q*.sh`)
-- [ ] `QUESTION` variable is clear and descriptive
-- [ ] `HINT` provides helpful guidance
-- [ ] For labs: `prepare_lab()` resets the environment properly
-- [ ] For labs: `check_tasks()` correctly validates completion
-- [ ] Tested on a RHEL/CentOS/Rocky Linux system
-
----
-
-## 🤝 Need Help?
-
-- **Questions?** Open an issue on GitHub
-- **Found a bug?** Please report it!
-- **Want to discuss ideas?** Start a GitHub Discussion
-
-**Repository:** https://github.com/RHCSA/RHCSA.github.io
-
----
-
-## 🏆 Contributors
-
-Thank you to everyone who contributes to this project! Your work helps aspiring Linux system administrators achieve their RHCSA certification.
-
-**Every contribution matters - even fixing a typo helps!**
-
----
-
-*Made with ❤️*
+- [ ] The file is in the correct folder (1 to 10) and has a `.sh` extension.
+- [ ] The file name is `lab_<name>.sh` or `question_<name>.sh`.
+- [ ] `LAB_ID` is unique.
+- [ ] `LAB_TASK_COUNT` is the same as the number of tasks.
+- [ ] Each task has `TASK_N_QUESTION` and at least `TASK_N_COMMAND_1`.
+- [ ] Each literal `$` in a command is written `\$`.
+- [ ] `check_tasks()` sets one `TASK_STATUS` entry for each task.
+- [ ] `cleanup_lab()` removes everything that the lab made.
+- [ ] You tested the lab on Rocky Linux 10 in the web interface.

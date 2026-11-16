@@ -13,27 +13,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create a hard link /tmp/hardlink.txt pointing to /tmp/original.txt"
-TASK_1_HINT="Use ln command without -s option to create a hard link"
+TASK_1_ANSWER="Use ln command without -s option to create a hard link"
 TASK_1_COMMAND_1="ln /tmp/original.txt /tmp/hardlink.txt"
 
 # Task 2
 TASK_2_QUESTION="Verify both files have the same inode number (use ls -i)"
-TASK_2_HINT="Use ls -i to display inode numbers and verify they match"
+TASK_2_ANSWER="Use ls -i to display inode numbers and verify they match"
 TASK_2_COMMAND_1="ls -i /tmp/original.txt /tmp/hardlink.txt"
 
 # Task 3
 TASK_3_QUESTION="Create another hard link /tmp/linkdir/file_link to /tmp/original.txt"
-TASK_3_HINT="Use ln to create hard link in different directory"
+TASK_3_ANSWER="Use ln to create hard link in different directory"
 TASK_3_COMMAND_1="ln /tmp/original.txt /tmp/linkdir/file_link"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

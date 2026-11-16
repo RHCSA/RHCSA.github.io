@@ -2,9 +2,6 @@
 # Objective 5: Configure local storage
 # LAB: Create physical volumes on partitions, a volume group, and a logical
 #      volume using 100% of the free space, mounted permanently via UUID
-# NOTE: check_prerequisites() is only read by the web UI (webui/server.py).
-# The CLI simulator (rhcsa) never calls it, so on the CLI this lab just runs
-# prepare_lab/check_tasks/cleanup_lab like any other lab (no pre-flight popup).
 
 IS_LAB=true
 LAB_ID="lvm_partitions_fullsize"
@@ -13,7 +10,6 @@ QUESTION="Set up LVM storage on partitions: create partitions, physical volumes,
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 
 # Lab configuration
-LAB_TITLE="LVM: Partitions, 100% Free Space, UUID Mount"
 LAB_TASK_COUNT=6
 
 # =============================================================================
@@ -70,102 +66,48 @@ _lvm_load_disks() {
 _lvm_load_disks
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create a ${PART1_SIZE_MB}M partition on ${DISK1} and a ${PART2_SIZE_MB}M partition on ${DISK2}"
-TASK_1_HINT="Use fdisk or parted to create one partition of each requested size"
+TASK_1_ANSWER="Use fdisk or parted to create one partition of each requested size"
 TASK_1_COMMAND_1="parted -s ${DISK1} mklabel msdos mkpart primary 1MiB $((PART1_SIZE_MB + 1))MiB"
 TASK_1_COMMAND_2="parted -s ${DISK2} mklabel msdos mkpart primary 1MiB $((PART2_SIZE_MB + 1))MiB"
 
 # Task 2
 TASK_2_QUESTION="Create LVM physical volumes on ${DISK1}1 and ${DISK2}1"
-TASK_2_HINT="Use pvcreate on both partitions to initialize them as LVM physical volumes"
+TASK_2_ANSWER="Use pvcreate on both partitions to initialize them as LVM physical volumes"
 TASK_2_COMMAND_1="pvcreate ${DISK1}1 ${DISK2}1"
 
 # Task 3
 TASK_3_QUESTION="Create a volume group named ${VG_NAME} from ${DISK1}1 and ${DISK2}1"
-TASK_3_HINT="Use vgcreate to combine both physical volumes into one volume group"
+TASK_3_ANSWER="Use vgcreate to combine both physical volumes into one volume group"
 TASK_3_COMMAND_1="vgcreate ${VG_NAME} ${DISK1}1 ${DISK2}1"
 
 # Task 4
 TASK_4_QUESTION="Create a logical volume named ${LV_NAME} using 100% of the free space in ${VG_NAME}"
-TASK_4_HINT="Use lvcreate with --extents 100%FREE to consume all remaining space in the volume group"
+TASK_4_ANSWER="Use lvcreate with --extents 100%FREE to consume all remaining space in the volume group"
 TASK_4_COMMAND_1="lvcreate --name ${LV_NAME} --extents 100%FREE ${VG_NAME}"
 
 # Task 5
 TASK_5_QUESTION="Format /dev/${VG_NAME}/${LV_NAME} with the xfs file system"
-TASK_5_HINT="Use mkfs.xfs to format the logical volume"
+TASK_5_ANSWER="Use mkfs.xfs to format the logical volume"
 TASK_5_COMMAND_1="mkfs.xfs /dev/${VG_NAME}/${LV_NAME}"
 
 # Task 6
 TASK_6_QUESTION="Create ${MOUNT_POINT} and mount /dev/${VG_NAME}/${LV_NAME} there permanently using its UUID (must persist after reboot)"
-TASK_6_HINT="Look up the UUID with blkid, then add a UUID= entry to /etc/fstab"
+TASK_6_ANSWER="Look up the UUID with blkid, then add a UUID= entry to /etc/fstab"
 TASK_6_COMMAND_1="mkdir ${MOUNT_POINT}"
 TASK_6_COMMAND_2="echo \"UUID=\$(blkid -o value -s UUID /dev/${VG_NAME}/${LV_NAME}) ${MOUNT_POINT} xfs defaults 0 0\" >> /etc/fstab"
 TASK_6_COMMAND_3="systemctl daemon-reload"
 TASK_6_COMMAND_4="mount -a"
 
 # =============================================================================
-# TASK HELPER FUNCTIONS
-# =============================================================================
-
-# Get task description by index (0-based)
-get_task_description() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local var_name="TASK_${task_num}_QUESTION"
-    echo "${!var_name}"
-}
-
-# Get commands for a task (returns newline-separated commands)
-get_task_commands() {
-    local task_idx=$1
-    local task_num=$((task_idx + 1))
-    local result=""
-
-    for i in 1 2 3 4 5; do
-        local var_name="TASK_${task_num}_COMMAND_${i}"
-        local cmd="${!var_name}"
-        if [[ -n "$cmd" ]]; then
-            if [[ -n "$result" ]]; then
-                result+=$'\n'
-            fi
-            result+="$cmd"
-        fi
-    done
-    echo "$result"
-}
-
-# Build HINT from all task commands (called automatically)
-_build_hint() {
-    local result=""
-    for ((i=0; i<LAB_TASK_COUNT; i++)); do
-        local task_num=$((i+1))
-        local cmds=$(get_task_commands $i)
-        if [[ -n "$cmds" ]]; then
-            while IFS= read -r cmd; do
-                if [[ -n "$cmd" ]]; then
-                    if [[ -n "$result" ]]; then
-                        result+=$'\n'
-                    fi
-                    result+="Task ${task_num}: ${cmd}"
-                fi
-            done <<< "$cmds"
-        fi
-    done
-    echo "$result"
-}
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
-
-# =============================================================================
 # LAB IMPLEMENTATION
 # =============================================================================
 
-# Web UI only: verify 2 spare disks (>= 5G, not the root disk) exist before
+# Verify 2 spare disks (>= 5G, not the root disk) exist before
 # starting. If not, the web UI shows this message and never starts the lab.
 check_prerequisites() {
     local spares=()

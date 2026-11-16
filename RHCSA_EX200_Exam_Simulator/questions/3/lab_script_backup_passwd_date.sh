@@ -1,14 +1,6 @@
 #!/bin/bash
 # Objective 3: Create simple shell scripts
 # LAB: Conditional Backup with Date (test, cp, date)
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal
-# $(date +%Y-%m-%d) command substitution, which the CLI's bash-based parser
-# will execute immediately while sourcing (a framework limitation - see
-# repo memory), embedding whatever date is current at load time into the
-# displayed hint instead of the live command. This does NOT affect grading
-# (check_tasks is real bash, not a parsed string) or the web UI, which
-# shows/sends it correctly. CLI users may see a slightly different hint
-# text for this task.
 # NOTE: /etc/passwd always exists on a working system, so the "missing
 # file" branch cannot safely be tested by removing the real file. Task 2 is
 # graded by running a copy of the script with the source path substituted
@@ -29,12 +21,12 @@ LAB_TASK_COUNT=2
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/backup_passwd.sh. Test whether /etc/passwd exists; if it does, copy it to /tmp/passwd followed by a dot and today's date in YYYY-MM-DD format, for example /tmp/passwd.2026-10-18. If /etc/passwd does not exist, print an error message instead of copying anything"
-TASK_1_HINT="Use a file test such as -e or -f to check /etc/passwd first; build the destination name by joining /tmp/passwd. with the output of the date command; cp should only run in the branch where the test succeeds"
+TASK_1_ANSWER="Use a file test such as -e or -f to check /etc/passwd first; build the destination name by joining /tmp/passwd. with the output of the date command; cp should only run in the branch where the test succeeds"
 TASK_1_COMMAND_1="cat > /root/backup_passwd.sh << 'SCRIPT_END'
 #!/bin/bash
 if [ -e /etc/passwd ]
 then
-    cp /etc/passwd /tmp/passwd.$(date +%Y-%m-%d)
+    cp /etc/passwd /tmp/passwd.\$(date +%Y-%m-%d)
 else
     echo Error: /etc/passwd does not exist
 fi
@@ -43,11 +35,11 @@ chmod +x /root/backup_passwd.sh"
 
 # Task 2
 TASK_2_QUESTION="Confirm the script reports an error instead of copying anything when the file it checks for is missing. Since /etc/passwd always exists on a working system, review the else branch (or equivalent) in your script to confirm it only prints a message and never calls cp"
-TASK_2_HINT="The branch that runs when the test fails must not call cp at all; it should only print an error message"
+TASK_2_ANSWER="The branch that runs when the test fails must not call cp at all; it should only print an error message"
 TASK_2_COMMAND_1="cat /root/backup_passwd.sh"
 
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
+# Auto-generate ANSWER from commands
+ANSWER=$(_build_answer)
 
 # Prepare the lab environment
 prepare_lab() {

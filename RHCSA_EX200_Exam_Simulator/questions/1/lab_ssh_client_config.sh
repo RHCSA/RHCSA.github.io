@@ -13,18 +13,15 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create SSH client config (~/.ssh/config) with Host 'labserver' (HostName 192.168.1.100, User admin, Port 2222) and set permissions to 600"
-TASK_1_HINT="Use vim/nano to create config file with Host block, then chmod 600"
+TASK_1_ANSWER="Use vim/nano to create config file with Host block, then chmod 600"
 TASK_1_COMMAND_1="vim ~/.ssh/config"
 TASK_1_COMMAND_2="chmod 600 ~/.ssh/config"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

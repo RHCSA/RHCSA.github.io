@@ -13,32 +13,28 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Set the permission of /tmp/exam/public, so owner has full access, others can list and enter but not create files"
-TASK_1_HINT="Use chmod 755 (rwxr-xr-x) - owner: full, others: read+execute"
+TASK_1_ANSWER="Use chmod 755 (rwxr-xr-x) - owner: full, others: read+execute"
 TASK_1_COMMAND_1="chmod 755 /tmp/exam/public"
 
 # Task 2
 TASK_2_QUESTION="Set the permission of /tmp/exam/private, so only owner can access - completely private from others"
-TASK_2_HINT="Use chmod 700 (rwx------) - only owner has any access"
+TASK_2_ANSWER="Use chmod 700 (rwx------) - only owner has any access"
 TASK_2_COMMAND_1="chmod 700 /tmp/exam/private"
 
 # Task 3
 TASK_3_QUESTION="Set the permission of /tmp/exam/dropbox, so others can enter and create files but cannot list contents"
-TASK_3_HINT="Use chmod 733 (rwx-wx-wx) - owner: full, others: write+execute"
+TASK_3_ANSWER="Use chmod 733 (rwx-wx-wx) - owner: full, others: write+execute"
 TASK_3_COMMAND_1="chmod 733 /tmp/exam/dropbox"
 
 # Task 4
 TASK_4_QUESTION="Set the permission of /tmp/exam/gateway, so others can only enter - cannot list (must know exact filename)"
-TASK_4_HINT="Use chmod 711 (rwx--x--x) - owner: full, others: execute only"
+TASK_4_ANSWER="Use chmod 711 (rwx--x--x) - owner: full, others: execute only"
 TASK_4_COMMAND_1="chmod 711 /tmp/exam/gateway"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

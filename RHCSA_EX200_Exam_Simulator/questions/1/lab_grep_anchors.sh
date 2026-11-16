@@ -13,27 +13,24 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Extract lines starting with 'root' from /etc/passwd to /tmp/root-lines.txt"
-TASK_1_HINT="Use ^ to anchor pattern to start of line"
+TASK_1_ANSWER="Use ^ to anchor pattern to start of line"
 TASK_1_COMMAND_1="grep '^root' /etc/passwd > /tmp/root-lines.txt"
 
 # Task 2
 TASK_2_QUESTION="Extract lines ending with 'bash' from /etc/passwd to /tmp/bash-shell.txt"
-TASK_2_HINT="Use $ to anchor pattern to end of line"
+TASK_2_ANSWER="Use $ to anchor pattern to end of line"
 TASK_2_COMMAND_1="grep 'bash$' /etc/passwd > /tmp/bash-shell.txt"
 
 # Task 3
 TASK_3_QUESTION="Count empty lines in /tmp/testfile.txt and save count to /tmp/empty-count.txt"
-TASK_3_HINT="Use ^$ to match empty lines and -c to count"
+TASK_3_ANSWER="Use ^$ to match empty lines and -c to count"
 TASK_3_COMMAND_1="grep -c '^$' /tmp/testfile.txt > /tmp/empty-count.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Removing existing files...${RESET}"

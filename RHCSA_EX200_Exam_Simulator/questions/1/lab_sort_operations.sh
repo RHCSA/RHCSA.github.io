@@ -13,27 +13,24 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Sort /tmp/numbers.txt numerically, save to /tmp/sorted_numeric.txt"
-TASK_1_HINT="-n = numeric sort"
+TASK_1_ANSWER="-n = numeric sort"
 TASK_1_COMMAND_1="sort -n /tmp/numbers.txt > /tmp/sorted_numeric.txt"
 
 # Task 2
 TASK_2_QUESTION="Sort /tmp/words.txt alphabetically, case-insensitive, unique only save to /tmp/sorted_words.txt"
-TASK_2_HINT="-d=dictionary order, -f=fold case, -u=unique"
+TASK_2_ANSWER="-d=dictionary order, -f=fold case, -u=unique"
 TASK_2_COMMAND_1="sort -dfu /tmp/words.txt > /tmp/sorted_words.txt"
 
 # Task 3
 TASK_3_QUESTION="Sort /tmp/numbers.txt numerically in reverse (descending) save to /tmp/sorted_reverse.txt"
-TASK_3_HINT="-r = reverse order"
+TASK_3_ANSWER="-r = reverse order"
 TASK_3_COMMAND_1="sort -nr /tmp/numbers.txt > /tmp/sorted_reverse.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test files...${RESET}"

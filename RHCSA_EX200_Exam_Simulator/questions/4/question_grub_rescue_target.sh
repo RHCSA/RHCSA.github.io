@@ -3,8 +3,8 @@
 # Question: Boot into a specific GRUB target (rescue.target)
 # This is a plain question, not a lab. GRUB edits happen before the kernel
 # starts, so a container has no boot phase to test this in. No IS_LAB line,
-# so both the CLI and the webui treat this as a plain Question/Answer entry
-# (QUESTION + ANSWER only, no HINT needed).
+# so the web UI treats this as a plain Question/Answer entry
+# (QUESTION + ANSWER only).
 
 QUESTION="At boot time, edit GRUB to boot into the rescue target."
 YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"

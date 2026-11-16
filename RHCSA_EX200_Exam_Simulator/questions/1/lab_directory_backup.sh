@@ -13,32 +13,32 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=4
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create directories /tmp/dir1/dir2/dir3/dir4/dir5"
-TASK_1_HINT="Use mkdir -p to create nested directories in one command"
+TASK_1_ANSWER="Use mkdir -p to create nested directories in one command"
 TASK_1_COMMAND_1="mkdir -p /tmp/dir1/dir2/dir3/dir4/dir5"
 
 # Task 2
 TASK_2_QUESTION="Create file 'my backup \$(date +%Y-%m-%d).log' in dir5 using date command"
-TASK_2_HINT="Use touch with command substitution for the date"
-TASK_2_COMMAND_1='touch "/tmp/dir1/dir2/dir3/dir4/dir5/my backup $(date +%Y-%m-%d).log"'
+TASK_2_ANSWER="Use touch with command substitution for the date"
+TASK_2_COMMAND_1="touch /tmp/dir1/dir2/dir3/dir4/dir5/my\ backup\ \$(date +%Y-%m-%d).log"
 
 # Task 3
 TASK_3_QUESTION="Redirect hostnamectl command output in 'my backup \$(date +%Y-%m-%d).log'"
-TASK_3_HINT="Use output redirection to write hostnamectl output to file"
-TASK_3_COMMAND_1='hostnamectl > "/tmp/dir1/dir2/dir3/dir4/dir5/my backup $(date +%Y-%m-%d).log"'
+TASK_3_ANSWER="Use output redirection to write hostnamectl output to file"
+TASK_3_COMMAND_1="hostnamectl > /tmp/dir1/dir2/dir3/dir4/dir5/my\ backup\ \$(date +%Y-%m-%d).log"
 
 # Task 4
 TASK_4_QUESTION="Create file1, file2, file3, file4, file5 in dir4"
-TASK_4_HINT="Use brace expansion to create multiple files in one command"
+TASK_4_ANSWER="Use brace expansion to create multiple files in one command"
 TASK_4_COMMAND_1="touch /tmp/dir1/dir2/dir3/dir4/file{1,2,3,4,5}"
 
 
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
+# Auto-generate ANSWER from commands
+ANSWER=$(_build_answer)
 
 # =============================================================================
 # LAB IMPLEMENTATION

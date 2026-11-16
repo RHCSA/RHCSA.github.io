@@ -25,21 +25,18 @@ BACKUP_FILE="/tmp/.rhcsa_lab_journald_conf_backup"
 STATE_FILE="/tmp/.rhcsa_lab_journald_baseline_pid"
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Configure persistent journal storage. Edit /etc/systemd/journald.conf, add Storage=persistent under the [Journal] section, then restart the systemd-journald service so /var/log/journal starts being used"
-TASK_1_HINT="Add a Storage=persistent line under [Journal] in journald.conf, then restart the service so the change takes effect"
+TASK_1_ANSWER="Add a Storage=persistent line under [Journal] in journald.conf, then restart the service so the change takes effect"
 TASK_1_COMMAND_1="sed -i '/^\[Journal\]/a Storage=persistent' /etc/systemd/journald.conf && systemctl restart systemd-journald"
 
 # Task 2
 TASK_2_QUESTION="Limit the journal to a maximum of 500M of disk space. Add SystemMaxUse=500M under the [Journal] section in the same file, then restart the systemd-journald service"
-TASK_2_HINT="Add a SystemMaxUse=500M line under [Journal] in journald.conf, then restart the service so the change takes effect"
+TASK_2_ANSWER="Add a SystemMaxUse=500M line under [Journal] in journald.conf, then restart the service so the change takes effect"
 TASK_2_COMMAND_1="sed -i '/^\[Journal\]/a SystemMaxUse=500M' /etc/systemd/journald.conf && systemctl restart systemd-journald"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

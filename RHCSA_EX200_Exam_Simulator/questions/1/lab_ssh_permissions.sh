@@ -13,27 +13,23 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Fix /tmp/sshtest/.ssh directory permissions (should be 700)"
-TASK_1_HINT="SSH directories must be private to prevent unauthorized access"
+TASK_1_ANSWER="SSH directories must be private to prevent unauthorized access"
 TASK_1_COMMAND_1="chmod 700 /tmp/sshtest/.ssh"
 
 # Task 2
 TASK_2_QUESTION="Fix /tmp/sshtest/.ssh/id_rsa private key permissions (should be 600)"
-TASK_2_HINT="Private keys must not be readable by others"
+TASK_2_ANSWER="Private keys must not be readable by others"
 TASK_2_COMMAND_1="chmod 600 /tmp/sshtest/.ssh/id_rsa"
 
 # Task 3
 TASK_3_QUESTION="Fix /tmp/sshtest/.ssh/authorized_keys permissions (should be 600)"
-TASK_3_HINT="authorized_keys should be readable/writable only by owner"
+TASK_3_ANSWER="authorized_keys should be readable/writable only by owner"
 TASK_3_COMMAND_1="chmod 600 /tmp/sshtest/.ssh/authorized_keys"
-
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # =============================================================================
 # LAB IMPLEMENTATION

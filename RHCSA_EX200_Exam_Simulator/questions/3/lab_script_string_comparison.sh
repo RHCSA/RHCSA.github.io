@@ -17,21 +17,21 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=3
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/check_string.sh. It should read a username from its first argument: if the argument is empty, use -z to print 'No value provided'. If it is not empty, use -n together with = and != to compare the value to 'admin', printing 'Username matches' or 'Username does not match'"
-TASK_1_HINT="Use -z for empty, -n for non-empty, then = or != to compare the value to admin"
+TASK_1_ANSWER="Use -z for empty, -n for non-empty, then = or != to compare the value to admin"
 TASK_1_COMMAND_1="cat > /root/check_string.sh << 'SCRIPT_END'
 #!/bin/bash
-name=$1
-if [[ -z $name ]]; then
+name=\$1
+if [[ -z \$name ]]; then
     echo No value provided
-elif [[ -n $name ]]; then
-    if [[ $name = admin ]]; then
+elif [[ -n \$name ]]; then
+    if [[ \$name = admin ]]; then
         echo Username matches
-    elif [[ $name != admin ]]; then
+    elif [[ \$name != admin ]]; then
         echo Username does not match
     fi
 fi
@@ -40,16 +40,13 @@ chmod +x /root/check_string.sh"
 
 # Task 2
 TASK_2_QUESTION="Run the script with 'admin' as the argument: it should print 'Username matches'"
-TASK_2_HINT="Pass admin as the first argument"
+TASK_2_ANSWER="Pass admin as the first argument"
 TASK_2_COMMAND_1="/root/check_string.sh admin"
 
 # Task 3
 TASK_3_QUESTION="Run the script with 'guest' as the argument: it should print 'Username does not match'"
-TASK_3_HINT="Pass any value other than admin as the first argument"
+TASK_3_ANSWER="Pass any value other than admin as the first argument"
 TASK_3_COMMAND_1="/root/check_string.sh guest"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Compress /tmp/largefile.txt using bzip2 with maximum compression (-9)"
-TASK_1_HINT="-9 = maximum compression"
+TASK_1_ANSWER="-9 = maximum compression"
 TASK_1_COMMAND_1="bzip2 -9 /tmp/largefile.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test file for compression...${RESET}"

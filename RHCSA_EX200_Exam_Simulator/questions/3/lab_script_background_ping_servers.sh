@@ -4,11 +4,6 @@
 # NOTE: this lab launches real ping processes in the background to verify
 # concurrency; check_tasks always terminates them afterward, regardless of
 # outcome, so no ping processes are left running.
-# NOTE ON HINT TEXT: TASK_1_COMMAND_1 below contains a literal $ip, which
-# the CLI's bash-based parser will expand while sourcing (a framework
-# limitation - see repo memory). This does NOT affect grading (check_tasks
-# is real bash, not a parsed string) or the web UI, which shows/sends it
-# correctly. CLI users may see a slightly different hint text for this task.
 
 IS_LAB=true
 LAB_ID="script_background_ping_servers"
@@ -20,17 +15,17 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Create an executable script at /root/ping_servers.sh. Use a for loop over the three addresses 8.8.8.8, 8.8.4.4, and 1.1.1.1, and inside the loop send a ping of 5 packets to each address to the background with the ampersand operator, so all three run at the same time instead of one after another"
-TASK_1_HINT="Use a for loop that steps through the three addresses one at a time; inside the loop body, ping each one 5 times and follow the command with an ampersand to send it to the background. Adding wait after the loop pauses the script until all three finish"
+TASK_1_ANSWER="Use a for loop that steps through the three addresses one at a time; inside the loop body, ping each one 5 times and follow the command with an ampersand to send it to the background. Adding wait after the loop pauses the script until all three finish"
 TASK_1_COMMAND_1="cat > /root/ping_servers.sh << 'SCRIPT_END'
 #!/bin/bash
 for ip in 8.8.8.8 8.8.4.4 1.1.1.1
 do
-    ping -c 5 $ip &
+    ping -c 5 \$ip &
 done
 wait
 SCRIPT_END
@@ -38,11 +33,8 @@ chmod +x /root/ping_servers.sh"
 
 # Task 2
 TASK_2_QUESTION="Run the script: all three pings should start together and run at the same time, instead of one finishing before the next begins"
-TASK_2_HINT="While the script is running, check the process list in another terminal; all three ping processes should be visible running together, not one at a time"
+TASK_2_ANSWER="While the script is running, check the process list in another terminal; all three ping processes should be visible running together, not one at a time"
 TASK_2_COMMAND_1="/root/ping_servers.sh"
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 
 # Prepare the lab environment
 prepare_lab() {

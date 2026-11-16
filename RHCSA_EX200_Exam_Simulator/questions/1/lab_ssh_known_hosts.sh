@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Remove 'server5.example.com' entry from ~/.ssh/known_hosts"
-TASK_1_HINT="-R option removes all keys for specified hostname"
+TASK_1_ANSWER="-R option removes all keys for specified hostname"
 TASK_1_COMMAND_1="ssh-keygen -R server5.example.com"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Ensuring .ssh directory exists...${RESET}"

@@ -13,17 +13,14 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=1
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Run 'whoami' command as 'operator' user and save output to ~/i_am"
-TASK_1_HINT="-c option allows running single command as specified user"
+TASK_1_ANSWER="-c option allows running single command as specified user"
 TASK_1_COMMAND_1="su - operator -c 'whoami' > ~/i_am"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating test user operator...${RESET}"

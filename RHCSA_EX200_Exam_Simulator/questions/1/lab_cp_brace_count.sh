@@ -13,22 +13,19 @@ YOUTUBE_VIDEO="https://www.youtube.com/watch?v=Me6Y12-sux8"
 LAB_TASK_COUNT=2
 
 # =============================================================================
-# TASK DEFINITIONS - Each task has question, hint, and command(s)
+# TASK DEFINITIONS - Each task has question, answer, and command(s)
 # =============================================================================
 
 # Task 1
 TASK_1_QUESTION="Copy files20 through files25 from /tmp/source/dir1/dir2/ to /tmp/destination/ preserving attributes and permissions"
-TASK_1_HINT="Use brace expansion {20..25} to specify file range"
+TASK_1_ANSWER="Use brace expansion {20..25} to specify file range"
 TASK_1_COMMAND_1="cp -arp /tmp/source/dir1/dir2/files{20..25} /tmp/destination/"
 
 # Task 2
 TASK_2_QUESTION="Count files in /tmp/destination/ and save the count to /tmp/file_count.txt"
-TASK_2_HINT="Use wc -l to count lines from ls output"
+TASK_2_ANSWER="Use wc -l to count lines from ls output"
 TASK_2_COMMAND_1="ls /tmp/destination/ | wc -l > /tmp/file_count.txt"
 
-
-# Auto-generate HINT from commands
-HINT=$(_build_hint)
 # Prepare the lab environment
 prepare_lab() {
     echo -e "  ${DIM}• Creating source directory structure...${RESET}"
