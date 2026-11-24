@@ -545,10 +545,11 @@ fi
 
 
 def resolve_dynamic_lab_data(filepath, lab_data):
-    """Re-resolve task text/commands after prepare_lab has run, so labs that
-    pick values at runtime (e.g. disk names) show the real values in the web
-    UI. No-op for ordinary labs: get_task_description()/TASK_i_COMMAND_j
-    already just echo back the same static string the regex parser found.
+    """Re-resolve task text, commands and answer notes after prepare_lab has
+    run, so labs that pick values at runtime (e.g. disk names) show the real
+    values in the web UI. No-op for ordinary labs: get_task_description()/
+    TASK_i_COMMAND_j already just echo back the same static string the regex
+    parser found.
     """
     task_count = lab_data.get('task_count', 0)
     commands = lab_data.get('commands', [])
@@ -572,6 +573,12 @@ def resolve_dynamic_lab_data(filepath, lab_data):
             f'__v="TASK_{i}_COMMAND_{j}"; __c="${{!__v}}"; '
             f'echo "RHCSA_CMD_{i}_{j}:${{__c//$\'\\n\'/@@RHCSA_NL@@}}"'
         )
+        if j == 1:
+            # The answer note shown above the first command goes through bash too (\$ and ${VAR})
+            script_lines.append(
+                f'__a="${{TASK_{i}_ANSWER:-$TASK_{i}_HINT}}"; '
+                f'echo "RHCSA_ANS_{i}:${{__a//$\'\\n\'/@@RHCSA_NL@@}}"'
+            )
 
     stdout = run_bash_capture(filepath, '\n'.join(script_lines), timeout=15)
 
@@ -596,6 +603,14 @@ def resolve_dynamic_lab_data(filepath, lab_data):
             for entry in commands:
                 if entry['task'] == ti and entry['cmd_index'] == tj:
                     entry['command'] = val
+                    break
+            continue
+        m = re.match(r'^RHCSA_ANS_(\d+):(.*)$', line)
+        if m:
+            val = m.group(2).replace('@@RHCSA_NL@@', '\n')
+            for entry in commands:
+                if val and entry['task'] == int(m.group(1)) and entry['cmd_index'] == 1:
+                    entry['answer'] = val
                     break
 
     lab_data['tasks'] = tasks
