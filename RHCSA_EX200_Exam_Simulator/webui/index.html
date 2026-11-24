@@ -458,6 +458,85 @@
             overflow-wrap: anywhere;
         }
 
+        /* A phrase the student types in the terminal: click it to copy it */
+        .copy-chip {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            max-width: 100%;
+            padding: 0 6px;
+            border: 1px solid rgba(88, 166, 255, 0.35);
+            border-radius: 6px;
+            background-color: rgba(88, 166, 255, 0.08);
+            color: #79c0ff;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.45;
+            text-align: left;
+            vertical-align: baseline;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        .copy-chip:hover {
+            background-color: rgba(88, 166, 255, 0.16);
+            border-color: #58a6ff;
+        }
+
+        .copy-chip:focus-visible {
+            outline: 2px solid #58a6ff;
+            outline-offset: 1px;
+        }
+
+        .copy-chip-text {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .copy-chip svg {
+            display: block;
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .copy-chip-icon { opacity: 0.7; }
+        .copy-chip:hover .copy-chip-icon { opacity: 1; }
+        .copy-chip-done { display: none; }
+
+        .copy-chip.copied {
+            background-color: rgba(63, 185, 80, 0.15);
+            border-color: #3fb950;
+            color: #3fb950;
+        }
+
+        .copy-chip.copied .copy-chip-icon { display: none; }
+        .copy-chip.copied .copy-chip-done { display: block; }
+
+        .copy-chip.copied::after {
+            content: 'Copied!';
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            background-color: #238636;
+            color: #fff;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.8em;
+            white-space: nowrap;
+            pointer-events: none;
+            animation: chipCopiedIn 0.15s ease-out;
+        }
+
+        @keyframes chipCopiedIn {
+            from { opacity: 0; transform: translate(-50%, 4px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
         .task-actions {
             display: flex;
             gap: 12px;
@@ -738,8 +817,8 @@
 
         @media (prefers-reduced-motion: reduce) {
             .task-track { transition: none !important; }
-            .task-btn, .task-seg { transition: none; }
-            .task-btn-verify.failed, .task-btn-verify.pop, .task-answer.show, .summary-emoji { animation: none; }
+            .task-btn, .task-seg, .copy-chip { transition: none; }
+            .task-btn-verify.failed, .task-btn-verify.pop, .task-answer.show, .summary-emoji, .copy-chip.copied::after { animation: none; }
             .fw-layer { display: none; }
         }
 
@@ -2185,6 +2264,317 @@
         }
 
 
+        // ==================== COPY CHIPS (click a phrase in the task text to copy it) ====================
+        // A phrase in the task text gets a copy chip when the task's own answer commands use it.
+
+        const COPY_STOPWORDS = new Set((
+            'about above after again against also another answer append argument arguments back backup '
+            + 'before being below between both bash branch called case change check command commands '
+            + 'confirm contain contains content copy count create created current default delete '
+            + 'directory directories display does done each echo else enable enabled entry error every '
+            + 'exist exists file files find first following from given group groups have here home '
+            + 'input inside install installed into just last line lines list make message missing mode more '
+            + 'name named number once only other output owner package packages print read remove root '
+            + 'same save script service services shell show sort start status stop string system target '
+            + 'task test text that their them then there these this through time true false using user '
+            + 'users value when where which while with word words write your'
+        ).split(' '));
+
+        // Tools whose first argument is a subcommand (dnf install, systemctl restart, ...), not a name to copy
+        const SUBCOMMAND_TOOLS = new Set([
+            'dnf', 'yum', 'flatpak', 'systemctl', 'tuned-adm', 'nmcli', 'hostnamectl', 'timedatectl',
+            'localectl', 'loginctl', 'semanage', 'git', 'docker', 'podman', 'subscription-manager'
+        ]);
+
+        // Their plain-word arguments are free text (messages), not names
+        const TEXT_TOOLS = new Set(['echo', 'printf', 'logger', 'wall']);
+
+        const COMMAND_PREFIXES = new Set(['sudo', 'exec', 'time', 'then', 'do', 'else', 'if', 'while', 'until', '!']);
+        const SYSTEM_TOP_DIRS = new Set(['bin', 'boot', 'dev', 'etc', 'home', 'lib', 'lib64', 'mnt', 'opt',
+            'proc', 'root', 'run', 'sbin', 'srv', 'sys', 'tmp', 'usr', 'var', '~']);
+
+        // Split shell text into simple commands: { words: [text], redirects: [text] }
+        function shellSegments(text) {
+            const segments = [];
+            let seg = { words: [], redirects: [] };
+            let cur = '';
+            let has = false;
+            let quoted = false;
+            let redirectNext = false;
+            const endWord = () => {
+                if (has) {
+                    if (redirectNext) seg.redirects.push(cur);
+                    else seg.words.push(cur);
+                    redirectNext = false;
+                }
+                cur = '';
+                has = false;
+                quoted = false;
+            };
+            const endSegment = () => {
+                endWord();
+                if (seg.words.length || seg.redirects.length) segments.push(seg);
+                seg = { words: [], redirects: [] };
+            };
+            let i = 0;
+            while (i < text.length) {
+                const c = text[i];
+                if (c === "'") {
+                    const j = text.indexOf("'", i + 1);
+                    cur += j < 0 ? text.slice(i + 1) : text.slice(i + 1, j);
+                    i = j < 0 ? text.length : j + 1;
+                    has = quoted = true;
+                } else if (c === '"') {
+                    i++;
+                    while (i < text.length && text[i] !== '"') {
+                        if (text[i] === '\\' && i + 1 < text.length) i++;
+                        cur += text[i++];
+                    }
+                    i++;
+                    has = quoted = true;
+                } else if (c === '\\' && i + 1 < text.length) {
+                    cur += text[i + 1];
+                    i += 2;
+                    has = true;
+                } else if (c === '$' && text[i + 1] === '(') {
+                    const start = i;
+                    let depth = 0;
+                    while (i < text.length) {
+                        if (text[i] === '(') depth++;
+                        else if (text[i] === ')' && --depth === 0) { i++; break; }
+                        i++;
+                    }
+                    cur += text.slice(start, i);
+                    has = true;
+                } else if (c === '>' || c === '<') {
+                    if (/^\d$/.test(cur) && !quoted) { cur = ''; has = false; }  // the 2 in 2>/dev/null
+                    endWord();
+                    while ('<>&'.includes(text[i] || '')) i++;
+                    redirectNext = true;
+                } else if (';|&\n()'.includes(c)) {
+                    endSegment();
+                    i++;
+                } else if (/\s/.test(c)) {
+                    endWord();
+                    i++;
+                } else {
+                    cur += c;
+                    i++;
+                    has = true;
+                }
+            }
+            endSegment();
+            return segments;
+        }
+
+        // Command lines, plus each here-document body (a script body holds commands, a config body does not)
+        function splitHeredocs(cmd) {
+            const commandLines = [];
+            const bodies = [];
+            let body = null;
+            for (const line of cmd.split('\n')) {
+                if (body) {
+                    if (line.trim() === body.end) {
+                        bodies.push(body);
+                        body = null;
+                    } else {
+                        body.lines.push(line);
+                    }
+                    continue;
+                }
+                commandLines.push(line);
+                const m = line.match(/<<-?\s*(['"]?)([A-Za-z_][A-Za-z0-9_]*)\1/);
+                if (m) body = { end: m[2], lines: [], isScript: /\.sh\b/.test(line) };
+            }
+            if (body) bodies.push(body);
+            return {
+                commands: commandLines.join('\n'),
+                bodies: bodies.map(b => ({ text: b.lines.join('\n'), isScript: b.isScript || /^#!/.test(b.lines[0] || '') }))
+            };
+        }
+
+        const isFlag = w => /^-/.test(w) && w.length > 1;
+        const isCamel = w => /^[A-Za-z0-9]+$/.test(w) && /[a-z][A-Z]/.test(w);
+
+        // Names, paths, sizes, IDs: anything with a digit or symbol in it
+        function isIdentifierLike(w) {
+            if (w.length < 2 || isFlag(w) || w.startsWith('$') || !/[A-Za-z0-9]/.test(w)) return false;
+            if (/^\d+$/.test(w)) return w.length >= 3;
+            return !/^[A-Za-z]+$/.test(w);
+        }
+
+        const isPlainName = w => /^[A-Za-z]+$/.test(w) && w.length >= 4 && !COPY_STOPWORDS.has(w.toLowerCase());
+
+        function collectCopyCandidates(cmd, out, runs, isConfig) {
+            for (const seg of shellSegments(cmd)) {
+                const words = seg.words;
+                for (let a = 0; a < words.length; a++) {
+                    for (let b = a; b < Math.min(words.length, a + 6); b++) runs.add(words.slice(a, b + 1).join(' '));
+                }
+
+                let k = 0;
+                while (k < words.length && (COMMAND_PREFIXES.has(words[k]) || /^\w+=/.test(words[k]))) k++;
+                if (words[k] === 'nice') {
+                    k++;
+                    while (k < words.length && (isFlag(words[k]) || /^-?\d+$/.test(words[k]))) k++;
+                }
+                const command = isConfig ? null : words[k];
+                const args = isConfig ? words : words.slice(k + 1);
+                const runsScript = command && command.includes('/');
+                // A config directive (AllowUsers, MaxAuthTries, ...) rather than a program
+                const directive = command && /[A-Z]/.test(command) && /^[A-Za-z0-9]+$/.test(command);
+                if (runsScript || directive) addCopyWord(command, false, out, runs);
+
+                let skipSubcommand = command && SUBCOMMAND_TOOLS.has(command);
+                const named = args.filter(w => !isFlag(w));
+                const lastArg = named[named.length - 1];
+                for (const w of args) {
+                    if (isFlag(w)) {
+                        addCopyWord(w, false, out, runs);
+                        continue;
+                    }
+                    if (skipSubcommand) {
+                        skipSubcommand = false;
+                        continue;
+                    }
+                    if (runsScript && !w.includes('/')) continue;
+                    const plainOk = directive || (!isConfig && w === lastArg && !TEXT_TOOLS.has(command));
+                    addCopyWord(w, plainOk, out, runs);
+                }
+                seg.redirects.forEach(r => addCopyWord(r, false, out, runs));
+            }
+        }
+
+        function addCopyWord(w, plainOk, out, runs, depth = 0) {
+            if (!w || depth > 4) return;
+            runs.add(w);
+            if (isFlag(w)) {
+                const eq = w.indexOf('=');
+                if (eq > 0) addCopyWord(w.slice(eq + 1), false, out, runs, depth + 1);
+                return;
+            }
+            if (isIdentifierLike(w) || isCamel(w) || (plainOk && isPlainName(w))) out.add(w);
+
+            for (const m of w.matchAll(/\$\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g)) collectCopyCandidates(m[1], out, runs, false);
+
+            const next = p => addCopyWord(p, false, out, runs, depth + 1);
+            const core = w.replace(/^[!(\[{^'"]+/, '').replace(/[)\]}'",;$]+$/, '');
+            if (core !== w) addCopyWord(core, plainOk, out, runs, depth + 1);
+            if (w.indexOf('$') > 0) next(w.slice(0, w.indexOf('$')).replace(/[._-]+$/, ''));
+
+            const isPath = w.startsWith('/') || w.startsWith('~/');
+            if (isPath) addCopyPath(w, out, runs);
+            if (/\s/.test(w)) {
+                w.split(/\s+/).forEach(next);
+                return;
+            }
+            const eq = w.indexOf('=');
+            if (eq > 0) {
+                next(w.slice(0, eq));
+                next(w.slice(eq + 1));
+            }
+            if (!w.includes('://')) {
+                for (const sep of [',', ':', '|']) {
+                    if (w.includes(sep)) w.split(sep).forEach(next);
+                }
+            }
+            if (!isPath && w.includes('/') && !w.includes('://')) w.split('/').forEach(p => runs.add(p));
+        }
+
+        function addCopyPath(path, out, runs) {
+            const parts = path.split('/');
+            parts.forEach(p => {
+                runs.add(p);
+                if (isIdentifierLike(p) || isCamel(p)) out.add(p);
+            });
+            for (let n = 2; n < parts.length; n++) {
+                if (n === 2 && SYSTEM_TOP_DIRS.has(parts[1])) continue;
+                const prefix = parts.slice(0, n).join('/');
+                if (prefix.length > 1) out.add(prefix);
+            }
+        }
+
+        // Non-overlapping { start, end } ranges of copyable phrases in the task text
+        function findCopyPhrases(text, commands) {
+            const out = new Set();
+            const runs = new Set();
+            for (const cmd of commands) {
+                const parts = splitHeredocs(cmd);
+                collectCopyCandidates(parts.commands, out, runs, false);
+                parts.bodies.forEach(b => collectCopyCandidates(b.text, out, runs, !b.isScript));
+            }
+
+            const ranges = [];
+            const free = (s, e) => !ranges.some(r => s < r.end && e > r.start);
+
+            // A quoted phrase in the text that is exactly one or more words of a command
+            for (const m of text.matchAll(/'([^'\n]+)'|"([^"\n]+)"/g)) {
+                const inner = m[1] !== undefined ? m[1] : m[2];
+                const start = m.index + 1;
+                if (runs.has(inner) && free(start, start + inner.length)) ranges.push({ start, end: start + inner.length });
+            }
+
+            for (const phrase of [...out].sort((a, b) => b.length - a.length)) {
+                let from = 0;
+                let at;
+                while ((at = text.indexOf(phrase, from)) !== -1) {
+                    from = at + 1;
+                    let end = at + phrase.length;
+                    if (text[end] === '/' && !/[\w.\-]/.test(text[end + 1] || '')) end++;
+                    const before = at > 0 ? text[at - 1] : '';
+                    const after = text[end] || '';
+                    if (/[\w\/.\-~$@:]/.test(before)) continue;
+                    if (/[\w\/\-@]/.test(after) || (/[.:]/.test(after) && /\w/.test(text[end + 1] || ''))) continue;
+                    if (free(at, end)) ranges.push({ start: at, end });
+                }
+            }
+            return ranges.sort((a, b) => a.start - b.start);
+        }
+
+        // Task text as HTML, with a copy chip on each phrase the student types in the terminal
+        function renderTaskText(text, commands) {
+            let html = '';
+            let pos = 0;
+            for (const r of findCopyPhrases(text, commands)) {
+                const phrase = text.slice(r.start, r.end);
+                html += escapeHtml(text.slice(pos, r.start))
+                    + `<button type="button" class="copy-chip" data-copy="${escapeHtml(phrase).replace(/"/g, '&quot;')}" onclick="copyChip(this)" title="Click to copy">`
+                    + `<span class="copy-chip-text">${escapeHtml(phrase)}</span>`
+                    + `<span class="copy-chip-icon">${icons.copy}</span><span class="copy-chip-done">${icons.check}</span></button>`;
+                pos = r.end;
+            }
+            return html + escapeHtml(text.slice(pos));
+        }
+
+        // Copy the chip's phrase; the chip turns green and shows "Copied!" for a moment
+        async function copyChip(chip) {
+            const text = chip.dataset.copy;
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    // The page is served over plain http, where navigator.clipboard does not exist
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    textarea.style.position = 'fixed';
+                    textarea.style.left = '-9999px';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    const copied = document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    chip.focus({ preventScroll: true });
+                    if (!copied) throw new Error('copy command was refused');
+                }
+            } catch (e) {
+                console.error('Failed to copy:', e);
+                return;
+            }
+            clearTimeout(chip.copiedTimer);
+            chip.classList.add('copied');
+            chip.copiedTimer = setTimeout(() => chip.classList.remove('copied'), 1500);
+        }
+
+
         // ==================== TASK PAGER (one task per slide) ====================
 
         // Build one slide per task plus a summary slide, and show the first task
@@ -2250,7 +2640,7 @@
             return `
                 <section class="task-slide" id="task-${idx}">
                     <div class="task-info-icon" aria-hidden="true">i</div>
-                    <div class="task-text">${escapeHtml(task)}</div>
+                    <div class="task-text">${renderTaskText(task, taskAnswers.map(a => unescapeCommand(a.command)))}</div>
                     <div class="task-actions">
                         <button class="task-btn task-btn-answer" id="answerBtn-${idx}" aria-expanded="false" onclick="toggleAnswer(${idx})">
                             ${icons.answer}<span>Answer</span>
