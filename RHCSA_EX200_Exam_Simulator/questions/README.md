@@ -12,9 +12,9 @@ Each folder is one RHCSA EX200 objective. The simulator shows all `.sh` files of
 | 2 | Manage software | 12 labs |
 | 3 | Create simple shell scripts | 23 labs |
 | 4 | Operate running systems | 11 labs, 4 questions |
-| 5 | Configure local storage | 6 labs |
+| 5 | Configure local storage | 10 labs |
 | 6 | Create and configure file systems | Help wanted |
-| 7 | Deploy, configure, and maintain systems | Help wanted |
+| 7 | Deploy, configure, and maintain systems | 3 labs |
 | 8 | Manage basic networking | 1 lab, 2 demo labs |
 | 9 | Manage users and groups | Help wanted |
 | 10 | Manage security | Help wanted |
